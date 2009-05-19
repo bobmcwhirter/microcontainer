@@ -62,7 +62,7 @@ public class LoaderRepositoryBeanMetaDataFactory extends GenericBeanFactoryMetaD
       {
          name = GUID.asString();
       }
-      BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder(name, LifecycleRepository.class.getName());
+      BeanMetaDataBuilder builder = AOPBeanMetaDataBuilder.createBuilder(name, LifecycleRepository.class.getName());
       builder.addPropertyMetaData("repositoryName", contents);
       builder.addPropertyMetaData("name", name);
       

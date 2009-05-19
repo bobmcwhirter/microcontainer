@@ -67,7 +67,7 @@ public class TypeDefBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFa
    {
       ArrayList<BeanMetaData> beans = new ArrayList<BeanMetaData>();
       
-      BeanMetaDataBuilder typedefBuilder = BeanMetaDataBuilder.createBuilder(getName(), TypeDef.class.getName());
+      BeanMetaDataBuilder typedefBuilder = AOPBeanMetaDataBuilder.createBuilder(getName(), TypeDef.class.getName());
       typedefBuilder.addPropertyMetaData("name", getName());
       typedefBuilder.addPropertyMetaData("expr", expr);
       

@@ -74,7 +74,7 @@ public abstract class AbstractDeclareBeanMetaDataFactory extends AspectManagerAw
       {
           name = GUID.asString();
       }
-      BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder(name, DeclareDefinition.class.getName());
+      BeanMetaDataBuilder builder = AOPBeanMetaDataBuilder.createBuilder(name, DeclareDefinition.class.getName());
       builder.addPropertyMetaData("expr", expr);
       builder.addPropertyMetaData("name", name);
       builder.addPropertyMetaData("message", message);

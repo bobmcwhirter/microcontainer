@@ -155,7 +155,7 @@ public class DomainBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFac
    {
       ArrayList<BeanMetaData> result = new ArrayList<BeanMetaData>();
       
-      BeanMetaDataBuilder domainBuilder = BeanMetaDataBuilder.createBuilder(getName(), AOPDomain.class.getName());
+      BeanMetaDataBuilder domainBuilder = AOPBeanMetaDataBuilder.createBuilder(getName(), AOPDomain.class.getName());
       domainBuilder.addPropertyMetaData("name", getName());
     
       if (parentFirst != null)
@@ -189,7 +189,7 @@ public class DomainBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFac
                AspectManagerAwareBeanMetaDataFactory amChild = (AspectManagerAwareBeanMetaDataFactory)child;
                amChild.setManagerBean(name);
                amChild.setManagerProperty("domain");
-               amChild.setAspectManagerProperty(BeanMetaDataBuilder.createBuilder(bean));
+               amChild.setAspectManagerProperty(AOPBeanMetaDataBuilder.createBuilder(bean));
             }
             List<BeanMetaData> childResult = child.getBeans();
             if (childResult != null && childBeans.size() > 0)

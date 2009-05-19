@@ -76,7 +76,7 @@ public class ArrayBindBeanMetaDataFactory extends AspectManagerAwareBeanMetaData
       {
          name = GUID.asString();
       }
-      BeanMetaDataBuilder bindingBuilder = BeanMetaDataBuilder.createBuilder(name, ArrayBinding.class.getName());
+      BeanMetaDataBuilder bindingBuilder = AOPBeanMetaDataBuilder.createBuilder(name, ArrayBinding.class.getName());
       bindingBuilder.addPropertyMetaData("name", name);
       bindingBuilder.addPropertyMetaData("type", type);
       setAspectManagerProperty(bindingBuilder);
@@ -90,7 +90,7 @@ public class ArrayBindBeanMetaDataFactory extends AspectManagerAwareBeanMetaData
          for (BaseInterceptorData interceptor : interceptors)
          {
             String intName = name + "$" + i++; 
-            BeanMetaDataBuilder interceptorBuilder = BeanMetaDataBuilder.createBuilder(intName, interceptor.getBeanClassName());
+            BeanMetaDataBuilder interceptorBuilder = AOPBeanMetaDataBuilder.createBuilder(intName, interceptor.getBeanClassName());
             setAspectManagerProperty(interceptorBuilder);
             ValueMetaData injectBinding = interceptorBuilder.createInject(name, null, null, ControllerState.INSTANTIATED);
             interceptorBuilder.addPropertyMetaData("binding", injectBinding);

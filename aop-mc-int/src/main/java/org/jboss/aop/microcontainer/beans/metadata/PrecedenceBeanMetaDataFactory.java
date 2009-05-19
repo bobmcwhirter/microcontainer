@@ -66,7 +66,7 @@ public class PrecedenceBeanMetaDataFactory extends AspectManagerAwareBeanMetaDat
       {
          name = GUID.asString();
       }
-      BeanMetaDataBuilder precedenceBuilder = BeanMetaDataBuilder.createBuilder(name, PrecedenceDef.class.getName());
+      BeanMetaDataBuilder precedenceBuilder = AOPBeanMetaDataBuilder.createBuilder(name, PrecedenceDef.class.getName());
       precedenceBuilder.addPropertyMetaData("name", getName());
       setAspectManagerProperty(precedenceBuilder);
       result.add(precedenceBuilder.getBeanMetaData());
@@ -77,7 +77,7 @@ public class PrecedenceBeanMetaDataFactory extends AspectManagerAwareBeanMetaDat
       for (BaseInterceptorData entry : entries)
       {
          String entryName = name + "$" + i++;
-         BeanMetaDataBuilder entryBuilder = BeanMetaDataBuilder.createBuilder(entryName, PrecedenceDefEntry.class.getName());
+         BeanMetaDataBuilder entryBuilder = AOPBeanMetaDataBuilder.createBuilder(entryName, PrecedenceDefEntry.class.getName());
          
          entryBuilder.addPropertyMetaData("aspectName", entry.getRefName());
          if (entry instanceof AdviceOrInterceptorData)

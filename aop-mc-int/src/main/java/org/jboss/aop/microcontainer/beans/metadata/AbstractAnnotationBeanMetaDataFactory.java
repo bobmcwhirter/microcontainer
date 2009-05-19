@@ -87,7 +87,7 @@ public abstract class AbstractAnnotationBeanMetaDataFactory extends AspectManage
       {
          name = GUID.asString();
       }
-      BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder(name, getBeanClassName());
+      BeanMetaDataBuilder builder = AOPBeanMetaDataBuilder.createBuilder(name, getBeanClassName());
       builder.addPropertyMetaData("invisible", invisible);
       builder.addPropertyMetaData("expr", expr);
       builder.addPropertyMetaData("annotation", annotation);

@@ -62,7 +62,7 @@ public abstract class AbstractPointcutBeanMetaDataFactory extends AspectManagerA
          name = GUID.asString();
       }
       
-      BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder(name, getBeanClass());
+      BeanMetaDataBuilder builder = AOPBeanMetaDataBuilder.createBuilder(name, getBeanClass());
       builder.addPropertyMetaData("name", name);
       builder.addPropertyMetaData("expr", expr);
       setAspectManagerProperty(builder);

@@ -80,7 +80,7 @@ public class DynamicCflowBeanMetaDataFactory extends AspectManagerAwareBeanMetaD
    {
       ArrayList<BeanMetaData> result = new ArrayList<BeanMetaData>();
       
-      BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder(name, DynamicCFlowDef.class.getName());
+      BeanMetaDataBuilder builder = AOPBeanMetaDataBuilder.createBuilder(name, DynamicCFlowDef.class.getName());
       builder.addPropertyMetaData("name", name);
       builder.addPropertyMetaData("className", clazz);
       HashMap<String, String> attributes = new HashMap<String, String>();

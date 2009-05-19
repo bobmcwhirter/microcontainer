@@ -97,7 +97,7 @@ public class MetaDataLoaderBeanMetaDataFactory extends AspectManagerAwareBeanMet
       {
          name = GUID.asString();
       }
-      BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder(name, ClassMetaDataLoader.class.getName());
+      BeanMetaDataBuilder builder = AOPBeanMetaDataBuilder.createBuilder(name, ClassMetaDataLoader.class.getName());
       builder.addPropertyMetaData("tag", tag);
       builder.addPropertyMetaData("className", clazz);
       HashMap<String, String> attributes = new HashMap<String, String>();

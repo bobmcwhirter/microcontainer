@@ -80,7 +80,7 @@ public class BindBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFacto
       {
          name = GUID.asString();
       }
-      BeanMetaDataBuilder bindingBuilder = BeanMetaDataBuilder.createBuilder(name, AspectBinding.class.getName());
+      BeanMetaDataBuilder bindingBuilder = AOPBeanMetaDataBuilder.createBuilder(name, AspectBinding.class.getName());
       bindingBuilder.addPropertyMetaData("name", name);
       if (cflow != null)
       {
@@ -97,7 +97,7 @@ public class BindBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFacto
          for (BaseInterceptorData interceptor : interceptors)
          {
             String intName = name + "$" + i++; 
-            BeanMetaDataBuilder interceptorBuilder = BeanMetaDataBuilder.createBuilder(intName, interceptor.getBeanClassName());
+            BeanMetaDataBuilder interceptorBuilder = AOPBeanMetaDataBuilder.createBuilder(intName, interceptor.getBeanClassName());
             setAspectManagerProperty(interceptorBuilder);
             ValueMetaData injectBinding = interceptorBuilder.createInject(name, null, null, ControllerState.INSTANTIATED);
             interceptorBuilder.addPropertyMetaData("binding", injectBinding);

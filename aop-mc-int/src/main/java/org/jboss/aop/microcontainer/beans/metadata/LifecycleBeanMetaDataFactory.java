@@ -81,7 +81,7 @@ public abstract class LifecycleBeanMetaDataFactory extends AspectManagerAwareBea
       ArrayList<BeanMetaData> result = new ArrayList<BeanMetaData>();
 
       //Do not include the bean factory here, just install the bean directly and the binding
-      BeanMetaDataBuilder lifecycleBuilder = BeanMetaDataBuilder.createBuilder(name, getBean());
+      BeanMetaDataBuilder lifecycleBuilder = AOPBeanMetaDataBuilder.createBuilder(name, getBean());
       if (properties != null && properties.size() > 0)
       {
          for (PropertyMetaData pmd : properties)
@@ -102,7 +102,7 @@ public abstract class LifecycleBeanMetaDataFactory extends AspectManagerAwareBea
       
       
       String aspectBindingName = name + "$AspectBinding";
-      BeanMetaDataBuilder bindingBuilder = BeanMetaDataBuilder.createBuilder(aspectBindingName, LifecycleBinding.class.getName());
+      BeanMetaDataBuilder bindingBuilder = AOPBeanMetaDataBuilder.createBuilder(aspectBindingName, LifecycleBinding.class.getName());
       bindingBuilder.addPropertyMetaData("callbackBean", name);
       setAspectManagerProperty(bindingBuilder);
       if (expr != null)

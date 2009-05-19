@@ -120,7 +120,7 @@ public class IntroductionBeanMetaDataFactory extends AspectManagerAwareBeanMetaD
          name = GUID.asString();
       }
      
-      BeanMetaDataBuilder introductionBuilder = BeanMetaDataBuilder.createBuilder(name, IntroductionBinding.class.getName());
+      BeanMetaDataBuilder introductionBuilder = AOPBeanMetaDataBuilder.createBuilder(name, IntroductionBinding.class.getName());
       introductionBuilder.addPropertyMetaData("name", name);
       setAspectManagerProperty(introductionBuilder);
       if (clazz != null)
@@ -169,7 +169,7 @@ public class IntroductionBeanMetaDataFactory extends AspectManagerAwareBeanMetaD
       for (MixinData mixin : mixins)
       {
          String name = introductionBuilder.getBeanMetaData().getName() + "$" + i++;
-         BeanMetaDataBuilder mixinBuilder = BeanMetaDataBuilder.createBuilder(name, MixinEntry.class.getName());
+         BeanMetaDataBuilder mixinBuilder = AOPBeanMetaDataBuilder.createBuilder(name, MixinEntry.class.getName());
          mixinBuilder.addPropertyMetaData("mixin", mixin.getMixin());
          addInterfaces(mixinBuilder, "interfaces", mixin.getInterfaces());
          mixinBuilder.addPropertyMetaData("transient", mixin.getTransient());

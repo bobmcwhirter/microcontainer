@@ -59,7 +59,7 @@ public class StackBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFact
       ArrayList<BeanMetaData> result = new ArrayList<BeanMetaData>();
 
       //Create Stack
-      BeanMetaDataBuilder stackBuilder = BeanMetaDataBuilder.createBuilder(name, Stack.class.getName());
+      BeanMetaDataBuilder stackBuilder = AOPBeanMetaDataBuilder.createBuilder(name, Stack.class.getName());
       stackBuilder.addPropertyMetaData("name", name);
       setAspectManagerProperty(stackBuilder);
       result.add(stackBuilder.getBeanMetaData());
@@ -71,7 +71,7 @@ public class StackBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFact
          for (BaseInterceptorData interceptor : interceptors)
          {
             String intName = name + "$" + i++; 
-            BeanMetaDataBuilder interceptorBuilder = BeanMetaDataBuilder.createBuilder(intName, interceptor.getBeanClassName());
+            BeanMetaDataBuilder interceptorBuilder = AOPBeanMetaDataBuilder.createBuilder(intName, interceptor.getBeanClassName());
             setAspectManagerProperty(interceptorBuilder);
             interceptorBuilder.addPropertyMetaData("forStack", Boolean.TRUE);
             

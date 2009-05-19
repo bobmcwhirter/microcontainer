@@ -84,7 +84,7 @@ public class ArrayReplacementBeanMetaDataFactory extends AspectManagerAwareBeanM
          name = GUID.asString();
       }
 
-      BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder(name, ArrayReplacement.class.getName());
+      BeanMetaDataBuilder builder = AOPBeanMetaDataBuilder.createBuilder(name, ArrayReplacement.class.getName());
       builder.addPropertyMetaData("name", name);
       builder.addPropertyMetaData("classes", clazz);
       builder.addPropertyMetaData("expr", expr);

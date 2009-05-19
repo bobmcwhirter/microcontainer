@@ -64,7 +64,7 @@ public class CFlowStackBeanMetaDataFactory extends AspectManagerAwareBeanMetaDat
       ArrayList<BeanMetaData> result = new ArrayList<BeanMetaData>();
       
       //Add the Aspect
-      BeanMetaDataBuilder cflowStackBuilder = BeanMetaDataBuilder.createBuilder(getName(), CFlowStack.class.getName());
+      BeanMetaDataBuilder cflowStackBuilder = AOPBeanMetaDataBuilder.createBuilder(getName(), CFlowStack.class.getName());
       cflowStackBuilder.addPropertyMetaData("name", getName());
       setAspectManagerProperty(cflowStackBuilder);
       result.add(cflowStackBuilder.getBeanMetaData());
@@ -77,7 +77,7 @@ public class CFlowStackBeanMetaDataFactory extends AspectManagerAwareBeanMetaDat
          for (CFlowEntry entry : calledEntries)
          {
             String entryName = getName() + "$" + i++;
-            BeanMetaDataBuilder entryBuilder = BeanMetaDataBuilder.createBuilder(entryName, CFlowStackEntry.class.getName());
+            BeanMetaDataBuilder entryBuilder = AOPBeanMetaDataBuilder.createBuilder(entryName, CFlowStackEntry.class.getName());
             entryBuilder.addPropertyMetaData("called", entry.getCalled());
             entryBuilder.addPropertyMetaData("expr", entry.getExpr());
             ValueMetaData injectEntry = entryBuilder.createInject(entryName);

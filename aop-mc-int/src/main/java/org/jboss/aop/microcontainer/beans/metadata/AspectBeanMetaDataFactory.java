@@ -140,12 +140,12 @@ public class AspectBeanMetaDataFactory extends AspectManagerAwareBeanMetaDataFac
          throw new RuntimeException("Wrong number of beans" + beans);
       }
       BeanMetaData factory = beans.get(0);
-      BeanMetaDataBuilder factoryBuilder = BeanMetaDataBuilder.createBuilder(factory);
+      BeanMetaDataBuilder factoryBuilder = AOPBeanMetaDataBuilder.createBuilder(factory);
       factoryBuilder.setBean(ClassLoaderAwareGenericBeanFactory.class.getName());
       result.add(factory);
       
       //Add the Aspect
-      BeanMetaDataBuilder aspectBuilder = BeanMetaDataBuilder.createBuilder(aspectName, Aspect.class.getName());
+      BeanMetaDataBuilder aspectBuilder = AOPBeanMetaDataBuilder.createBuilder(aspectName, Aspect.class.getName());
       aspectBuilder.addPropertyMetaData("scope", scope);
       aspectBuilder.addPropertyMetaData("name", aspectName);
       HashMap<String, String> attributes = new HashMap<String, String>();
