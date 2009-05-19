@@ -26,9 +26,9 @@ $Id: bean-deployer_2_0.xsd 70437 2008-03-05 17:13:04Z alesj $
          </xsd:documentation>
       </xsd:annotation>
       <xsd:sequence>
-         <xsd:element name="annotation" type="annotationType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="alias" type="aliasType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="related-class" type="relatedClassType" minOccurs="0" maxOccurs="unbounded"/>
+         <xsd:element name="annotation" type="annotationType" minOccurs="0" maxOccurs="unbounded"/>
          <xsd:element name="classloader" type="classloaderType" minOccurs="0"/>
          <xsd:element name="constructor" type="constructorType" minOccurs="0"/>
          <xsd:element name="property" type="propertyType" minOccurs="0" maxOccurs="unbounded"/>
