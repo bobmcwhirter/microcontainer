@@ -37,4 +37,10 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})
 public @interface DisableAOP 
 {
+   /**
+    * The disabled types.
+    *
+    * @return the disabled types
+    */
+   DisabledType[] value() default {DisabledType.ALL};
 }
