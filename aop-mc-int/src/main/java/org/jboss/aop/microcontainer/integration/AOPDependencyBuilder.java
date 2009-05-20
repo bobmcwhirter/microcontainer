@@ -39,6 +39,7 @@ import org.jboss.aop.advice.AspectDefinition;
 import org.jboss.aop.microcontainer.beans.AspectManagerFactory;
 import org.jboss.aop.microcontainer.beans.ManagedAspectDefinition;
 import org.jboss.aop.microcontainer.lifecycle.LifecycleCallbackDefinition;
+import org.jboss.aop.microcontainer.annotations.DisabledType;
 import org.jboss.aop.proxy.container.ContainerCache;
 import org.jboss.aop.util.Advisable;
 import org.jboss.aop.util.ClassInfoMethodHashing;
@@ -85,7 +86,7 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
     */
    protected boolean bypassAOP(BeanInfo beanInfo, MetaData metaData)
    {
-      return DisableAOPHelper.isAOPDisabled(metaData);
+      return DisableAOPHelper.isAOPDisabled(metaData, DisabledType.ALL);
    }
 
    @SuppressWarnings({"unchecked", "deprecation"})
@@ -137,6 +138,8 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
                   }
                }
             }
+
+            // TODO - add lifecycle + disable aop
 
             Map<Object, Set<LifecycleCallbackDefinition>> lifecycleCallbacks = binder.getLifecycleCallbacks();
             if (lifecycleCallbacks != null && lifecycleCallbacks.size() > 0)

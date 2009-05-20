@@ -21,8 +21,9 @@
  */
 package org.jboss.aop.microcontainer.integration;
 
-import org.jboss.metadata.spi.MetaData;
 import org.jboss.aop.microcontainer.annotations.DisableAOP;
+import org.jboss.aop.microcontainer.annotations.DisabledType;
+import org.jboss.metadata.spi.MetaData;
 
 /**
  * Diable AOP helper.
@@ -36,9 +37,29 @@ public final class DisableAOPHelper
     *
     * @param metaData the metadata instance
     * @return true if AOP is disabled, false otherwise
+    * @deprecated use the method with a constraint
     */
+   @Deprecated
    public static boolean isAOPDisabled(MetaData metaData)
    {
-      return metaData != null && metaData.isAnnotationPresent(DisableAOP.class);
+      return isAOPDisabled(metaData, DisabledType.ALL);
+   }
+
+   /**
+    * Is AOP disabled for this metadata instance.
+    *
+    * @param metaData the metadata instance
+    * @param constraint the constraint
+    * @return true if AOP is disabled, false otherwise
+    */
+   public static boolean isAOPDisabled(MetaData metaData, DisabledType constraint)
+   {
+      if (metaData != null)
+      {
+         DisableAOP aop = metaData.getAnnotation(DisableAOP.class);
+         if (aop != null)
+            return DisabledType.isDisabled(aop.value(), constraint);
+      }
+      return false;
    }
 }
