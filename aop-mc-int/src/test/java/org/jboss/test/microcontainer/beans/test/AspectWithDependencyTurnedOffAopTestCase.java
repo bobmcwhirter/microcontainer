@@ -27,6 +27,7 @@ import java.util.Set;
 import junit.framework.Test;
 import org.jboss.aop.proxy.container.AspectManaged;
 import org.jboss.dependency.spi.ControllerContext;
+import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.test.aop.junit.AOPMicrocontainerTest;
 import org.jboss.test.microcontainer.beans.POJO;
@@ -57,26 +58,66 @@ public class AspectWithDependencyTurnedOffAopTestCase extends AOPMicrocontainerT
       // do nothing, so we ignore validate
    }
 
-   public void testBeanWithDependency() throws Exception
+   public void testAllAopTurnedOff() throws Exception
+   {
+      assertMoreDependencies("Intercepted", "NotIntercepted");
+
+      POJO pojoNotIntercepted = (POJO)getBean("NotIntercepted");
+      assertFalse(pojoNotIntercepted instanceof AspectManaged);
+
+      assertMoreDependencies("WithLifecycle", "WithLifecycleDisabled");
+   }
+   
+   public void testPointcutsTurnedOff() throws Exception
+   {
+      assertMoreDependencies("Intercepted", "NotIntercepted");
+
+      POJO pojoNotIntercepted = (POJO)getBean("NotIntercepted");
+      assertFalse(pojoNotIntercepted instanceof AspectManaged);
+      
+      assertNotInstalledContext("WithLifecycle");
+      assertNotInstalledContext("WithLifecycleDisabled");
+   }
+   
+   public void testLifecycleTurnedOff() throws Exception
+   {
+      assertNotInstalledContext("Intercepted");
+      assertNotInstalledContext("NotIntercepted");
+
+      assertMoreDependencies("WithLifecycle", "WithLifecycleDisabled");
+   }
+   
+   private void assertMoreDependencies(String aspectCtxName, String disabledCtxName)
+   {
+      ControllerContext aspectCtx = assertNotInstalledContext(aspectCtxName);
+      ControllerContext disabledCtx = assertInstalledContext(disabledCtxName);
+      
+      Set<DependencyItem> interceptedDependencies = new HashSet<DependencyItem>(aspectCtx.getDependencyInfo().getIDependOn(null));
+      Set<DependencyItem> notInterceptedDependencies = new HashSet<DependencyItem>(disabledCtx.getDependencyInfo().getIDependOn(null));
+      assertTrue(interceptedDependencies.size() > notInterceptedDependencies.size());
+   }
+   
+   private ControllerContext assertNotInstalledContext(String bean)
    {
       try
       {
-         getControllerContext("Intercepted");
-         fail("'Intercepted' should not have been installed");
+         getControllerContext(bean);
+         fail("'" + bean + "' should not have been installed");
       }
       catch (Exception expected)
       {
       }
-      ControllerContext ctxIntercepted = getControllerContext("Intercepted", null);
-      ControllerContext ctxNotIntercepted = getControllerContext("NotIntercepted");
-      assertNotNull(ctxIntercepted);
-      assertNotNull(ctxNotIntercepted);
-
-      Set<DependencyItem> interceptedDependencies = new HashSet<DependencyItem>(ctxIntercepted.getDependencyInfo().getIDependOn(null));
-      Set<DependencyItem> notInterceptedDependencies = new HashSet<DependencyItem>(ctxNotIntercepted.getDependencyInfo().getIDependOn(null));
-      assertTrue(interceptedDependencies.size() > notInterceptedDependencies.size());
-
-      POJO pojoNotIntercepted = (POJO)getBean("NotIntercepted");
-      assertFalse(pojoNotIntercepted instanceof AspectManaged);
+      ControllerContext ctx = getControllerContext(bean, null);
+      assertNotNull(ctx);
+      assertNotSame(ControllerState.INSTALLED, ctx.getState());
+      return ctx;
+   }
+   
+   private ControllerContext assertInstalledContext(String bean)
+   {
+      ControllerContext ctx = getControllerContext(bean);
+      assertNotNull(ctx);
+      assertSame(ControllerState.INSTALLED, ctx.getState());
+      return ctx;
    }
 }

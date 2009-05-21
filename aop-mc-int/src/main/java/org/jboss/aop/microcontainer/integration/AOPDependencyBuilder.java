@@ -82,18 +82,19 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
     *
     * @param beanInfo the bean info
     * @param metaData the metadata instance
+    * @param disabledType The type we want to check if is disabled
     * @return true if we should bypass aop, false otherwise
     */
-   protected boolean bypassAOP(BeanInfo beanInfo, MetaData metaData)
+   protected boolean bypassAOP(BeanInfo beanInfo, MetaData metaData, DisabledType disabledType)
    {
-      return DisableAOPHelper.isAOPDisabled(metaData, DisabledType.ALL);
+      return DisableAOPHelper.isAOPDisabled(metaData, disabledType);
    }
 
    @SuppressWarnings({"unchecked", "deprecation"})
    @Override
    public List<DependencyBuilderListItem> getDependencies(BeanInfo beanInfo, MetaData metaData)
    {
-      if (bypassAOP(beanInfo, metaData))
+      if (bypassAOP(beanInfo, metaData, DisabledType.ALL))
       {
          return super.getDependencies(beanInfo, metaData);
       }
@@ -119,41 +120,46 @@ public class AOPDependencyBuilder extends AbstractDependencyBuilder
                advisor = cache.getAdvisor();
             }
             ReflectiveAspectBinder binder = new ReflectiveAspectBinder(clazz, advisor);
-            Set aspects = binder.getAspects();
-
             ArrayList<DependencyBuilderListItem> depends = new ArrayList<DependencyBuilderListItem>();
-            if (aspects != null && aspects.size() > 0)
+
+            if (bypassAOP(beanInfo, metaData, DisabledType.POINTCUTS) == false)
             {
-               Iterator it = aspects.iterator();
-               while (it.hasNext())
+               Set aspects = binder.getAspects();
+   
+               if (aspects != null && aspects.size() > 0)
                {
-                  AspectDefinition def = (AspectDefinition) it.next();
-                  if (def instanceof ManagedAspectDefinition)
+                  Iterator it = aspects.iterator();
+                  while (it.hasNext())
                   {
-                     String name = ((ManagedAspectDefinition)def).getDependentAspectName();
-                     if (name != null)
+                     AspectDefinition def = (AspectDefinition) it.next();
+                     if (def instanceof ManagedAspectDefinition)
                      {
-                        depends.add(new AspectDependencyBuilderListItem(name));
+                        String name = ((ManagedAspectDefinition)def).getDependentAspectName();
+                        if (name != null)
+                        {
+                           depends.add(new AspectDependencyBuilderListItem(name));
+                        }
                      }
                   }
                }
             }
 
-            // TODO - add lifecycle + disable aop
-
-            Map<Object, Set<LifecycleCallbackDefinition>> lifecycleCallbacks = binder.getLifecycleCallbacks();
-            if (lifecycleCallbacks != null && lifecycleCallbacks.size() > 0)
+            if (bypassAOP(beanInfo, metaData, DisabledType.LIFECYCLE) == false)
             {
-               for (Entry<Object, Set<LifecycleCallbackDefinition>> states : lifecycleCallbacks.entrySet())
+               Map<Object, Set<LifecycleCallbackDefinition>> lifecycleCallbacks = binder.getLifecycleCallbacks();
+               if (lifecycleCallbacks != null && lifecycleCallbacks.size() > 0)
                {
-                  for (LifecycleCallbackDefinition callback : states.getValue())
+                  for (Entry<Object, Set<LifecycleCallbackDefinition>> states : lifecycleCallbacks.entrySet())
                   {
-                     depends.add(new LifecycleAspectDependencyBuilderListItem(
-                           callback.getBean(), (ControllerState)states.getKey(), callback.getInstallMethod(), callback.getUninstallMethod()));
+                     for (LifecycleCallbackDefinition callback : states.getValue())
+                     {
+                        depends.add(new LifecycleAspectDependencyBuilderListItem(
+                              callback.getBean(), (ControllerState)states.getKey(), callback.getInstallMethod(), callback.getUninstallMethod()));
+                     }
                   }
                }
             }
-
+            
             HashSet<String> annotationDependencies = getAnnotationDependencies(classInfo, metaData);
             for (String dependency : annotationDependencies)
             {

@@ -21,6 +21,9 @@
  */
 package org.jboss.aop.microcontainer.annotations;
 
+import java.util.Arrays;
+import java.util.EnumSet;
+
 /**
  * Fine grained disable type.
  * e.g. LIFECYCLE only disable aop lifecycle callbacks
@@ -29,16 +32,10 @@ package org.jboss.aop.microcontainer.annotations;
  */
 public enum DisabledType
 {
-   ALL(~0),
-   LIFECYCLE(1),
-   POINTCUTS(1 << 1);
+   ALL,
+   LIFECYCLE,
+   POINTCUTS;
 
-   private int bits;
-
-   DisabledType(int bits)
-   {
-      this.bits = bits;
-   }
 
    /**
     * Is the type disabled for this constraint.
@@ -48,8 +45,22 @@ public enum DisabledType
     */
    public boolean isDisabled(DisabledType constraint)
    {
-      int and = bits & constraint.bits;
-      return and == constraint.bits;
+      if (this == ALL)
+      {
+         return true;
+      }
+      return this == constraint;
+   }
+
+   /**
+    * Is the type enabled for this constraint.
+    *
+    * @param constraint the constraint
+    * @return true if enabled for this constraint
+    */
+   public boolean isEnabled(DisabledType constraint)
+   {
+      return isDisabled(constraint) == false;
    }
 
    /**
@@ -63,13 +74,12 @@ public enum DisabledType
    {
       if (values == null || values.length == 0)
          return false;
-
-      for (DisabledType value : values)
-      {
-         if (value.isDisabled(constraint))
-            return true;
-      }
-
-      return false;
+      EnumSet<DisabledType> set = EnumSet.copyOf(Arrays.asList(values));
+      return set.contains(ALL) || set.contains(constraint);
+   }
+   
+   public static boolean isEnabled(DisabledType[] values, DisabledType constraint)
+   {
+      return !isDisabled(values, constraint);
    }
 }

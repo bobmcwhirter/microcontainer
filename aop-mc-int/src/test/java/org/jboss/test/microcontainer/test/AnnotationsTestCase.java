@@ -48,33 +48,54 @@ public class AnnotationsTestCase extends AOPMicrocontainerTest
       assertTrue(all.isDisabled(DisabledType.ALL));
       assertTrue(all.isDisabled(DisabledType.LIFECYCLE));
       assertTrue(all.isDisabled(DisabledType.POINTCUTS));
+      assertFalse(all.isEnabled(DisabledType.ALL));
+      assertFalse(all.isEnabled(DisabledType.LIFECYCLE));
+      assertFalse(all.isEnabled(DisabledType.POINTCUTS));
 
       DisabledType lifecycle = DisabledType.LIFECYCLE;
       assertFalse(lifecycle.isDisabled(DisabledType.ALL));
       assertTrue(lifecycle.isDisabled(DisabledType.LIFECYCLE));
       assertFalse(lifecycle.isDisabled(DisabledType.POINTCUTS));
+      assertTrue(lifecycle.isEnabled(DisabledType.ALL));
+      assertFalse(lifecycle.isEnabled(DisabledType.LIFECYCLE));
+      assertTrue(lifecycle.isEnabled(DisabledType.POINTCUTS));
 
       DisabledType pointcut = DisabledType.POINTCUTS;
       assertFalse(pointcut.isDisabled(DisabledType.ALL));
       assertFalse(pointcut.isDisabled(DisabledType.LIFECYCLE));
       assertTrue(pointcut.isDisabled(DisabledType.POINTCUTS));
+      assertTrue(pointcut.isEnabled(DisabledType.ALL));
+      assertTrue(pointcut.isEnabled(DisabledType.LIFECYCLE));
+      assertFalse(pointcut.isEnabled(DisabledType.POINTCUTS));
 
       DisabledType[] three = {all, lifecycle, pointcut};
       assertTrue(DisabledType.isDisabled(three, DisabledType.ALL));
       assertTrue(DisabledType.isDisabled(three, DisabledType.LIFECYCLE));
       assertTrue(DisabledType.isDisabled(three, DisabledType.POINTCUTS));
+      assertFalse(DisabledType.isEnabled(three, DisabledType.ALL));
+      assertFalse(DisabledType.isEnabled(three, DisabledType.LIFECYCLE));
+      assertFalse(DisabledType.isEnabled(three, DisabledType.POINTCUTS));
 
       DisabledType[] two = {all, lifecycle};
       assertTrue(DisabledType.isDisabled(two, DisabledType.ALL));
       assertTrue(DisabledType.isDisabled(two, DisabledType.LIFECYCLE));
       assertTrue(DisabledType.isDisabled(two, DisabledType.POINTCUTS));
+      assertFalse(DisabledType.isEnabled(two, DisabledType.ALL));
+      assertFalse(DisabledType.isEnabled(two, DisabledType.LIFECYCLE));
+      assertFalse(DisabledType.isEnabled(two, DisabledType.POINTCUTS));
       two = new DisabledType[]{all, pointcut};
       assertTrue(DisabledType.isDisabled(two, DisabledType.ALL));
       assertTrue(DisabledType.isDisabled(two, DisabledType.LIFECYCLE));
       assertTrue(DisabledType.isDisabled(two, DisabledType.POINTCUTS));
+      assertFalse(DisabledType.isEnabled(two, DisabledType.ALL));
+      assertFalse(DisabledType.isEnabled(two, DisabledType.LIFECYCLE));
+      assertFalse(DisabledType.isEnabled(two, DisabledType.POINTCUTS));
       two = new DisabledType[]{lifecycle, pointcut};
       assertFalse(DisabledType.isDisabled(two, DisabledType.ALL));
       assertTrue(DisabledType.isDisabled(two, DisabledType.LIFECYCLE));
       assertTrue(DisabledType.isDisabled(two, DisabledType.POINTCUTS));
+      assertTrue(DisabledType.isEnabled(two, DisabledType.ALL));
+      assertFalse(DisabledType.isEnabled(two, DisabledType.LIFECYCLE));
+      assertFalse(DisabledType.isEnabled(two, DisabledType.POINTCUTS));
    }
 }
