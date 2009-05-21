@@ -36,7 +36,6 @@ public enum DisabledType
    LIFECYCLE,
    POINTCUTS;
 
-
    /**
     * Is the type disabled for this constraint.
     *
@@ -45,11 +44,7 @@ public enum DisabledType
     */
    public boolean isDisabled(DisabledType constraint)
    {
-      if (this == ALL)
-      {
-         return true;
-      }
-      return this == constraint;
+      return this == ALL || this == constraint;
    }
 
    /**
@@ -68,18 +63,26 @@ public enum DisabledType
     *
     * @param values the disabled values
     * @param constraint the constraint
-    * @return true if disabled for this constraint
+    * @return true if disabled for this constraint, false otherwise
     */
    public static boolean isDisabled(DisabledType[] values, DisabledType constraint)
    {
       if (values == null || values.length == 0)
          return false;
+
       EnumSet<DisabledType> set = EnumSet.copyOf(Arrays.asList(values));
       return set.contains(ALL) || set.contains(constraint);
    }
-   
+
+   /**
+    * Do values mark enabled usage.
+    *
+    * @param values the disabled values
+    * @param constraint the constraint
+    * @return true if enabled for this constraint, false otherwise
+    */
    public static boolean isEnabled(DisabledType[] values, DisabledType constraint)
    {
-      return !isDisabled(values, constraint);
+      return isDisabled(values, constraint) == false;
    }
 }
