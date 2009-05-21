@@ -34,24 +34,24 @@ public class BeanMetaDataBuilderFactory
    /**
     * Create builder from bean.
     *
-    * @param bean bean class name
+    * @param beanClassName bean class name
     * @return new Builder
     */
-   public static BeanMetaDataBuilder createBuilder(String bean)
+   public static BeanMetaDataBuilder createBuilder(String beanClassName)
    {
-      return new BeanMetaDataBuilderImpl(bean);
+      return new BeanMetaDataBuilderImpl(beanClassName);
    }
 
    /**
     * Create builder from name and bean.
     *
-    * @param name bean name
-    * @param bean bean class name
+    * @param beanInstanceName bean name
+    * @param beanClassName bean class name
     * @return new Builder
     */
-   public static BeanMetaDataBuilder createBuilder(String name, String bean)
+   public static BeanMetaDataBuilder createBuilder(String beanInstanceName, String beanClassName)
    {
-      return new BeanMetaDataBuilderImpl(name, bean);
+      return new BeanMetaDataBuilderImpl(beanInstanceName, beanClassName);
    }
 
    /**
