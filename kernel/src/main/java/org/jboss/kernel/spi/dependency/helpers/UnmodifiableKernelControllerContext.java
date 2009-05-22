@@ -25,6 +25,7 @@ import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.info.spi.helpers.UnmodifiableBeanInfo;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.dependency.spi.helpers.UnmodifiableControllerContext;
+import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 
@@ -94,5 +95,10 @@ public class UnmodifiableKernelControllerContext extends UnmodifiableControllerC
    public void set(String name, Object value) throws Throwable
    {
       throw new UnsupportedOperationException("Cannot execute set on unmodifiable wrapper.");
+   }
+
+   public ControllerState lifecycleInvocation(String name, Object[] parameters, String[] signature) throws Throwable
+   {
+      return null;
    }
 }

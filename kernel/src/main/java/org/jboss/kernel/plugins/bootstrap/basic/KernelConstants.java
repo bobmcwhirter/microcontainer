@@ -49,7 +49,7 @@ public interface KernelConstants
    static final String KERNEL_BUS_PROPERTY = KernelBus.class.getName(); 
    
    /** The default kernel bus implementation */
-   static final String KERNEL_BUS_CLASS = "org.jboss.kernel.plugins.registry.basic.BasicKernelBus"; 
+   static final String KERNEL_BUS_CLASS = "org.jboss.kernel.plugins.registry.basic.LifecycleAwareKernelBus"; 
    
    /** The default kernel config name */
    static final String KERNEL_CONFIG_NAME = "jboss.kernel:service=KernelConfig"; 

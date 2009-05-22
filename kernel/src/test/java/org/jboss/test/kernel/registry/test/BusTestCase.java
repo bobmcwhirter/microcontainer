@@ -21,13 +21,19 @@
 */
 package org.jboss.test.kernel.registry.test;
 
+import java.util.Date;
+
 import junit.framework.Test;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
+import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
+import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.dependency.AbstractKernelControllerContext;
+import org.jboss.kernel.spi.config.KernelConfigurator;
+import org.jboss.kernel.spi.dependency.KernelController;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.registry.KernelBus;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
-import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.test.kernel.AbstractKernelTest;
 import org.jboss.test.kernel.registry.support.BusBean;
 
@@ -35,7 +41,7 @@ import org.jboss.test.kernel.registry.support.BusBean;
  * Bus Test Case.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
- * @version $Revision$
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
 @SuppressWarnings("deprecation")
 public class BusTestCase extends AbstractKernelTest
@@ -56,6 +62,7 @@ public class BusTestCase extends AbstractKernelTest
       org.jboss.kernel.spi.registry.KernelRegistry registry = kernel.getRegistry();
       KernelConfigurator configurator = kernel.getConfigurator();
       registry.registerEntry("Bus", makeContext(configurator, "Name1", new BusBean()));
+
       KernelBus bus = kernel.getBus();
       Object result1 = bus.get("Bus", "value");
       assertNull("Result 1", result1);
@@ -69,13 +76,50 @@ public class BusTestCase extends AbstractKernelTest
       Kernel kernel = bootstrap();
       org.jboss.kernel.spi.registry.KernelRegistry registry = kernel.getRegistry();
       KernelConfigurator configurator = kernel.getConfigurator();
-      registry.registerEntry("Name1", makeContext(configurator, "Name1", "A string"));
-      registry.registerEntry("Name2", makeContext(configurator, "Name2", "B string"));
+
+      KernelRegistryEntry entry1 = makeContext(configurator, "Name1", "A string");
+      entry1.setState(ControllerState.INSTALLED);
+      registry.registerEntry("Name1", entry1);
+
+      KernelRegistryEntry entry2 = makeContext(configurator, "Name2", "B string");
+      entry2.setState(ControllerState.INSTALLED);
+      registry.registerEntry("Name2", entry2);
+
       KernelBus bus = kernel.getBus();
       Object result1 = bus.invoke("Name1", "toString", new Object[]{}, new String[]{});
       Object result2 = bus.invoke("Name2", "toString", new Object[]{}, new String[]{});
       assertEquals("A string", result1);
       assertEquals("B string", result2);
+   }
+
+   public void testLifecycle() throws Throwable
+   {
+      Kernel kernel = bootstrap();
+      KernelController controller = kernel.getController();
+
+      BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder("Name1", BusBean.class.getName());
+      builder.addStartParameter(String.class.getName(), "123-Start");
+      builder.setStop("doStop");
+      builder.setDestroy("executeDestroy");
+      builder.addDestroyParameter("int", 123);
+      builder.addDestroyParameter(Date.class.getName(), new Date());
+
+      KernelControllerContext context = controller.install(builder.getBeanMetaData());
+      assertEquals(ControllerState.INSTALLED, context.getState());
+
+      KernelBus bus = kernel.getBus();
+
+      bus.invoke("Name1", "executeDestroy", new Object[]{-1, new Date()}, new String[]{int.class.getName(), Date.class.getName()});
+      assertEquals(ControllerState.CONFIGURED, context.getState());
+
+      bus.invoke("Name1", "create", null, null);
+      assertEquals(ControllerState.CREATE, context.getState());
+
+      bus.invoke("Name1", "start", new Object[]{"foobar"}, new String[]{String.class.getName()});
+      assertEquals(ControllerState.START, context.getState());
+
+      bus.invoke("Name1", "doStop", null, null);
+      assertEquals(ControllerState.CREATE, context.getState());     
    }
 
    protected static KernelRegistryEntry makeContext(KernelConfigurator configurator, String name, Object target)

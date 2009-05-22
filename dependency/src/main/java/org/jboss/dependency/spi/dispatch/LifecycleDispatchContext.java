@@ -19,45 +19,30 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.kernel.registry.support;
+package org.jboss.dependency.spi.dispatch;
 
-import java.util.Date;
+import org.jboss.dependency.spi.ControllerState;
 
 /**
+ * This context knows how to handle lifecycle invocation.
+ * Resulting in valid lifecycle invocation will force this context to change state.
+ *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class BusBean
+public interface LifecycleDispatchContext extends InvokeDispatchContext
 {
-   private String value;
-
-   public String getValue()
-   {
-      return value;
-   }
-
-   public void setValue(String value)
-   {
-      this.value = value;
-   }
-
-   public void create()
-   {
-      System.out.println("Created");
-   }
-
-   public void start(String msg)
-   {
-      System.out.println("msg = " + msg);
-   }
-
-   public void doStop()
-   {
-      System.out.println("doStop");
-   }
-
-   public void executeDestroy(int exit, Date date)
-   {
-      System.out.println("exit = " + exit);
-      System.out.println("date = " + date);
-   }
+   /**
+    * Is this invocation a lifecycle invocation.
+    * 
+    * Return state value to which this context should be moved
+    * or return current state if we're already past the lifecycle state
+    * or null if the invocation is actually not a lifecycle invocation.
+    *
+    * @param name method name
+    * @param parameters parameter values
+    * @param signature method's parameter types / signatures
+    * @return state to which we should move this context, or null if this is not lifecycle invocation
+    * @throws Throwable for any error
+    */
+   ControllerState lifecycleInvocation(String name, Object parameters[], String[] signature) throws Throwable;
 }

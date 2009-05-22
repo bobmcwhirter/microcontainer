@@ -23,7 +23,7 @@ package org.jboss.kernel.spi.dependency;
 
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.metadata.spi.BeanMetaData;
-import org.jboss.dependency.spi.dispatch.InvokeDispatchContext;
+import org.jboss.dependency.spi.dispatch.LifecycleDispatchContext;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
 
@@ -33,7 +33,7 @@ import org.jboss.kernel.spi.registry.KernelRegistryEntry;
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
-public interface KernelControllerContext extends KernelRegistryEntry, InvokeDispatchContext
+public interface KernelControllerContext extends KernelRegistryEntry, LifecycleDispatchContext
 {
    /**
     * Get the kernel

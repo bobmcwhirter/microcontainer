@@ -49,8 +49,25 @@ public class BasicKernelBus extends AbstractKernelBus
       ControllerContext context = controller.getInstalledContext(name);
       if (context == null)
          throw new IllegalArgumentException("No such context: " + name);
+      
+      return execute(context, clazz, dispatcher);
+   }
+
+   /**
+    * Execute dispatch.
+    *
+    * @param <T> exact context type
+    * @param context the context
+    * @param clazz the context class
+    * @param dispatcher the dispatcher
+    * @return dispatcher's result
+    * @throws Throwable for any error
+    */
+   protected <T> Object execute(ControllerContext context, Class<T> clazz, Dispatcher<T> dispatcher) throws Throwable
+   {
       if (clazz.isAssignableFrom(context.getClass()) == false)
          throw new IllegalArgumentException("Cannot execute " + dispatcher + " on non " + clazz.getSimpleName() + " context: " + context);
+
       return dispatcher.dispatch(clazz.cast(context));
    }
 
@@ -108,7 +125,7 @@ public class BasicKernelBus extends AbstractKernelBus
     *
     * @param <T> exact context type
     */
-   private interface Dispatcher<T>
+   protected interface Dispatcher<T>
    {
       /**
        * Invoke simple dispatcher.
