@@ -33,7 +33,7 @@ import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.DependencyItem;
-import org.jboss.dependency.spi.dispatch.InvokeDispatchContext;
+import org.jboss.dependency.spi.dispatch.LifecycleDispatchContext;
 import org.jboss.system.Service;
 import org.jboss.system.ServiceContext;
 import org.jboss.system.ServiceController;
@@ -48,7 +48,7 @@ import org.jboss.system.metadata.ServiceMetaDataVisitorNode;
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @version $Revision$
  */
-public class ServiceControllerContext extends AbstractControllerContext implements InvokeDispatchContext
+public class ServiceControllerContext extends AbstractControllerContext implements LifecycleDispatchContext
 {
    /** The ObjectName */
    private ObjectName objectName;
@@ -197,6 +197,11 @@ public class ServiceControllerContext extends AbstractControllerContext implemen
       {
          return getMBeanServer().getClassLoaderFor(objectName);
       }
+   }
+
+   public ControllerState lifecycleInvocation(String name, Object[] parameters, String[] signature) throws Throwable
+   {
+      return null; // TODO
    }
 
    /**

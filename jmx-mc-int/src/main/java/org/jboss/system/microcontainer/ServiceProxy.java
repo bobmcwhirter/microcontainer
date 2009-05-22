@@ -25,7 +25,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
-
+import java.util.Map;
 import javax.management.MBeanInfo;
 import javax.management.MBeanOperationInfo;
 import javax.management.MBeanServer;
@@ -51,6 +51,7 @@ import org.jboss.system.ServiceController;
  * @author <a href="mailto:jason@planet57.com">Jason Dillon</a>
  * @author <a href="mailto:dimitris@jboss.org">Dimitris Andreadis</a>
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @version $Revision$
  */
 public class ServiceProxy implements InvocationHandler
@@ -59,7 +60,7 @@ public class ServiceProxy implements InvocationHandler
     * A mapping from the Service interface method names to the corresponding
     * index into the ServiceProxy.hasOp array.
     */
-   private static HashMap<String, Integer> serviceOpMap = new HashMap<String, Integer>();
+   private static Map<String, Integer> serviceOpMap = new HashMap<String, Integer>();
 
    // A singleton proxy with no callouts
    private static Service NO_LIFECYCLE_CALLOUT;
@@ -69,10 +70,10 @@ public class ServiceProxy implements InvocationHandler
     */
    static
    {
-      serviceOpMap.put("create", new Integer(0));
-      serviceOpMap.put("start", new Integer(1));
-      serviceOpMap.put("destroy", new Integer(2));
-      serviceOpMap.put("stop", new Integer(3));
+      serviceOpMap.put("create", 0);
+      serviceOpMap.put("start", 1);
+      serviceOpMap.put("destroy", 2);
+      serviceOpMap.put("stop", 3);
       Class<?>[] interfaces = { Service.class };
       NO_LIFECYCLE_CALLOUT = (Service) Proxy.newProxyInstance(Service.class.getClassLoader(), interfaces, NoLifecycleCallout.INSTANCE);
    }
@@ -108,17 +109,18 @@ public class ServiceProxy implements InvocationHandler
     */
    public static Service getServiceProxy(ObjectName objectName, MBeanServer server, boolean includeLifecycle) throws Exception
    {
-      Service service = null;
-      MBeanInfo info = server.getMBeanInfo(objectName);
-      MBeanOperationInfo[] opInfo = info.getOperations();
-      Class<?>[] interfaces = { Service.class };
-      InvocationHandler handler = new ServiceProxy(objectName, server, opInfo);
-      if (includeLifecycle == false)
-         service = NO_LIFECYCLE_CALLOUT; 
+      if (includeLifecycle)
+      {
+         MBeanInfo info = server.getMBeanInfo(objectName);
+         MBeanOperationInfo[] opInfo = info.getOperations();
+         Class<?>[] interfaces = { Service.class };
+         InvocationHandler handler = new ServiceProxy(objectName, server, opInfo);
+         return (Service) Proxy.newProxyInstance(Service.class.getClassLoader(), interfaces, handler);
+      }
       else
-         service = (Service) Proxy.newProxyInstance(Service.class.getClassLoader(), interfaces, handler);
-
-      return service;
+      {
+         return NO_LIFECYCLE_CALLOUT;
+      }
    }
 
    /**
@@ -135,9 +137,8 @@ public class ServiceProxy implements InvocationHandler
       this.server = server;
       this.objectName = objectName;
 
-      for (int op = 0; op < opInfo.length; op++)
+      for (MBeanOperationInfo info : opInfo)
       {
-         MBeanOperationInfo info = opInfo[op];
          String name = info.getName();
 
          if (name.equals(ServiceController.JBOSS_INTERNAL_LIFECYCLE))
@@ -162,7 +163,7 @@ public class ServiceProxy implements InvocationHandler
             continue;
          }
 
-         hasOp[opID.intValue()] = true;
+         hasOp[opID] = true;
       }
    }
 
@@ -171,14 +172,13 @@ public class ServiceProxy implements InvocationHandler
     * corresponding hasOp array element is true, dispatch the method to the
     * mbean we are proxying.
     *
-    * @param proxy
-    * @param method
-    * @param args
-    * @return             Always null.
-    * @throws Throwable
+    * @param proxy the proxy
+    * @param method the method
+    * @param args the args
+    * @return always null.
+    * @throws Throwable for any error
     */
-   public Object invoke(Object proxy, Method method, Object[] args)
-         throws Throwable
+   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
    {
       String name = method.getName();
 
@@ -197,7 +197,7 @@ public class ServiceProxy implements InvocationHandler
 
       Integer opID = serviceOpMap.get(name);
 
-      if (opID != null && hasOp[opID.intValue()] == true)
+      if (opID != null && hasOp[opID])
       {
          // deal with those pesky JMX exceptions
          try
