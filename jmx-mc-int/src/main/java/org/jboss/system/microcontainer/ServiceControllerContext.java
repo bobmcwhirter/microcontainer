@@ -62,8 +62,11 @@ public class ServiceControllerContext extends AbstractControllerContext implemen
    /** The service context */
    private ServiceContext serviceContext = new ServiceContext();
 
-   // Whether to include the lifecycle
+   /** Whether to include the lifecycle */
    private boolean includeLifecycle = true;
+
+   /** The lifecycle info */
+   private volatile LifecycleInfo lifecycleInfo;
    
    /**
     * Create a new ServiceControllerContext.
@@ -201,7 +204,10 @@ public class ServiceControllerContext extends AbstractControllerContext implemen
 
    public ControllerState lifecycleInvocation(String name, Object[] parameters, String[] signature) throws Throwable
    {
-      return null; // TODO
+      if (lifecycleInfo == null)
+         lifecycleInfo = new LifecycleInfo(this);
+
+      return lifecycleInfo.lifecycleInvocation(name, signature);
    }
 
    /**
