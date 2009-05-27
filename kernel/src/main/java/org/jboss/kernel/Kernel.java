@@ -27,6 +27,7 @@ import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.event.KernelEventManager;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
 import org.jboss.kernel.spi.registry.KernelBus;
+import org.jboss.kernel.spi.validation.KernelBeanValidator;
 
 /**
  * The kernel.<p>
@@ -35,6 +36,7 @@ import org.jboss.kernel.spi.registry.KernelBus;
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @author <a href="mailto:les.hazlewood@jboss.org">Les A. Hazlewood</a>
+ * @author <a href="ales.justin@jboss.org">Ales Justin</a>
  * @version $Revision$
  */
 @SuppressWarnings("deprecation")
@@ -70,12 +72,14 @@ public class Kernel
    /** The kernel registry */
    protected org.jboss.kernel.spi.registry.KernelRegistry registry;
 
+   /** The kernel bean validator */
+   protected KernelBeanValidator validator;
+
    static
    {
       boolean checkingEnabled = false;
       try
       {
-         
          checkingEnabled = Boolean.getBoolean(KernelPermission.class.getName()); 
       }
       catch (Throwable ignored)
@@ -280,5 +284,28 @@ public class Kernel
    {
       checkConfigure();
       this.metaDataRepository = metaDataRepository;
+   }
+
+   /**
+    * Get the kernel bean validator.
+    *
+    * @return the bean validator
+    * @throws SecurityException if the you don't have KernelPermission('configure')
+    */
+   public KernelBeanValidator getValidator()
+   {
+      checkAccess();
+      return validator;
+   }
+
+   /**
+    * Set the bean validator.
+    *
+    * @param validator the bean validator.
+    * @throws SecurityException if the you don't have KernelPermission('configure')
+    */
+   public void setValidator(KernelBeanValidator validator)
+   {
+      this.validator = validator;
    }
 }

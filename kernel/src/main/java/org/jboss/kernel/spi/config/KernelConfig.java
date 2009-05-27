@@ -21,9 +21,10 @@
 */
 package org.jboss.kernel.spi.config;
 
-import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.info.spi.BeanAccessMode;
+import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.kernel.spi.KernelObject;
+import org.jboss.kernel.spi.validation.KernelBeanValidator;
 import org.jboss.kernel.spi.bootstrap.KernelInitializer;
 import org.jboss.kernel.spi.dependency.DependencyBuilder;
 import org.jboss.kernel.spi.dependency.KernelController;
@@ -197,7 +198,15 @@ public interface KernelConfig extends KernelObject
     * @throws Throwable for any error
     */
    KernelMetaDataRepository createKernelMetaDataRepository() throws Throwable;
-   
+
+   /**
+    * Create kernel bean validator.
+    *
+    * @return the kernel bean validator
+    * @throws Throwable for any error
+    */
+   KernelBeanValidator createKernelBeanValidator() throws Throwable;
+
    /**
     * Get the dependency builder
     * 

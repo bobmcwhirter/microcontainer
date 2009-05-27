@@ -25,7 +25,9 @@ import junit.framework.Test;
 import org.jboss.beans.metadata.plugins.AbstractBeanMetaData;
 import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.kernel.Kernel;
+import org.jboss.kernel.plugins.validation.basic.BasicKernelBeanValidator;
 import org.jboss.kernel.spi.dependency.KernelController;
+import org.jboss.kernel.spi.validation.KernelBeanValidator;
 import org.jboss.test.kernel.AbstractKernelTest;
 import org.jboss.test.kernel.dependency.support.BVBTester;
 import org.jboss.test.kernel.dependency.support.MockBeanValidatorBridge;
@@ -51,18 +53,28 @@ public class BeanValidatorBridgeTestCase extends AbstractKernelTest
    {
       Kernel kernel = bootstrap();
       KernelController controller = kernel.getController();
+      KernelBeanValidator validator = kernel.getValidator();
+      BasicKernelBeanValidator bkbv = assertInstanceOf(validator, BasicKernelBeanValidator.class);
+      bkbv.setDisabled(false);
 
-      MockBeanValidatorBridge bridge = new MockBeanValidatorBridge();
-      controller.install(new AbstractBeanMetaData("bvb", MockBeanValidatorBridge.class.getName()), bridge);
+      try
+      {
+         MockBeanValidatorBridge bridge = new MockBeanValidatorBridge();
+         controller.install(new AbstractBeanMetaData("bvb", MockBeanValidatorBridge.class.getName()), bridge);
 
-      BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder("tester", BVBTester.class.getName());
-      builder.addPropertyMetaData("something", 123);
-      builder.addInstall("invokeSomething", Object.class.getName(), "123");
-      controller.install(builder.getBeanMetaData());
+         BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder("tester", BVBTester.class.getName());
+         builder.addPropertyMetaData("something", 123);
+         builder.addInstall("invokeSomething", Object.class.getName(), "123");
+         controller.install(builder.getBeanMetaData());
 
-      assertNotNull(bridge.getJoinpoint());
-      assertInstanceOf(bridge.getTarget(), BVBTester.class);
-      assertEquals("something", bridge.getProperty());
-      assertEquals("invokeSomething", bridge.getMethod());
+         assertNotNull(bridge.getJoinpoint());
+         assertInstanceOf(bridge.getTarget(), BVBTester.class);
+         assertEquals("something", bridge.getProperty());
+         assertEquals("invokeSomething", bridge.getMethod());
+      }
+      finally
+      {
+         bkbv.setDisabled(true);
+      }
    }
 }

@@ -28,6 +28,7 @@ import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.event.KernelEventManager;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
 import org.jboss.kernel.spi.registry.KernelBus;
+import org.jboss.kernel.spi.validation.KernelBeanValidator;
 
 /**
  * Constants.<p>
@@ -108,9 +109,21 @@ public interface KernelConstants
    /** The default meta data repository implementation */
    static final String KERNEL_METADATA_REPOSITORY_CLASS = "org.jboss.kernel.plugins.metadata.basic.BasicKernelMetaDataRepository"; 
 
-   /** The DependencyBuilder property name */
-   static final String DEPENDENCY_BUILDER_NAME = DependencyBuilder.class.getName();
+   /** The kernel bean validator repository name */
+   static final String KERNEL_BEAN_VALIDATOR_NAME = "jboss.kernel:service=BeanValidator";
+
+   /** The kernel bean validator */
+   static final String KERNEL_BEAN_VALIDATOR_PROPERTY = KernelBeanValidator.class.getName();
+
+   /** The default meta data repository implementation */
+   static final String KERNEL_BEAN_VALIDATOR_CLASS = "org.jboss.kernel.plugins.validation.basic.BasicKernelBeanValidator";
+
+   /** The DependencyBuilder repository name */
+   static final String DEPENDENCY_BUILDER_NAME = "jboss.kernel:service=DependencyBuilder";
    
+   /** The DependencyBuilder property name */
+   static final String DEPENDENCY_BUILDER_PROPERTY = DependencyBuilder.class.getName();
+
    /** The DependencyBuilder default value */
-   static final String DEPENDENCY_BUILDER_DEFAULT="org.jboss.aop.microcontainer.integration.AOPDependencyBuilder:org.jboss.kernel.spi.dependency.helpers.AbstractDependencyBuilder";
+   static final String DEPENDENCY_BUILDER_DEFAULT = "org.jboss.aop.microcontainer.integration.AOPDependencyBuilder:org.jboss.kernel.spi.dependency.helpers.AbstractDependencyBuilder";
 }

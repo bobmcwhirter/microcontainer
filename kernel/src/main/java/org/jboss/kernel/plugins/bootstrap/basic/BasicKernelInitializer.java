@@ -32,11 +32,13 @@ import org.jboss.kernel.spi.event.KernelEventManager;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
 import org.jboss.kernel.spi.registry.KernelBus;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
+import org.jboss.kernel.spi.validation.KernelBeanValidator;
 
 /**
  * Bootstrap the kernel.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @version $Revision$
  */
 @SuppressWarnings("deprecation")
@@ -88,6 +90,12 @@ public class BasicKernelInitializer extends AbstractKernelInitializer
       bus.setKernel(kernel);
       kernel.setBus(bus);
 
+      KernelBeanValidator validator = createKernelBeanValidator(kernel);
+      if (trace)
+         log.trace("Using Validator: " + validator);
+      validator.setKernel(kernel);
+      kernel.setValidator(validator);
+
       // Register everything
       register(kernel, KernelConstants.KERNEL_CONFIG_NAME, kernel.getConfig());
       register(kernel, KernelConstants.KERNEL_INITIALIZER_NAME, this);
@@ -98,6 +106,7 @@ public class BasicKernelInitializer extends AbstractKernelInitializer
       register(kernel, KernelConstants.KERNEL_CONFIGURATOR_NAME, configurator);
       register(kernel, KernelConstants.KERNEL_CONTROLLER_NAME, controller);
       register(kernel, KernelConstants.KERNEL_METADATA_REPOSITORY_NAME, metaDataRepository);
+      register(kernel, KernelConstants.KERNEL_BEAN_VALIDATOR_NAME, validator);
    }
    
    /**
@@ -170,6 +179,18 @@ public class BasicKernelInitializer extends AbstractKernelInitializer
    protected KernelMetaDataRepository createKernelMetaDataRepository(Kernel kernel) throws Throwable
    {
       return kernel.getConfig().createKernelMetaDataRepository();
+   }
+
+   /**
+    * Create the bean validator
+    *
+    * @param kernel the kernel
+    * @return the bean validator
+    * @throws Throwable for any error
+    */
+   protected KernelBeanValidator createKernelBeanValidator(Kernel kernel) throws Throwable
+   {
+      return kernel.getConfig().createKernelBeanValidator();
    }
 
    /**

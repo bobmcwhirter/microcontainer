@@ -39,6 +39,7 @@ import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.event.KernelEventManager;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
 import org.jboss.kernel.spi.registry.KernelBus;
+import org.jboss.kernel.spi.validation.KernelBeanValidator;
 
 /**
  * Kernel configuration using properties.
@@ -138,11 +139,19 @@ public class PropertyKernelConfig extends AbstractKernelConfig
          KernelConstants.KERNEL_METADATA_REPOSITORY_CLASS
       );
    }
-   
+
+   public KernelBeanValidator createKernelBeanValidator() throws Throwable
+   {
+      return (KernelBeanValidator) getImplementation(
+         KernelConstants.KERNEL_BEAN_VALIDATOR_PROPERTY,
+         KernelConstants.KERNEL_BEAN_VALIDATOR_CLASS
+      );
+   }
+
    public DependencyBuilder createDefaultDependencyBuilder() throws Throwable
    {
       return (DependencyBuilder) getImplementation(
-         KernelConstants.DEPENDENCY_BUILDER_NAME,
+         KernelConstants.DEPENDENCY_BUILDER_PROPERTY,
          KernelConstants.DEPENDENCY_BUILDER_DEFAULT
       );
    }

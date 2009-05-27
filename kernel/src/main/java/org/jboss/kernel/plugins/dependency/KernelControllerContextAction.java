@@ -26,14 +26,15 @@ import java.security.PrivilegedExceptionAction;
 
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.dependency.plugins.action.SimpleControllerContextAction;
-import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.joinpoint.spi.Joinpoint;
+import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.config.Configurator;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.kernel.spi.dependency.KernelControllerContextAware;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
+import org.jboss.kernel.spi.validation.KernelBeanValidator;
 import org.jboss.logging.Logger;
 import org.jboss.metadata.spi.MetaData;
 import org.jboss.metadata.spi.stack.MetaDataStack;
@@ -42,6 +43,7 @@ import org.jboss.metadata.spi.stack.MetaDataStack;
  * KernelControllerContextAction.
  *
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
+ * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @version $Revision$
  */
 public class KernelControllerContextAction extends SimpleControllerContextAction<KernelControllerContext>
@@ -255,11 +257,15 @@ public class KernelControllerContextAction extends SimpleControllerContextAction
     */
    static BeanValidatorBridge getBeanValidatorBridge(KernelControllerContext context)
    {
-      Controller controller = context.getController();
+      KernelController controller = (KernelController)context.getController();
       if (controller == null)
          return null;
 
-      ControllerContext bridge = controller.getInstalledContext(BeanValidatorBridge.class);
-      return bridge != null ? BeanValidatorBridge.class.cast(bridge.getTarget()) : null;
+      Kernel kernel = controller.getKernel();
+      KernelBeanValidator validator = kernel.getValidator();
+      if (validator == null || validator.isDisabled())
+         return null;
+
+      return new KernelBeanValidatorBridge(validator);
    }
 }
