@@ -290,7 +290,7 @@ public class Kernel
     * Get the kernel bean validator.
     *
     * @return the bean validator
-    * @throws SecurityException if the you don't have KernelPermission('configure')
+    * @throws SecurityException if the you don't have KernelPermission('access')
     */
    public KernelBeanValidator getValidator()
    {
