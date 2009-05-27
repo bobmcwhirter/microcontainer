@@ -306,6 +306,7 @@ public class Kernel
     */
    public void setValidator(KernelBeanValidator validator)
    {
+      checkConfigure();
       this.validator = validator;
    }
 }
