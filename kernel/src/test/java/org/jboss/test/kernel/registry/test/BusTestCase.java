@@ -29,6 +29,7 @@ import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.plugins.dependency.AbstractKernelControllerContext;
+import org.jboss.kernel.plugins.registry.basic.LifecycleAwareKernelBus;
 import org.jboss.kernel.spi.config.KernelConfigurator;
 import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
@@ -108,6 +109,7 @@ public class BusTestCase extends AbstractKernelTest
       assertEquals(ControllerState.INSTALLED, context.getState());
 
       KernelBus bus = kernel.getBus();
+      assertInstanceOf(bus, LifecycleAwareKernelBus.class);
 
       bus.invoke("Name1", "executeDestroy", new Object[]{-1, new Date()}, new String[]{int.class.getName(), Date.class.getName()});
       assertEquals(ControllerState.CONFIGURED, context.getState());
