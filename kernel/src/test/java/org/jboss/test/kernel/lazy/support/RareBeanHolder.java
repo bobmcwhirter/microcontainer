@@ -19,49 +19,32 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.test.kernel.lazy.test;
-
-import junit.framework.Test;
-import org.jboss.test.kernel.junit.MicrocontainerTest;
-import org.jboss.test.kernel.lazy.support.IRare;
-import org.jboss.test.kernel.lazy.support.RareBean;
+package org.jboss.test.kernel.lazy.support;
 
 /**
- * Test lazy metadata.
- * 
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
-public class LazyMetaDataTestCase extends MicrocontainerTest
+public class RareBeanHolder implements IRare
 {
-   public LazyMetaDataTestCase(String name)
+   private IRare delegate;
+
+   public RareBeanHolder(IRare delegate)
    {
-      super(name);
+      this.delegate = delegate;
    }
 
-   public static Test suite()
+   public int getHits()
    {
-      return suite(LazyMetaDataTestCase.class);
+      return delegate.getHits();
    }
 
-   public void testLazyXMLTest() throws Throwable
+   public void setHits(int hits)
    {
-      Object proxy = getBean("proxy");
-      assertNotNull(proxy);
-      assertInstanceOf(proxy, IRare.class);
-      assertInstanceOf(proxy, RareBean.class);
-      RareBean rare = (RareBean)proxy;
+      delegate.setHits(hits);
+   }
 
-      RareBean bean = (RareBean)getBean("bean");
-      assertNotNull(bean);
-
-      assertEquals(bean.getHits(), rare.getHits());
-      bean.setHits(123);
-      assertEquals(bean.getHits(), rare.getHits());
-      bean.setHits(321);
-      assertEquals(bean.getHits(), rare.getHits());
-
-      Object holder = getBean("holder");
-      assertNotNull(holder);
-      assertInstanceOf(holder, IRare.class);
+   public int checkHits(int expectedHits)
+   {
+      return delegate.checkHits(expectedHits);
    }
 }
