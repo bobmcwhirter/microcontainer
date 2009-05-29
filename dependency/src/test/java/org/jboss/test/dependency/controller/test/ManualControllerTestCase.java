@@ -328,4 +328,20 @@ public class ManualControllerTestCase extends AbstractDependencyTest
       assertEquals(-1, dependee.instantiateUninstallOrder);
       assertEquals(-1, dependee.describeUninstallOrder);
    }
+
+   public void testManualAndAutoMixed() throws Throwable
+   {
+      ControllerContext manual = createControllerContext("Manual");
+      manual.setMode(ControllerMode.MANUAL);
+      install(manual);
+      assertChange(manual, ControllerState.DESCRIBED, ControllerState.DESCRIBED);
+
+      ControllerContext auto = createControllerContext("Auto");
+      auto.setMode(ControllerMode.AUTOMATIC);
+      install(auto);
+      assertContext(auto);
+
+      // check that the auto doesn't move the manual
+      assertContext(manual, ControllerState.DESCRIBED);
+   }
 }

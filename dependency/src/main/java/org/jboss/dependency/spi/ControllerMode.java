@@ -42,7 +42,7 @@ public enum ControllerMode
    @XmlEnumValue("On Demand") ON_DEMAND("On Demand", ControllerState.DESCRIBED),
    MANUAL("Manual"),
    DISABLED("Disabled"),
-   ASYNCHRONOUS("Asynchronous");
+   ASYNCHRONOUS("Asynchronous", ControllerState.INSTALLED);
 
    /** The mode string */
    private final String modeString;
