@@ -26,12 +26,14 @@ import java.util.Set;
 import org.jboss.util.JBossInterface;
 
 /**
- * A controller.<p>
- * 
- * The controller is the core component for keeping track
- * of contexts to make sure the configuration and lifecycle are
+ * The controller is the state-machine at the heart of the JBoss
+ * Microcontainer. It keeps track of {@link ControllerContext}s
+ * to make sure the configuration and lifecycle are
  * done in the correct order including dependencies and
- * classloading considerations. 
+ * classloading considerations. Several controllers can exist in a hiearchy.
+ * <p>
+ * The {@link ControllerContext}s each represent a bean that is to
+ * be installed in the Microcontainer.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
@@ -39,7 +41,14 @@ import org.jboss.util.JBossInterface;
 public interface Controller extends JBossInterface
 {
    /**
-    * Install a context
+    * Install a controller context.
+    * This will attempt to move the controller context as far
+    * as possible through its states. For contexts using
+    * {@link ControllerMode#AUTOMATIC} it will attempt to move it to
+    * the {@link ControllerState#INSTALLED} state. If in any state the
+    * context's dependencies are not satisfied, the context will be held 
+    * at that state until its depdencies are satisfied. Once its dependencies 
+    * are satisfied the install initiated by calling this method will resume.
     * 
     * @param context the context
     * @throws Throwable for any error
@@ -47,7 +56,9 @@ public interface Controller extends JBossInterface
    void install(ControllerContext context) throws Throwable;
 
    /**
-    * Change a context to the given state
+    * Change a context to the given state. The given state can
+    * either be before or after the state the context is currently
+    * in.
     * 
     * @param context the context
     * @param state the state
@@ -56,7 +67,8 @@ public interface Controller extends JBossInterface
    void change(ControllerContext context, ControllerState state) throws Throwable;
 
    /**
-    * Enable an on demand context
+    * Enable an on demand context and move it to the {@link ControllerState#INSTALLED}
+    * state.
     * 
     * @param context the context
     * @throws Throwable for any error
@@ -64,15 +76,16 @@ public interface Controller extends JBossInterface
    void enableOnDemand(ControllerContext context) throws Throwable;
    
    /**
-    * Uninstall a context
+    * Uninstall a context. This will move the context to the {@link ControllerState#NOT_INSTALLED}
+    * atate. If other contexts depend on this context, they will be uninstalled first.
     * 
-    * @param name the name of the component
+    * @param name the name of the component to uninstall
     * @return the context
     */
    ControllerContext uninstall(Object name);
 
    /**
-    * Add alias.
+    * Add an alias. An alias is an alternative name to be used for a bean, and are 
     *
     * @param alias the alias to add
     * @param original original name

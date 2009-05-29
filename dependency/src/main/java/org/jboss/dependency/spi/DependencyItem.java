@@ -22,7 +22,13 @@
 package org.jboss.dependency.spi;
 
 /**
- * Information about a single dependency.
+ * Information about a single dependency on a {@link ControllerContext}. These are
+ * held within a {@link ControllerContext}'s {@link DependencyInfo}.
+ * <p>
+ * When the owning {@link ControllerContext} enters the state in 
+ * {@link #getWhenRequired()}, if the {@link ControllerContext} we have a dependency
+ * on has not reached the state in {@link #getDependentState()} the owning
+ * {@link ControllerContext} cannot proceed to the state in {@link #getWhenRequired()}.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
@@ -30,42 +36,47 @@ package org.jboss.dependency.spi;
 public interface DependencyItem 
 {
    /**
-    * Get the object name i depend on
+    * Get the name of the {@link ControllerContext} I depend on.
     * 
     * @return the name
     */
    Object getIDependOn();
 
    /**
-    * Get my object name
+    * Get the name of the {@link ControllerContext} this dependency belongs to.
     * 
-    * @return the name
+    * @return the name of the owning {@link ControllerContext}
     */
    Object getName();
 
    /**
-    * Get when the dependency is required
+    * Get when the dependency is required. This is the state of the owning
+    * {@link ControllerContext}. 
     * 
     * @return the state when required
     */
    ControllerState getWhenRequired();
 
    /**
-    * Get the dependent's state
+    * Get the dependencies state. This is the state of dependency the {@link ControllerContext}
+    * represented by this dependency item that the owning {@link ControllerContext}
+    * depends on.
     * 
     * @return the state of the required of the dependent
     */
    ControllerState getDependentState();
    
    /**
-    * Whether we are resolved
+    * Whether we are resolved. Resolved means that the dependency has reached the
+    * state given by {@link #getDependentState()}
     * 
     * @return true for resolved, false otherwise
     */
    boolean isResolved();
 
    /**
-    * Try to resolve
+    * Try to resolve. This will look up the dependency {@link ControllerContext} in the
+    * controller.
     * 
     * @param controller the controller
     * @return true for resolved, false otherwise

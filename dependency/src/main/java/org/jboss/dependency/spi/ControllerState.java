@@ -30,8 +30,13 @@ import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
 
 /**
- * Description of state.
+ * Description of the state of a {@link ControllerContext} in the controller. 
+ * See {@link ControllerContextActions} for a description of the states and
+ * how they are used. The default states used when running in full kernel mode 
+ * are constant ControllerState fields in this class.
  * 
+ * 
+ * @see ControllerContextActions
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
@@ -106,6 +111,11 @@ public class ControllerState extends JBossObject implements Serializable
       return stateString;
    }
    
+   /**
+    * Checks if the other object is also a ControllerState and has the same 
+    * stateString
+    * @param object The object we want to compare with.
+    */
    public boolean equals(Object object)
    {
       if (object == null || object instanceof ControllerState == false)

@@ -24,7 +24,7 @@ package org.jboss.dependency.spi.dispatch;
 /**
  * The API similar to the DynamicMBean API
  * where there are methods to get/set Properties/Attributes.
- * It is missing invoke, since not all context support it.
+ * It is missing invoke, since not all contexts support it.
  * KernelControllerContext -> Configurator
  * ServiceControllerContext -> MBeanServer
  *
@@ -38,7 +38,7 @@ public interface AttributeDispatchContext
     * Getter property / attribute
     *
     * @param name property / attribute name
-    * @return target's property / attribute instance
+    * @return target's property / attribute value
     * @throws Throwable for any error
     */
    Object get(String name) throws Throwable;
@@ -47,7 +47,7 @@ public interface AttributeDispatchContext
     * Setter property / attribute
     *
     * @param name property / attribute name
-    * @param value set target's property / attribute instance
+    * @param value set target's property / attribute value
     * @throws Throwable for any error
     */
    void set(String name, Object value) throws Throwable;

@@ -24,14 +24,26 @@ package org.jboss.dependency.spi;
 import org.jboss.xb.annotations.JBossXmlEnum;
 
 /**
- * Error handling mode.
+ * Specifies how the {@link Controller} should handle a {@link ControllerContext} that throws 
+ * an error when moving between states.
  *
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
 @JBossXmlEnum(ignoreCase=true)
 public enum ErrorHandlingMode
 {
+   /**
+    * The default mode, unless otherwise specified when creating the {@link ControllerContext},
+    * tells the {@link Controller} to move the failed {@link ControllerContext}s to the
+    * {@link ControllerState#ERROR} state.
+    */
    DISCARD, // The default as before
+   /**
+    * The Manual mode allows advanced users to handle {@link ControllerContext}s in error themselves.
+    */
    MANUAL, // Handle contexts in error yourself
+   /**
+    * ???
+    */
    CHECKED // As MANUAL but RuntimeExceptions, Errors lead to a DISCARD
 }

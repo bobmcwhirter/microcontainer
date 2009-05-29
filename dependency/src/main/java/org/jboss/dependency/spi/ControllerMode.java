@@ -29,7 +29,12 @@ import org.jboss.util.JBossStringBuilder;
 import org.jboss.xb.annotations.JBossXmlEnum;
 
 /**
- * Mode of the context.
+ * Enumeration used to specify the mode a {@link ControllerContext} should be installed,
+ * which has impact on what the {@link Controller} does when told to install a {@link ControllerContext}.
+ * The comments on the enum constants relates to running the Microcontainer in its
+ * default configuration.<p>
+ * 
+ * For a description of the {@link ControllerState}s mentioned, see {@link ControllerContextActions}.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
@@ -38,10 +43,26 @@ import org.jboss.xb.annotations.JBossXmlEnum;
 @JBossXmlEnum(ignoreCase=true)
 public enum ControllerMode
 {
+   /** 
+    * The {@link Controller} will install the {@link ControllerContext} all the way to the 
+    *  {@link ControllerState#INSTALLED} state.  
+    */ 
    AUTOMATIC("Automatic", ControllerState.INSTALLED),
+   
+   /**
+    * The {@link Controller} will install the {@link ControllerContext} to the {@link ControllerState#DESCRIBED}
+    * state and keep it there until another {@link ControllerContext} actually wants to use it for injection. 
+    */
    @XmlEnumValue("On Demand") ON_DEMAND("On Demand", ControllerState.DESCRIBED),
    MANUAL("Manual"),
+   /**
+    * The {@link Controller} will not install the {@link ControllerContext} 
+    */
    DISABLED("Disabled"),
+   /**
+    * The {@link Controller} will install the {@link ControllerContext} in another thread, allowing parallel deployments.
+    * The {@link ControllerContext} will be installed all the way to {@link ControllerState#INSTALLED}
+    */
    ASYNCHRONOUS("Asynchronous", ControllerState.INSTALLED);
 
    /** The mode string */

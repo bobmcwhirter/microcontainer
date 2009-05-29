@@ -22,6 +22,33 @@
 package org.jboss.dependency.spi;
 
 /**
+ * This represents a lifecycle callback applied via  aop the
+ * <code>
+ *   &lt;lifecycle-xxx&gt;
+ * </code> bindings.
+ * 
+ * This represents a dependency on a {@link ControllerContext}. These are
+ * held within a {@link ControllerContext}'s {@link DependencyInfo}.
+ * <p>
+ * When the owning {@link ControllerContext} enters the state in 
+ * {@link #getWhenRequired()}, if the {@link ControllerContext} of the lifecycle callback
+ * we have a dependency on has not reached the state in {@link #getDependentState()} the owning
+ * {@link ControllerContext} cannot proceed to the state in {@link #getWhenRequired()}.
+ * <p>
+ * When the owning {@link ControllerContext} enters the {@link #getWhenRequired()} 
+ * state on install the  {@link #install(ControllerContext)} method is called by the controller. 
+ * This will delegate to the
+ * <code>
+ * public void install(ControllerContext context)
+ * </code> method of the lifecycle callback bean implementation.
+ * <p>
+ * On uninstalling the owning {@link ControllerContext} from the {@link #getWhenRequired()}
+ * state, the {@link #uninstall(ControllerContext)} method is called by the controller. 
+ * This will delegate to the
+ * <code>
+ * public void uninstall(ControllerContext context)
+ * </code> method of the lifecycle callback bean implementation.
+ * 
  * 
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $
@@ -29,8 +56,10 @@ package org.jboss.dependency.spi;
 public interface LifecycleCallbackItem
 {
    /**
-    * Gets the target bean implementing this callback
-    * @return the target bean name
+    * Gets the name of the lifecycle callback {@link ControllerContext}. This
+    * holds the bean implementing the lifecycle callback.
+    * 
+    * @return the name of the lifecycle callback
     */
    Object getBean();
    

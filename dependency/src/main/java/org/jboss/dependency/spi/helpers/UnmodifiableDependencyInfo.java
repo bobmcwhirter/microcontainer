@@ -21,19 +21,20 @@
 */
 package org.jboss.dependency.spi.helpers;
 
-import java.util.Set;
 import java.util.List;
+import java.util.Set;
 
-import org.jboss.dependency.spi.DependencyInfo;
-import org.jboss.dependency.spi.DependencyItem;
+import org.jboss.dependency.spi.CallbackItem;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerState;
-import org.jboss.dependency.spi.CallbackItem;
+import org.jboss.dependency.spi.DependencyInfo;
+import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.dependency.spi.LifecycleCallbackItem;
 import org.jboss.util.JBossObject;
 
 /**
- * Unmodifiable instance.
+ * A wrapper around a {@link DependencyInfo} that throws UnsupportedOperationException when any
+ * methods that might mutate the underlying {@link DependencyInfo} state is called. 
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
@@ -58,21 +59,48 @@ public class UnmodifiableDependencyInfo extends JBossObject implements Dependenc
       return delegate.getDependsOnMe(type);
    }
 
+   /**
+    * Overrides {@link DependencyInfo#addIDependOn(DependencyItem)} to throw an {@link UnsupportedOperationException}
+    * when called.
+    * 
+    * @param dependency the dependency
+    * @throws UnsupportedOperationException when called
+    */
    public void addIDependOn(DependencyItem dependency)
    {
       throw new UnsupportedOperationException("Cannot execute add on unmodifiable wrapper.");
    }
 
+   /**
+    * Overrides {@link DependencyInfo#removeIDependOn(DependencyItem)} to throw an {@link UnsupportedOperationException}
+    * when called.
+    * 
+    * @param dependency the dependency
+    * @throws UnsupportedOperationException when called
+    */
    public void removeIDependOn(DependencyItem dependency)
    {
       throw new UnsupportedOperationException("Cannot execute remove on unmodifiable wrapper.");
    }
 
+   /**
+    * Overrides {@link DependencyInfo#addDependsOnMe(DependencyItem)} to throw an {@link UnsupportedOperationException}
+    * when called.
+    * 
+    * @param dependency the dependency
+    */
    public void addDependsOnMe(DependencyItem dependency)
    {
       throw new UnsupportedOperationException("Cannot execute add on unmodifiable wrapper.");
    }
 
+   /**
+    * Overrides {@link DependencyInfo#removeDependsOnMe(DependencyItem)} to throw an {@link UnsupportedOperationException}
+    * when called.
+    * 
+    * @param dependency the dependency
+    * @throws UnsupportedOperationException when called
+    */
    public void removeDependsOnMe(DependencyItem dependency)
    {
       throw new UnsupportedOperationException("Cannot execute remove on unmodifiable wrapper.");
@@ -88,11 +116,25 @@ public class UnmodifiableDependencyInfo extends JBossObject implements Dependenc
       return delegate.getUnresolvedDependencies(state);
    }
 
+   /**
+    * Overrides {@link DependencyInfo#addInstallItem(CallbackItem)} to throw an {@link UnsupportedOperationException}
+    * when called.
+    * 
+    * @param callbackItem the callback item
+    * @throws UnsupportedOperationException when called
+    */
    public <T> void addInstallItem(CallbackItem<T> callbackItem)
    {
       throw new UnsupportedOperationException("Cannot execute add on unmodifiable wrapper.");
    }
 
+   /**
+    * Overrides {@link DependencyInfo#removeInstallItem(CallbackItem)} to throw an {@link UnsupportedOperationException}
+    * when called.
+    * 
+    * @param callbackItem the callback item
+    * @throws UnsupportedOperationException when called
+    */
    public <T> void removeInstallItem(CallbackItem<T> callbackItem)
    {
       throw new UnsupportedOperationException("Cannot execute remove on unmodifiable wrapper.");
@@ -103,11 +145,25 @@ public class UnmodifiableDependencyInfo extends JBossObject implements Dependenc
       return delegate.getInstallItems();
    }
 
+   /**
+    * Overrides {@link DependencyInfo#addUninstallItem(CallbackItem)} to throw an {@link UnsupportedOperationException}
+    * when called.
+    * 
+    * @param callbackItem the callback item
+    * @throws UnsupportedOperationException when called
+    */
    public <T> void addUninstallItem(CallbackItem<T> callbackItem)
    {
       throw new UnsupportedOperationException("Cannot execute add on unmodifiable wrapper.");
    }
 
+   /**
+    * Overrides {@link DependencyInfo#removeUninstallItem(CallbackItem)} to throw an {@link UnsupportedOperationException}
+    * when called.
+    * 
+    * @param callbackItem the callback item
+    * @throws UnsupportedOperationException when called
+    */
    public <T> void removeUninstallItem(CallbackItem<T> callbackItem)
    {
       throw new UnsupportedOperationException("Cannot execute remove on unmodifiable wrapper.");
@@ -118,6 +174,13 @@ public class UnmodifiableDependencyInfo extends JBossObject implements Dependenc
       return delegate.getUninstallItems();
    }
 
+   /**
+    * Overrides {@link DependencyInfo#addLifecycleCallback(LifecycleCallbackItem)} to throw an {@link UnsupportedOperationException}
+    * when called.
+    * 
+    * @param lifecycleCallbackItem the lifecycle callback item
+    * @throws UnsupportedOperationException when called
+    */
    public void addLifecycleCallback(LifecycleCallbackItem lifecycleCallbackItem)
    {
       throw new UnsupportedOperationException("Cannot execute add on unmodifiable wrapper.");
@@ -133,6 +196,13 @@ public class UnmodifiableDependencyInfo extends JBossObject implements Dependenc
       return delegate.isAutowireCandidate();
    }
 
+   /**
+    * Overrides {@link DependencyInfo#setAutowireCandidate(boolean)} to throw an {@link UnsupportedOperationException}
+    * when called.
+    * 
+    * @param candidate if we are an autowire candidate
+    * @throws UnsupportedOperationException when called
+    */
    public void setAutowireCandidate(boolean candidate)
    {
       throw new UnsupportedOperationException("Cannot execute set on unmodifiable wrapper.");

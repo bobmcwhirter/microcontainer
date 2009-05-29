@@ -34,7 +34,8 @@ import org.jboss.dependency.spi.ErrorHandlingMode;
 import org.jboss.util.JBossObject;
 
 /**
- * Unmodifiable delegate instance.
+ * A wrapper around a {@link ControllerContext} that throws UnsupportedOperationException when any
+ * methods that might mutate the underlying context's state is called. 
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
@@ -92,6 +93,13 @@ public class UnmodifiableControllerContext extends JBossObject implements Contro
       return delegate.getController();
    }
 
+   /**
+    * Overrides {@link ControllerContext#setController(Controller)} to throw an {@link UnsupportedOperationException}
+    * when called.
+    * 
+    * @param state the controller
+    * @throws UnsupportedOperationException when called
+    */
    public void setController(Controller controller)
    {
       throw new UnsupportedOperationException("Cannot invoke set on unmodifiable wrapper.");
@@ -112,6 +120,13 @@ public class UnmodifiableControllerContext extends JBossObject implements Contro
       return delegate.getState();
    }
 
+   /**
+    * Overrides {@link ControllerContext#setState(ControllerState)} to throw an {@link UnsupportedOperationException}
+    * when called.
+    * 
+    * @param state the state
+    * @throws UnsupportedOperationException when called
+    */
    public void setState(ControllerState state)
    {
       throw new UnsupportedOperationException("Cannot invoke set on unmodifiable wrapper.");
@@ -122,6 +137,13 @@ public class UnmodifiableControllerContext extends JBossObject implements Contro
       return delegate.getRequiredState();
    }
 
+   /**
+    * Overrides {@link ControllerContext#setRequiredState(ControllerState)} to throw an {@link UnsupportedOperationException}
+    * when called.
+    * 
+    * @param state the required state
+    * @throws UnsupportedOperationException when called
+    */
    public void setRequiredState(ControllerState state)
    {
       throw new UnsupportedOperationException("Cannot invoke set on unmodifiable wrapper.");
@@ -132,6 +154,13 @@ public class UnmodifiableControllerContext extends JBossObject implements Contro
       return delegate.getMode();
    }
 
+   /**
+    * Overrides {@link ControllerContext#setMode(ControllerMode)} to throw an {@link UnsupportedOperationException}
+    * when called.
+    * 
+    * @param mode the mode
+    * @throws UnsupportedOperationException when called
+    */
    public void setMode(ControllerMode mode)
    {
       throw new UnsupportedOperationException("Cannot invoke set on unmodifiable wrapper.");
@@ -147,6 +176,13 @@ public class UnmodifiableControllerContext extends JBossObject implements Contro
       return delegate.getError();
    }
 
+   /**
+    * Overrides {@link ControllerContext#setError(Throwable)} to throw an {@link UnsupportedOperationException}
+    * when called.
+    * 
+    * @param error the error
+    * @throws UnsupportedOperationException when called
+    */
    public void setError(Throwable error)
    {
       throw new UnsupportedOperationException("Cannot invoke set on unmodifiable wrapper.");

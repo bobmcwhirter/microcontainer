@@ -27,8 +27,10 @@ import java.util.Set;
 import org.jboss.util.JBossInterface;
 
 /**
- * Information about dependencies.
+ * Contains information about a {@link ControllerContext}'s dependencies on other dependencies.
+ * It also contains information about {@link CallbackItem}s and {@link LifecycleCallbackItem}s 
  * 
+ * @see ControllerContext#getDependencyInfo();
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */
@@ -79,24 +81,25 @@ public interface DependencyInfo extends JBossInterface
    void removeDependsOnMe(DependencyItem dependency);
 
    /**
-    * Try to resolve dependencies
+    * Try to resolve dependencies. Look for each unresolved dependency item
+    * in the controller, and if found move to the resolved state.
     * 
     * @param controller the controller
-    * @param state the state of dependency to resolve
+    * @param state the state of dependencies to resolve, or null to resolve all dependencies
     * @return true when all dependencies are resolved
     */
    boolean resolveDependencies(Controller controller, ControllerState state);
    
    /**
-    * Return the unresolved dependencies
+    * Return the unresolved dependencies.
     *
-    * @param state the controller state
+    * @param state the controller state of the dependencies we could not resolve, or null for all unresolved dependencies
     * @return our unresolved dependencies
     */
    Set<DependencyItem> getUnresolvedDependencies(ControllerState state);
 
    /**
-    * Add a callback reference
+    * Add an install callback reference
     *
     * @param <T> the callback item type
     * @param callbackItem the callback to add
@@ -104,7 +107,7 @@ public interface DependencyInfo extends JBossInterface
    <T> void addInstallItem(CallbackItem<T> callbackItem);
 
    /**
-    * Remove a callback reference
+    * Remove an install callback reference
     *
     * @param <T> the callback item type
     * @param callbackItem the callback to remove
@@ -119,7 +122,7 @@ public interface DependencyInfo extends JBossInterface
    Set<CallbackItem<?>> getInstallItems();
 
    /**
-    * Add a callback reference
+    * Add an uninstall callback reference
     *
     * @param <T> the callback item type
     * @param callbackItem the callback to add
@@ -127,7 +130,7 @@ public interface DependencyInfo extends JBossInterface
    <T> void addUninstallItem(CallbackItem<T> callbackItem);
 
    /**
-    * Remove a callback reference
+    * Remove an uninstall callback reference
     *
     * @param <T> the callback item type
     * @param callbackItem the callback to remove
@@ -156,7 +159,10 @@ public interface DependencyInfo extends JBossInterface
    List<LifecycleCallbackItem> getLifecycleCallbacks();
 
    /**
-    * Can we use this context for autowiring.
+    * Can we use this context for autowiring. If <code>true</code> then 
+    * {@link ControllerContext}s wanting to inject the bean from the {@link ControllerContext} owning this DependencyInfo
+    *  do not need to specify the name of the {@link ControllerContext}. Instead a match between the type of the target property/
+    *  parameter and the bean type of the {@link ControllerContext} owning this DependencyInfo can be used.
     *
     * @return true if context can be used for autowiring
     */

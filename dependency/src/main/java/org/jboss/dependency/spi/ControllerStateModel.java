@@ -25,7 +25,7 @@ import java.util.ListIterator;
 
 /**
  * ControllerState model.
- * Helper/util methods.
+ * Helper/util methods used to compare and iterate over {@link ControllerState}s
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */

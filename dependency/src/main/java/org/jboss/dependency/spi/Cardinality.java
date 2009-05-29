@@ -27,7 +27,9 @@ import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
 
 /**
- * Cardinality def.
+ * Used to specify the number of beans as a range of a certain type that must have been registered
+ * with the {@link Controller} before invoking the callback method/property/attribute specified 
+ * by a {@link CallbackItem} for that type on a bean's {@link ControllerContext}.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
@@ -200,26 +202,46 @@ public class Cardinality extends JBossObject implements Serializable
       return left == card.left && right == card.right; 
    }
 
+   /**
+    * Returns a string represenation of the range, e.g. '1..2'
+    * @return the string representation
+    */
    public String getType()
    {
       return type;
    }
 
+   /**
+    * Get the lower bound of the range for this cardinality
+    * @return the lower bound of the range
+    */
    public int getLeft()
    {
       return left;
    }
 
+   /**
+    * Get the upper bound of the range for this cardinality
+    * @return the upper bound of the range
+    */
    public int getRight()
    {
       return right;
    }
 
+   /**
+    * Check if the lower bound is infinity
+    * return true if lower bound is infinity 
+    */
    public boolean isLeftInfinity()
    {
       return left <= INFINITY;
    }
 
+   /**
+    * Check if the upper bound is infinity
+    * return true if upper bound is infinity 
+    */
    public boolean isRightInfinity()
    {
       return right <= INFINITY;

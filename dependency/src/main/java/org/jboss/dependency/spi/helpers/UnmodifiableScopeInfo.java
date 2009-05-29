@@ -31,7 +31,8 @@ import org.jboss.metadata.spi.scope.Scope;
 import org.jboss.metadata.spi.scope.ScopeKey;
 
 /**
- * UnmodifiableScopeInfo.
+ * A wrapper around a {@link ScopeInfo} that throws UnsupportedOperationException when any
+ * methods that might mutate the underlying {@link ScopeInfo} state is called. 
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
@@ -53,26 +54,68 @@ public class UnmodifiableScopeInfo implements ScopeInfo
       this.delegate = delegate;
    }
 
+   /**
+    * Overrides {@link ScopeInfo#addMetaData(MutableMetaDataRepository, ControllerContext)} to throw an {@link UnsupportedOperationException}
+    * when called.
+    * 
+    * @param repository the MutableMetaDataRepository
+    * @param context the controller context
+    * @throws UnsupportedOperationException when called
+    */
    public void addMetaData(MutableMetaDataRepository repository, ControllerContext context)
    {
       throw new UnsupportedOperationException("Cannot modify immutable");
    }
 
+   /**
+    * Overrides {@link ScopeInfo#removeMetaData(MutableMetaDataRepository, ControllerContext)} to throw an {@link UnsupportedOperationException}
+    * when called.
+    * 
+    * @param repository the MutableMetaDataRepository
+    * @param context the controller context
+    * @throws UnsupportedOperationException when called
+    */
    public void removeMetaData(MutableMetaDataRepository repository, ControllerContext context)
    {
       throw new UnsupportedOperationException("Cannot modify immutable");
    }
 
+   /**
+    * Overrides {@link ScopeInfo#initMetaDataRetrieval(MutableMetaDataRepository, ControllerContext, Scope)} to throw an {@link UnsupportedOperationException}
+    * when called.
+    * 
+    * @param repository the MutableMetaDataRepository
+    * @param context the controller context
+    * @param scope the scope
+    * @throws UnsupportedOperationException when called
+    */
    public MetaDataRetrieval initMetaDataRetrieval(MutableMetaDataRepository repository, ControllerContext context, Scope scope)
    {
       throw new UnsupportedOperationException("Cannot modify immutable");
    }
 
+   /**
+    * Overrides {@link ScopeInfo#initMetaDataRetrieval(MutableMetaDataRepository, ControllerContext)} to throw an {@link UnsupportedOperationException}
+    * when called.
+    * 
+    * @param repository the MutableMetaDataRepository
+    * @param context the controller context
+    * @throws UnsupportedOperationException when called
+    */
    public MetaDataRetrieval initMetaDataRetrieval(MutableMetaDataRepository repository, ControllerContext context)
    {
       throw new UnsupportedOperationException("Cannot modify immutable");
    }
 
+   /**
+    * Overrides {@link ScopeInfo#initMutableMetaDataRetrieval(MutableMetaDataRepository, ControllerContext, ScopeKey)} to throw an {@link UnsupportedOperationException}
+    * when called.
+    * 
+    * @param repository the MutableMetaDataRepository
+    * @param context the controller context
+    * @param scopeKet the scope key
+    * @throws UnsupportedOperationException when called
+    */
    public MutableMetaDataLoader initMutableMetaDataRetrieval(MutableMetaDataRepository repository, ControllerContext context, ScopeKey scopeKey)
    {
       throw new UnsupportedOperationException("Cannot modify immutable");
@@ -108,6 +151,13 @@ public class UnmodifiableScopeInfo implements ScopeInfo
       return delegate.getInstallScope();
    }
 
+   /**
+    * Overrides {@link ScopeInfo#setInstallScope(ScopeKey)} to throw an {@link UnsupportedOperationException}
+    * when called.
+    * 
+    * @param key the scope key
+    * @throws UnsupportedOperationException when called
+    */
    public void setInstallScope(ScopeKey key)
    {
       throw new UnsupportedOperationException("Cannot modify immutable");
