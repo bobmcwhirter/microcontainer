@@ -29,19 +29,21 @@ package org.jboss.dependency.spi;
  * The default actions when running the full kernel are on installing to/uninstalling from:
  * <ul>
  *   <li>{@link ControllerState#NOT_INSTALLED} - This is the starting state 
- *   for {@link ControllerContext}s to be installed</li> 
+ *   for {@link ControllerContext}s to be installed. Metadata for the bean has been parsed.</li> 
  *   <li>{@link ControllerState#PRE_INSTALL} - Determine the scoping policy 
  *   of the {@link ControllerContext} to see if it should go in the main controller 
- *   or in a child controller</li>
- *   <li>{@link ControllerState#DESCRIBED} - Determine the bean's dependencies</li>
+ *   or in a child controller and resolve classloading dependencies.</li>
+ *   <li>{@link ControllerState#DESCRIBED} - Determine the bean's extra dependencies that might be brought in from the AOP layer.</li>
  *   <li>{@link ControllerState#PRE_INSTALL} - Instantiate the bean instance and set it 
  *   in the {@link ControllerContext}'s target</li>
  *   <li>{@link ControllerState#CONFIGURED} - Configure the bean instance with the properties 
  *   from the bean metadata and perform injection of other bean instances.</li>
- *   <li>{@link ControllerState#CREATE} - Call any create/destroy lifecycle methods</li>
- *   <li>{@link ControllerState#START} - Call any start/stop lifecycle methods</li>
+ *   <li>{@link ControllerState#CREATE} - Call any create/destroy lifecycle methods. All {@link ControllerContext}s we depend on will
+ *   also have reached the {@link ControllerState#CREATE}</li>
+ *   <li>{@link ControllerState#START} - Call any start/stop lifecycle methods. All {@link ControllerContext}s we depend on will
+ *   also have reached the {@link ControllerState#START}</li>
  *   <li>{@link ControllerState#INSTALLED} - The bean is properly started. Any lifecycle 
- *   install/uninstall methods are called on the bean</li>
+ *   install/uninstall methods are called on the bean and the bean gets added to the list of items the controller supplies.</li>
  * </ul>
  * If something went wrong installing the {@link ControllerContext}, the {@link ControllerContext} 
  * enters the {@link ControllerState#ERROR} state.

@@ -23,13 +23,17 @@ package org.jboss.dependency.spi;
 
 import org.jboss.metadata.spi.MetaData;
 import org.jboss.metadata.spi.loader.MutableMetaDataLoader;
+import org.jboss.metadata.spi.repository.MetaDataRepository;
 import org.jboss.metadata.spi.repository.MutableMetaDataRepository;
 import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
 import org.jboss.metadata.spi.scope.Scope;
+import org.jboss.metadata.spi.scope.ScopeFactoryLookup;
 import org.jboss.metadata.spi.scope.ScopeKey;
 
 /**
- * ScopeInfo.
+ * ScopeInfo belongs to a {@link ControllerContext}, and is the entry point into the 
+ * {@link ControllerContext}'s data in the {@link MetaDataRepository}. Each {@link ControllerContext}
+ * has data stored under a unique {@link ScopeKey}.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
@@ -44,7 +48,9 @@ public interface ScopeInfo
    MetaData getMetaData();
 
    /**
-    * Add metadata
+    * Associates the passed in metadata repository with the controller context.
+    * The {@link ScopeKey} is created and the metadata repository location for the
+    * controller context is created.
     * 
     * @param repository the repository
     * @param context the controller context
@@ -52,7 +58,10 @@ public interface ScopeInfo
    void addMetaData(MutableMetaDataRepository repository, ControllerContext context);
 
    /**
-    * Add metadata
+    * Disassociates the passed in metadata repository with the controller context.
+    * The location of the {@link ScopeKey} for the passed in controller context
+    * is removed from the metadata repository.
+    *  
     * 
     * @param repository the repository
     * @param context the controller context
@@ -60,7 +69,7 @@ public interface ScopeInfo
    void removeMetaData(MutableMetaDataRepository repository, ControllerContext context);
 
    /**
-    * Initialise the metadata retrieval
+    * Initialise the metadata retrieval for a given {@link Scope} in {@link ScopeKey}.
     * 
     * @param repository the repository
     * @param context the context
@@ -70,7 +79,8 @@ public interface ScopeInfo
    MetaDataRetrieval initMetaDataRetrieval(MutableMetaDataRepository repository, ControllerContext context, Scope scope);
 
    /**
-    * Initialise the main metadata retrieval
+    * Initialise the main metadata retrieval. The returned retrieval will contain metadata retrievals for 
+    * each level of {@link Scope} in {@link ScopeKey}.
     * 
     * @param repository the repository
     * @param context the context
@@ -79,7 +89,8 @@ public interface ScopeInfo
    MetaDataRetrieval initMetaDataRetrieval(MutableMetaDataRepository repository, ControllerContext context);
 
    /**
-    * Initialise the main mutable metadata retrieval.
+    * Initialise the main mutable metadata retrieval. The returned mutable metadata loader contains the
+    * location of the context metadata where data can be added.
     *
     * @param repository the mutable metadata repository
     * @param context the controller context
@@ -89,42 +100,52 @@ public interface ScopeInfo
    MutableMetaDataLoader initMutableMetaDataRetrieval(MutableMetaDataRepository repository, ControllerContext context, ScopeKey scopeKey);
 
    /**
-    * Get the scope
+    * Get the scope key for the {@link ControllerContext}'s metadata.
     * 
-    * @return the scope
+    * @return the scope key
     */
    ScopeKey getScope();
 
    /**
-    * Set the scope
+    * Set the scope key for the {@link ControllerContext}'s metadata. This method should only be called by the
+    * {@link Controller}.
     * 
     * @param key the scope key
+    * @throws IllegalArgumentException if null
     */
    void setScope(ScopeKey key);
 
    /**
-    * Get the mutable scope
+    * Get the mutable scope key for the context
     * 
-    * @return the scope
+    * @return the scope key
     */
    ScopeKey getMutableScope();
 
    /**
-    * Set the mutable scope
+    * Set the mutable scope This method should only be called by the
+    * {@link Controller}.
     * 
     * @param key the scope key
+    * @throws IllegalArgumentException if null
     */
    void setMutableScope(ScopeKey key);
 
    /**
-    * Get the install scope
+    * Get the install scope. If a scoped {@link Controller} (i.e. a child of the main {@link Controller})
+    * was used, by annotating the {@link ControllerContext} with annotations annotated with {@link ScopeFactoryLookup}
+    * this is the location of the scoped {@link Controller} in the underlying metadata repository. 
     *
     * @return the scope
     */
    ScopeKey getInstallScope();
 
    /**
-    * Set the install scope
+    * Get the install scope. If a scoped {@link Controller} (i.e. a child of the main {@link Controller})
+    * was used, by annotating the {@link ControllerContext} with annotations annotated with {@link ScopeFactoryLookup}
+    * this is the location of the scoped {@link Controller} in the underlying metadata repository. This method should 
+    * only be called by the {@link Controller}. 
+    *  
     *
     * @param key the scope key
     */
