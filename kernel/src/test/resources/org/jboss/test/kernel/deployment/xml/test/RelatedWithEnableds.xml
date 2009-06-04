@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<bean xmlns="urn:jboss:bean-deployer:2.0" class="Dummy">
-   <related-class name="java.lang.Object">
-     <javabean xmlns="urn:jboss:javabean:1.0" class="java.util.Date"/>
-     <javabean xmlns="urn:jboss:javabean:1.0" class="java.lang.String"/>
-   </related-class>
-</bean>

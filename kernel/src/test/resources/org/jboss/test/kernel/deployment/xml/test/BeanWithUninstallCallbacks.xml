@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<bean xmlns="urn:jboss:bean-deployer:2.0" class="Dummy">
-   <uncallback method="Uninstall1"/>
-   <uncallback method="Uninstall2"/>
-   <uncallback method="Uninstall3"/>
-</bean>

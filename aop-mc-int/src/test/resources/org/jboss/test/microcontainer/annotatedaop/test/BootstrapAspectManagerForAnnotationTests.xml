@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<aop xmlns="urn:jboss:aop-beans:1.0">
-
-   <bean name="AspectManager" class="org.jboss.aop.AspectManager">
-      <constructor factoryClass="org.jboss.aop.AspectManager" factoryMethod="instance"/>
-   </bean>
-</aop>

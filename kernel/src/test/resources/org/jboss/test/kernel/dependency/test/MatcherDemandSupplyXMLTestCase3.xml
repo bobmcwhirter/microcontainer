@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<deployment xmlns="urn:jboss:bean-deployer:2.0">
-   <bean name="intervalSupplier" class="org.jboss.test.kernel.dependency.support.SimpleBeanImpl">
-      <supply class="java.lang.Integer">5</supply>
-   </bean>
-</deployment>

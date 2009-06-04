@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<deployment xmlns="urn:jboss:bean-deployer:2.0">
-            
-   <bean name="Base" class="org.jboss.test.microcontainer.matrix.Base"/>
-   
-   <bean name="Child" class="org.jboss.test.microcontainer.matrix.Child"/>
-</deployment>

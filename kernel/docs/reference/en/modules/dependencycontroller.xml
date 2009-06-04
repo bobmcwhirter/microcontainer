@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<chapter id="dependencycontroller">
-  <title>Dependency Controller</title>
-
-  <para>WARNING: The dependency controller is subject to change without notice. It
-  is currently under developement as issues with the integration of the JMX microkernel
-  and microcontainer are resolved.</para>
-
-</chapter>

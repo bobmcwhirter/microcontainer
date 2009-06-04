@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<aop>
-   <bind pointcut="execution(* org.jboss.test.microcontainer.matrix.Base->baseOnly(..))">
-      <interceptor class="org.jboss.test.microcontainer.matrix.TestInterceptor"/>
-   </bind>
-   <bind pointcut="execution(* $instanceof{org.jboss.test.microcontainer.support.SimpleBean}->$implements{org.jboss.test.microcontainer.support.SimpleBean}(..))">
-      <interceptor class="org.jboss.test.microcontainer.matrix.ReturningInterceptor"/>
-   </bind>
-</aop>

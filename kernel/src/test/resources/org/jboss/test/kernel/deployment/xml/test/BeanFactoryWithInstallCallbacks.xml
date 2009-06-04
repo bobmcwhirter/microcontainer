@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<beanfactory xmlns="urn:jboss:bean-deployer:2.0" class="Dummy">
-   <incallback method="Install1"/>
-   <incallback method="Install2"/>
-   <incallback method="Install3"/>
-</beanfactory>

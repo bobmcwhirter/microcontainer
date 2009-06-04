@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<bean xmlns="urn:jboss:bean-deployer:2.0" class="Dummy">
-   <constructor>
-      <annotation>org.jboss.test.kernel.deployment.xml.support.Annotation1</annotation>
-   </constructor>
-</bean>

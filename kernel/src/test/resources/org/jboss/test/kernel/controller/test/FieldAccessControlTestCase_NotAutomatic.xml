@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<deployment  xmlns="urn:jboss:bean-deployer:2.0">
-   <bean name="NotAllowed" class="org.jboss.test.kernel.controller.support.PrivateFieldTestBean" access-mode="ALL">
-      <property name="privateString">private</property>
-   </bean>
-</deployment>

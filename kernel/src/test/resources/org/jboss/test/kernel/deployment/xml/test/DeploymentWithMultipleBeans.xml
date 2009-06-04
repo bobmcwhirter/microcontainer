@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<deployment name="SimpleDeployment" xmlns="urn:jboss:bean-deployer:2.0">
-   <bean name="Bean1" class="java.lang.Object"/>
-   <bean name="Bean2" class="java.lang.Object"/>
-   <bean name="Bean3" class="java.lang.Object"/>
-</deployment>

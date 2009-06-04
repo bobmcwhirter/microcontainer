@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<aop>
-	<bind pointcut="execution(* org.jboss.test.microcontainer.matrix.Child->*(..))">
-	   <interceptor class="org.jboss.test.microcontainer.matrix.TestInterceptor"/>
-	</bind>
-	<bind pointcut="execution(* $instanceof{org.jboss.test.microcontainer.matrix.ChildInterface}->$implements{org.jboss.test.microcontainer.matrix.ChildInterface}(..))">
-	   <interceptor class="org.jboss.test.microcontainer.matrix.TestInterceptor"/>
-	</bind>
-</aop>

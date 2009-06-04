@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<deployment name="SimpleDeployment" xmlns="urn:jboss:bean-deployer:2.0">
-
-   <annotation>@org.jboss.test.kernel.deployment.xml.support.Annotation1</annotation>   
-   <annotation>@org.jboss.test.kernel.deployment.xml.support.AnnotationWithAttributes(clazz=java.lang.Integer.class, integer=100, str="Annotations are nice")</annotation>
-
-</deployment>

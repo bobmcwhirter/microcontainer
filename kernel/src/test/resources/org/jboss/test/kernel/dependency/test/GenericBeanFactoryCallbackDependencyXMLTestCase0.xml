@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<deployment xmlns="urn:jboss:bean-deployer:2.0">
-   <beanfactory name="Name1" class="org.jboss.test.kernel.dependency.support.SimpleBeanImpl" factoryClass="org.jboss.test.kernel.dependency.support.GenericBeanFactoryRepositoryBF">
-      <incallback method="addGenericBeanFactory"/>
-      <uncallback method="removeGenericBeanFactory"/>
-   </beanfactory>
-</deployment>

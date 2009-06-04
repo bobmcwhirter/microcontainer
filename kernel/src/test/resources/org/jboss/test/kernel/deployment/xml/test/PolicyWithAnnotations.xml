@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<policy xmlns="urn:jboss:policy:1.0">
-   <annotation xmlns="urn:jboss:bean-deployer:2.0">@org.jboss.test.Someannotaion</annotation>
-</policy>

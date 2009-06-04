@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<beanfactory xmlns="urn:jboss:bean-deployer:2.0" class="Dummy">
-   <install method="Install1"/>
-   <install method="Install2"/>
-   <install method="Install3"/>
-</beanfactory>
