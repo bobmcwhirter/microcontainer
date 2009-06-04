@@ -21,8 +21,12 @@
 */
 package org.jboss.kernel.spi.registry;
 
+import org.jboss.kernel.spi.dependency.KernelController;
+
 /**
- * A registry plugin.
+ * A registry plugin used to get {@link KernelRegistryEntry} objects
+ * from the {@link KernelRegistry}. The default implementation of {@link KernelController}
+ * implements this interface.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$

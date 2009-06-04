@@ -22,7 +22,7 @@
 package org.jboss.beans.metadata.spi;
 
 /**
- * Metadata about a parameter.
+ * Metadata about a parameter in the {@link ParameterizedMetaData} list.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
@@ -30,28 +30,28 @@ package org.jboss.beans.metadata.spi;
 public interface ParameterMetaData extends FeatureMetaData
 {
    /**
-    * Get the type.
+    * Get the type if possible.
     * 
-    * @return the type.
+    * @return the class name if set, null otherwise
     */
    String getType();
    
    /**
-    * Get the value.
+    * Get the value of the parameter.
     * 
     * @return the value.
     */
    ValueMetaData getValue();
 
    /**
-    * Get the index
+    * Get the index of the parameter in the list of parameters
     *
     * @return index in list
     */
    int getIndex();
 
    /**
-    * Set the index
+    * Set the index of the parameter in the list of parameters
     * 
     * @param index the index
     */

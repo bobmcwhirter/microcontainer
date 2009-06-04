@@ -27,8 +27,22 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The supplys.
+ * Used to specify a bean's supplies if it has more than one supply.
+ * 
+ * <pre>
+ * &#64;Bean(name="SomeBean")
+ * &#64;Supplys({&#64;Supply("java:/athing"), @Supply("java:/something"})
+ * public class MyBean
+ * {
+ * }
+ * </pre>
+ * When <code>SomeBean</code> is installed it is also registered in the Microcontainer that it
+ * supplies <code>java:/athing</code> and <code>java:/something</code>.  
  *
+ * @see Supply
+ * @see Demands
+ * @see Demand
+ * @see org.jboss.beans.metadata.spi.BeanMetaData#getSupplies()
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)

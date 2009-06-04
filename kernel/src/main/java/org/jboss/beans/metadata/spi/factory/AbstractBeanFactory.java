@@ -37,6 +37,8 @@ import org.jboss.joinpoint.spi.JoinpointException;
 
 /**
  * SPI contract of bean factory we can create from GenericBeanFactoryMetaData.
+ * This is the base class to be used for different implementations of the {@link BeanFactory}
+ * interface.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */

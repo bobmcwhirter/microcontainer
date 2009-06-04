@@ -27,7 +27,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Marks that an annotation is only used while uninstalling.
+ * Marks that an annotation is only used while uninstalling. 
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */

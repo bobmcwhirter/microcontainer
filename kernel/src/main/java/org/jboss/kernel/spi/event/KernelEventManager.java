@@ -21,12 +21,13 @@
 */
 package org.jboss.kernel.spi.event;
 
+import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.KernelObject;
 
 /**
  * An event manager.<p>
  * 
- * The event manager co-ordinates events. 
+ * The event manager co-ordinates events in the {@link Kernel}.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$

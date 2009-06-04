@@ -29,7 +29,9 @@ import org.jboss.dependency.spi.DependencyItem;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 
 /**
- * A metadata vistor.
+ * A metadata vistor. The main use is to traverse a BeanMetaData composite,
+ * where each component implements the {@link MetaDataVisitorNode},
+ * and build up the {@link KernelControllerContext} parts.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
@@ -38,6 +40,7 @@ public interface MetaDataVisitor
 {
    /**
     * Get the kernel controller context
+    * we are doing work on.
     * 
     * @return the context
     */

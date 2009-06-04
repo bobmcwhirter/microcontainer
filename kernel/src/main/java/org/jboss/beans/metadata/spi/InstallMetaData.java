@@ -24,7 +24,15 @@ package org.jboss.beans.metadata.spi;
 import org.jboss.dependency.spi.ControllerState;
 
 /**
- * Metadata about an installation method.
+ * Metadata about an (un)installation method.
+ * The method will be called when the bean is installed (if this metadata
+ * is in the list returned by {@link BeanMetaData#getInstalls()}, or when the bean
+ * is uninstalled if it is in the list returned by {@link BeanMetaData#getUninstalls()}.
+ * Install methods can either exist on the bean owning this {@link InstallMetaData} or
+ * on another bean, in which case we will get a dependency on the other bean.<p>
+ * 
+ * Normally (un)installation methods will be called when invoked upon installing to/uninstalling from
+ * the {@link ControllerState#INSTALLED} state, but this can be overridden by setting {@link #setState(ControllerState)} 
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
@@ -32,14 +40,14 @@ import org.jboss.dependency.spi.ControllerState;
 public interface InstallMetaData extends LifecycleMetaData
 {
    /**
-    * Get the bean name.
+    * Get the bean name on which we should invoke the (un)installation method.
     *
     * @return the bean name.
     */
    String getBean();
    
    /**
-    * Get the required state of the dependency
+    * Get the required state of bean containing the (un)installation method
     * 
     * @return the required state or null if it must be in the registry
     */

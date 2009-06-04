@@ -28,7 +28,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Possible IoC annotations.
+ * Possible IoC annotations. Can be used to narrow the number of annotations to
+ * look for.
  *
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */

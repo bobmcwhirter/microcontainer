@@ -27,8 +27,25 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Uninstall callback.
+ * Define an Uninstall callback on a bean to be notified whenever beans
+ * of a particular type are uninstalled from the Microcontainer.
+ *
+ * <pre>
+ * &#64;Bean(name="SomeBean")
+ * public class MyBean
+ * {
+ *    &#64;Uninstall
+ *    public void removeDatasource(Datasource ds)
+ *    {
+ *       ...
+ *    }
+ * }
+ * </pre>
+ * Whenever a bean of type <code>Datasource</code> is uninstalled, <code>MyBean</code>'s
+ * <code>removeDataSource</code> method gets called with the <code>Datasource</code> bean as the parameter.
  * 
+ * @see Install
+ * @see org.jboss.beans.metadata.spi.BeanMetaData#getUninstallCallbacks()
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
@@ -47,7 +64,7 @@ public @interface Uninstall
     * Get when required.
     * Default is Configured.
     *
-    * @return when required.
+    * @return String representation of the {@link org.jboss.dependency.spi.ControllerState} when required.
     */
    String whenRequired() default "Installed";
 
@@ -55,7 +72,7 @@ public @interface Uninstall
     * Get dependent state.
     * Default is Installed.
     *
-    * @return dependent state.
+    * @return String representation of the dependenct {@link org.jboss.dependency.spi.ControllerState}.
     */
    String dependentState() default "Installed";
 }

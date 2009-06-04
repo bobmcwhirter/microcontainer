@@ -25,7 +25,7 @@ import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.util.JBossInterface;
 
 /**
- * A registry entry
+ * A registry entry to be registered in the {@link KernelRegistry}
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
@@ -33,7 +33,7 @@ import org.jboss.util.JBossInterface;
 public interface KernelRegistryEntry extends JBossInterface, ControllerContext
 {
    /**
-    * Set the name
+    * Set the name of the entry
     * 
     * @param name the name
     */

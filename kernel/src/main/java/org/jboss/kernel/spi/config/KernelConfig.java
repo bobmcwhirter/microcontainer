@@ -47,7 +47,7 @@ import org.jboss.reflect.spi.TypeInfo;
 public interface KernelConfig extends KernelObject
 {
    /**
-    * Get the bean info
+    * Get the bean info for a class.
     * 
     * @param className the class name
     * @param cl the classloader
@@ -57,7 +57,7 @@ public interface KernelConfig extends KernelObject
    BeanInfo getBeanInfo(String className, ClassLoader cl) throws Throwable;
 
    /**
-    * Get the bean info
+    * Get the bean info for a class.
     * 
     * @param clazz the class
     * @return the bean info
@@ -66,7 +66,7 @@ public interface KernelConfig extends KernelObject
    BeanInfo getBeanInfo(Class<?> clazz) throws Throwable;
 
    /**
-    * Get the bean info
+    * Get the bean info from a type info.
     * 
     * @param type the type info
     * @return the bean info
@@ -75,7 +75,7 @@ public interface KernelConfig extends KernelObject
    BeanInfo getBeanInfo(TypeInfo type) throws Throwable;
    
    /**
-    * Get the bean info
+    * Get the bean info for a class using the given bean access mode.
     *
     * @param className the class name
     * @param cl the classloader
@@ -86,7 +86,7 @@ public interface KernelConfig extends KernelObject
    BeanInfo getBeanInfo(String className, ClassLoader cl, BeanAccessMode mode) throws Throwable;
 
    /**
-    * Get the bean info
+    * Get the bean info for a class using the given bean access mode.
     *
     * @param clazz the class
     * @param mode the access mode
@@ -96,7 +96,7 @@ public interface KernelConfig extends KernelObject
    BeanInfo getBeanInfo(Class<?> clazz, BeanAccessMode mode) throws Throwable;
 
    /**
-    * Get the bean info
+    * Get the bean info from a type info using the given bean access mode.
     *
     * @param type the type info
     * @param mode the access mode
@@ -106,7 +106,7 @@ public interface KernelConfig extends KernelObject
    BeanInfo getBeanInfo(TypeInfo type, BeanAccessMode mode) throws Throwable;
 
    /**
-    * Get the type info for a class
+    * Get the type info for a class.
     * 
     * @param className the class name
     * @param cl the classloader
@@ -116,7 +116,7 @@ public interface KernelConfig extends KernelObject
    TypeInfo getTypeInfo(String className, ClassLoader cl) throws Throwable;
    
    /**
-    * Get the type info for a class
+    * Get the type info for a class.
     * 
     * @param clazz the class
     * @return the type info
@@ -125,7 +125,7 @@ public interface KernelConfig extends KernelObject
    TypeInfo getTypeInfo(Class<?> clazz) throws Throwable;
 
    /**
-    * Get the class info for a class
+    * Get the class info for a class.
     * 
     * @param className the class name
     * @param cl the classloader
@@ -135,7 +135,7 @@ public interface KernelConfig extends KernelObject
    ClassInfo getClassInfo(String className, ClassLoader cl) throws Throwable;
    
    /**
-    * Get the class info for a class
+    * Get the class info for a class.
     * 
     * @param clazz the class
     * @return the class info

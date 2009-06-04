@@ -27,8 +27,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Array of external installs.
+ * Used to define several install methods defined in other beans.
  *
+ * @see ExternalInstall
+ * @see InstallMethod
+ * @see org.jboss.beans.metadata.spi.BeanMetaData#getInstalls()
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)

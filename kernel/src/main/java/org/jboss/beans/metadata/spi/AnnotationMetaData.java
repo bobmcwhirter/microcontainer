@@ -24,10 +24,13 @@ package org.jboss.beans.metadata.spi;
 import java.lang.annotation.Annotation;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.util.JBossInterface;
 
 /**
- * Metadata about an annotation attribute.
+ * Metadata about an annotation attribute that should go in the metadata
+ * repository for the {@link ControllerContext} resulting from the {@link BeanMetaData}
+ * owning this {@link AnnotationMetaData}.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
@@ -35,7 +38,7 @@ import org.jboss.util.JBossInterface;
 public interface AnnotationMetaData extends JBossInterface, MetaDataVisitorNode
 {
    /**
-    * Get the annotation using passed in classloader
+    * Get the annotation using the passed in classloader
     * @param classloader The classloader
     * @return The annotation instance
     */

@@ -32,7 +32,7 @@ import org.jboss.util.JBossInterface;
 public interface ClassLoaderMetaData extends JBossInterface, MetaDataVisitorNode
 {
    /**
-    * Get the classloader
+    * Get the value metadata containing the actual classloader
     * 
     * @return the classloader
     */

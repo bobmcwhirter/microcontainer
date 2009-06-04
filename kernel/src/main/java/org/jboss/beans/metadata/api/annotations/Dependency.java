@@ -27,7 +27,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Dependency.
+ * Dependency. If a bean is annotated with an annotation that in turn has been
+ * annotated with this annotation, that bean becomes dependent on a bean being deployed
+ * with the name in this annotations's <code>name</code> field. 
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
@@ -38,7 +40,7 @@ import java.lang.annotation.Target;
 public @interface Dependency
 {
    /**
-    * Get the name.
+    * Get the name of the bean this annotation introduces a dependency on.
     *
     * @return the name
     */

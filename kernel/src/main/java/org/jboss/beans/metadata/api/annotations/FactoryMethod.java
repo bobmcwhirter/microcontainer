@@ -27,8 +27,46 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Mark static method as factory method.
+ * Mark a static method as a factory method to instantiate a bean. The method must exist on
+ * the bean class itself. If the method has parameters,
+ * use the following annotations on the parameters to set their values:
+ * <ul>
+ *   <li>@{@link ArrayValue}</li>
+ *   <li>@{@link CollectionValue}</li>
+ *   <li>@{@link Inject}</li>
+ *   <li>@{@link JavaBeanValue}</li>
+ *   <li>@{@link ListValue}</li> 
+ *   <li>@{@link MapValue}</li> 
+ *   <li>@{@link NullValue}</li> 
+ *   <li>@{@link SetValue}</li> 
+ *   <li>@{@link StringValue}</li>
+ * </ul>
+ * 
+ * For example the following configuration:<p>
+ * <pre>
+ * &#64;Bean(name="SomeBean")
+ * public class MyBean
+ * {
+ *   
+ *   public MyBean(long age, Object other)
+ *   {
+ *      ...
+ *   }
+ *   
+ *   &#64;FactoryMethod
+ *   public static MyBean createInstance(&#64;StringValue(value="25", type="long") long age, &#64;Inject(bean="OtherBean") Object other)
+ *   {
+ *       return new MyBean(age, other);
+ *   }
+ *   
+ * }
+ * </pre>
+ * uses the <code>createInstance</code> method to construct the bean instance and uses the long value <code>25</code> for the <code>age</code> parameter, and injects
+ * the bean <code>OtherBean</code> into the <code>other</code> parameter. 
  *
+ * @see Constructor
+ * @see Factory
+ * @see org.jboss.beans.metadata.spi.BeanMetaData#getConstructor()
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)

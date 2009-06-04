@@ -26,7 +26,8 @@ import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerState;
 
 /**
- * Context lookup strategy.
+ * Context lookup strategy. Specifies how a context should be looked for 
+ * in a hierarchy of {@link Controller}s.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */

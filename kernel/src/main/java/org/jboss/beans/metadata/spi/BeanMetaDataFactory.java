@@ -24,7 +24,8 @@ package org.jboss.beans.metadata.spi;
 import java.util.List;
 
 /**
- * BeanMetaDataFactory.
+ * BeanMetaDataFactory is used to parse some metadata and return one or more {@link BeanMetaData}
+ * entries.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
@@ -32,7 +33,7 @@ import java.util.List;
 public interface BeanMetaDataFactory 
 {
    /**
-    * Get the beans
+    * Get the beans from this {@link BeanMetaDataFactory}.
     * 
     * @return a List<BeanMetaData>
     */

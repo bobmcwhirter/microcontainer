@@ -25,7 +25,8 @@ import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.event.KernelEventEmitter;
 
 /**
- * A kernel object.<p>
+ * A kernel object.<p> 
+ * All kernel service interfaces implement this interface
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$

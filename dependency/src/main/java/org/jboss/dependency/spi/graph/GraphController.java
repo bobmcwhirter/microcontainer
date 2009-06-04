@@ -21,6 +21,7 @@
 */
 package org.jboss.dependency.spi.graph;
 
+import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 
@@ -28,7 +29,8 @@ import org.jboss.dependency.spi.ControllerState;
  * Graph controller.
  *
  * Either GraphController itself understands
- * SearchInfo, or delegates work to LookupStrategy.
+ * SearchInfo, or delegates work to the LookupStrategy contained in the SearchInfo.
+ * {@link Controller} implementations may implement this interface.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */

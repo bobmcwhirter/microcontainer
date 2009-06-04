@@ -22,7 +22,11 @@
 package org.jboss.kernel.spi.dependency;
 
 /**
- * A Describe KernelControllerContextAware.
+ * A Describe KernelControllerContextAware. If a user implements this interface
+ * in a bean the KernelControllerContext will be injected upon installing
+ * to the {@link org.jboss.dependency.spi.ControllerState#DESCRIBED} state,
+ * and set to null on uninstalling from the {@link org.jboss.dependency.spi.ControllerState#DESCRIBED} state.
+ *
  * @see org.jboss.kernel.plugins.dependency.KernelControllerContextAction
  * @deprecated at the describe state there is no target yet instantiated
  *

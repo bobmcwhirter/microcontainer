@@ -22,7 +22,9 @@
 package org.jboss.kernel.spi.dependency;
 
 /**
- * A KernelControllerContextAware.
+ * A KernelControllerContextAware interface, which can be implemented by users' beans to 
+ * have the {@link KernelControllerContext} injected. When in the lifecycle this happens
+ * depends on the particular sub-interface that has been implemented.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$

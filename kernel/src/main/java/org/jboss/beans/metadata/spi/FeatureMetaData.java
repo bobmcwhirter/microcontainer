@@ -26,7 +26,7 @@ import java.util.Set;
 import org.jboss.util.JBossInterface;
 
 /**
- * General MetaData
+ * Root interface for meta datas that can have annotations. 
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$

@@ -32,8 +32,19 @@ import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ErrorHandlingMode;
 
 /**
- * Mark the MC bean.
+ * Used to mark a class as a Microcontainer bean and to set properties on the resulting bean metadata.
+ * The class of the bean becomes the class that was annotated.
+ * 
+ * For example this configuration:
+ * <pre>
+ * &#64;Bean(name="SomeBean")
+ * public class MyBean
+ * {
+ * }
+ * </pre>
+ * Creates an instance of MyBean and installs it in the Microcontainer using the name <code>MyBean</code>.
  *
+ * @see org.jboss.beans.metadata.spi.BeanMetaData
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
@@ -41,7 +52,7 @@ import org.jboss.dependency.spi.ErrorHandlingMode;
 public @interface Bean
 {
    /**
-    * Get the name.
+    * Get the bean's name.
     *
     * This is only meant to be used before
     * bean meta data is already installed
@@ -92,7 +103,7 @@ public @interface Bean
    AutowireType autowireType() default AutowireType.NONE;
 
    /**
-    * Get the mode
+    * Get the controller mode 
     *
     * Note that this is only gonna be
     * used after Describe state.
@@ -112,7 +123,7 @@ public @interface Bean
    ErrorHandlingMode errorHandlingMode() default ErrorHandlingMode.DISCARD;
 
    /**
-    * Get the access mode
+    * Get the bean access mode
     *
     * @return the access mode
     */

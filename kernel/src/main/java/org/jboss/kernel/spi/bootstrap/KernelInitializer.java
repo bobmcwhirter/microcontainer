@@ -22,11 +22,12 @@
 package org.jboss.kernel.spi.bootstrap;
 
 import org.jboss.kernel.Kernel;
+import org.jboss.kernel.spi.dependency.KernelController;
 
 /**
  * Kernel Factory.<p>
  * 
- * Initialises a kernel. 
+ * Initialises a {@link Kernel} with its {@link KernelController} and other services. 
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$

@@ -22,7 +22,7 @@
 package org.jboss.kernel.spi.registry;
 
 /**
- * Thrown when an invocation context does not exist
+ * Thrown when an {@link KernelRegistryEntry} does not exist in the {@link KernelRegistry}
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$

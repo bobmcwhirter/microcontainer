@@ -23,15 +23,21 @@ package org.jboss.beans.metadata.spi;
 
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.jboss.dependency.spi.Controller;
 import org.jboss.util.JBossInterface;
 
 /**
- * Metadata about an alias attribute.
+ * Metadata about an alias attribute. These are alternative names to be used to identify a bean
+ * locally within a {@link Controller}.
  *
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
 public interface AliasMetaData extends JBossInterface, MetaDataVisitorNode
 {
    @XmlTransient
+   /**
+    * Gets the name of the alias to use
+    * @return the name of the alias
+    */
    Object getAliasValue();
 }

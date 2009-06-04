@@ -27,8 +27,22 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The demand.
- *
+ * Used to specify a bean's demand.
+ * 
+ * <pre>
+ * &#64;Bean(name="SomeBean")
+ * &#64;Demand("java:/something")
+ * public class MyBean
+ * {
+ * }
+ * </pre>
+ * <code>SomeBean</code> cannot be installed until another bean called, or another bean that supplies something
+ * called <code>java:/something</code> has been installed.  
+ *  
+ * @see Supplys
+ * @see Supply
+ * @see Demands
+ * @see org.jboss.beans.metadata.spi.BeanMetaData#getDemands()
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)

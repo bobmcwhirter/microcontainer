@@ -22,7 +22,9 @@
 package org.jboss.kernel.spi.dependency;
 
 /**
- * DependencyBuilderListItem.
+ * DependencyBuilderListItem. Used during the {@link org.jboss.dependency.spi.ControllerState#DESCRIBED}
+ * state to add extra dependencies on unstall and remove them upon uninstall. These extra dependencies 
+ * might for example come from AOP.
  *
  * @author <a href="kabir.khan@jboss.com">Kabir Khan</a>
  * @version $Revision: 1.1 $

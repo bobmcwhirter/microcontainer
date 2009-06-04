@@ -25,12 +25,15 @@ import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.info.spi.helpers.UnmodifiableBeanInfo;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.dependency.spi.helpers.UnmodifiableControllerContext;
+import org.jboss.dependency.spi.Controller;
+import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 
 /**
- * Unmodifiable instance.
+ * A wrapper around a {@link KernelControllerContext} that throws UnsupportedOperationException when any
+ * methods that might mutate the underlying context's state is called. 
  * 
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
@@ -57,6 +60,13 @@ public class UnmodifiableKernelControllerContext extends UnmodifiableControllerC
       return beanInfo != null ? new UnmodifiableBeanInfo(beanInfo) : null;
    }
 
+   /**
+    * Overrides {@link KernelControllerContext#setBeanInfo(BeanInfo)} to throw an {@link UnsupportedOperationException}
+    * when called.
+    * 
+    * @param info the bean info to set
+    * @throws UnsupportedOperationException when called
+    */
    public void setBeanInfo(BeanInfo info)
    {
       throw new UnsupportedOperationException("Cannot execute set on unmodifiable wrapper.");
@@ -67,16 +77,39 @@ public class UnmodifiableKernelControllerContext extends UnmodifiableControllerC
       return getDelegate().getBeanMetaData();
    }
 
+   /**
+    * Overrides {@link KernelControllerContext#setTarget(Object)} to throw an {@link UnsupportedOperationException}
+    * when called.
+    * 
+    * @param target the target to set
+    * @throws UnsupportedOperationException when called
+    */
    public void setTarget(Object target)
    {
       throw new UnsupportedOperationException("Cannot execute set on unmodifiable wrapper.");
    }
 
+   /**
+    * Overrides {@link KernelControllerContext#setName(Object)} to throw an {@link UnsupportedOperationException}
+    * when called.
+    * 
+    * @param info the name to set
+    * @throws UnsupportedOperationException when called
+    */
    public void setName(Object name)
    {
       throw new UnsupportedOperationException("Cannot execute set on unmodifiable wrapper.");
    }
 
+   /**
+    * Overrides {@link KernelControllerContext#invoke(String, Object[], String[])} to throw an {@link UnsupportedOperationException}
+    * when called.
+    * 
+    * @param name the name of the method to call
+    * @param parameters an array of the parameter values to pass in
+    * @param signature the type of each parameter
+    * @throws UnsupportedOperationException when called
+    */
    public Object invoke(String name, Object parameters[], String[] signature) throws Throwable
    {
       throw new UnsupportedOperationException("Cannot execute invoke on unmodifiable wrapper.");
@@ -92,6 +125,14 @@ public class UnmodifiableKernelControllerContext extends UnmodifiableControllerC
       return getDelegate().get(name);
    }
 
+   /**
+    * Overrides {@link KernelControllerContext#set(String, Object)} to throw an {@link UnsupportedOperationException}
+    * when called.
+    * 
+    * @param name the name of the property/attribute to set
+    * @param value the value of the property to set
+    * @throws UnsupportedOperationException when called
+    */
    public void set(String name, Object value) throws Throwable
    {
       throw new UnsupportedOperationException("Cannot execute set on unmodifiable wrapper.");

@@ -47,10 +47,10 @@ public interface KernelRegistry extends KernelObject
    public static final String KERNEL_REGISTRY_UNREGISTERED = "KERNEL_REGISTRY_UNREGISTERED";
    
    /**
-    * Find a registration
+    * Find a registeration
     * 
     * @param name the name of the object
-    * @return the registration
+    * @return the registration or null if not found
     * @throws IllegalArgumentException for a null name
     */
    KernelRegistryEntry findEntry(Object name);

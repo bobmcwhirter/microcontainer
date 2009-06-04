@@ -37,7 +37,8 @@ import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
 import org.jboss.metadata.plugins.loader.reflection.AnnotatedElementMetaDataLoader;
 
 /**
- * Annotation to bean metadata factory.
+ * Annotation to bean metadata factory. Used to translate MC annotations on bean classes to
+ * {@link BeanMetaData}
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
@@ -59,9 +60,9 @@ public class AnnotationToBeanMetaDataFactory
    }
 
    /**
-    * Create bean metadata for class.
+    * Create bean metadata for a class from its annotations.
     *
-    * @param beanClass the bean class
+    * @param beanClass the bean class to read for annotations
     * @return bean metadata
     * @throws Throwable for any error
     */
@@ -71,7 +72,9 @@ public class AnnotationToBeanMetaDataFactory
    }
 
    /**
-    * Create bean metadata for class.
+    * Create bean metadata for a class from its annotations allowing specification of the bean access mode.
+    * Use the default {@link BeanMetaDataAnnotationAdapter} which recognises the annotations in the
+    * <a href="../../../beans/metadata/api/annotations/package-summary.html">org.jboss.beans.metadata.api.annotations</a> package
     *
     * @param beanClass the bean class
     * @param mode the bean access mode
@@ -84,7 +87,9 @@ public class AnnotationToBeanMetaDataFactory
    }
 
    /**
-    * Create bean metadata for class.
+    * Create bean metadata for a class from its annotations, and the annotations applied in the passed in metadata.
+    * Use the default {@link BeanMetaDataAnnotationAdapter} which recognises the annotations in the
+    * <a href="../../../beans/metadata/api/annotations/package-summary.html">org.jboss.beans.metadata.api.annotations</a> package
     *
     * @param beanClass the bean class
     * @param metaData predefined metadata
@@ -97,7 +102,7 @@ public class AnnotationToBeanMetaDataFactory
    }
 
    /**
-    * Create bean metadata for class.
+    * Create bean metadata for a class from its annotations using the specified bean metadata annotation adapter.
     *
     * @param beanClass the bean class
     * @param adapter bean metadata adapter
@@ -110,7 +115,7 @@ public class AnnotationToBeanMetaDataFactory
    }
 
    /**
-    * Create bean metadata for class.
+    * Create bean metadata for a class from its annotations using the specified bean access mode and metadata annotation adapter.
     *
     * @param beanClass the bean class
     * @param mode the bean access mode
@@ -124,7 +129,9 @@ public class AnnotationToBeanMetaDataFactory
    }
 
    /**
-    * Create bean metadata for class.
+    * Create bean metadata for a class from its annotations and add to the existing bean metadata.
+    * Use the default {@link BeanMetaDataAnnotationAdapter} which recognises the annotations in the
+    * <a href="../../../beans/metadata/api/annotations/package-summary.html">org.jboss.beans.metadata.api.annotations</a> package
     *
     * @param beanClass the bean class
     * @param existingMetaData the existing bean metadata
@@ -137,7 +144,9 @@ public class AnnotationToBeanMetaDataFactory
    }
 
    /**
-    * Create bean metadata for class.
+    * Create bean metadata for a class from its annotations, using the specified bean access mode, and add to the existing bean metadata.
+    * Use the default {@link BeanMetaDataAnnotationAdapter} which recognises the annotations in the
+    * <a href="../../../beans/metadata/api/annotations/package-summary.html">org.jboss.beans.metadata.api.annotations</a> package
     *
     * @param beanClass the bean class
     * @param mode the bean access mode
@@ -151,7 +160,7 @@ public class AnnotationToBeanMetaDataFactory
    }
 
    /**
-    * Create bean metadata for class.
+    * Create bean metadata for a class from its annotations, using the specified bean metadata annotation adapter, and add to the existing bean metadata.
     *
     * @param beanClass the bean class
     * @param existingMetaData the existing bean metadata
@@ -165,7 +174,8 @@ public class AnnotationToBeanMetaDataFactory
    }
 
    /**
-    * Create bean metadata for class.
+    * Create bean metadata for a class from its annotations, using the specified bean access mode and metadata annotation adapter,
+    * and add to the existing bean metadata.
     *
     * @param beanClass the bean class
     * @param mode the bean access mode
@@ -180,8 +190,9 @@ public class AnnotationToBeanMetaDataFactory
    }
 
    /**
-    * Create bean metadata for class.
-    *
+    * Create bean metadata for a class from its annotations, and the ones specified in the passed in metadata, using the specified bean metadata annotation adapter,
+    * and add to the existing bean metadata.
+    * 
     * @param beanClass the bean class
     * @param metaData predefined metadata
     * @param existingMetaData the existing bean metadata
@@ -195,7 +206,8 @@ public class AnnotationToBeanMetaDataFactory
    }
 
    /**
-    * Create bean metadata for class.
+    * Create bean metadata for a class from its annotations, and the ones specified in the passed in metadata, using the specified bean access mode and metadata annotation adapter,
+    * and add to the existing bean metadata.
     *
     * @param beanClass the bean class
     * @param mode the bean access mode

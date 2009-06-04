@@ -27,8 +27,23 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The supplys.
+ * Used to specify that a bean supplies something which another bean can depend on using a {@link Demand}
+ * <pre>
+ * &#64;Bean(name="SomeBean")
+ * &#64;Supply("java:/something")
+ * public class MyBean
+ * {
+ * }
+ * </pre>
+ * When <code>SomeBean</code> is installed it is also registered in the Microcontainer that it
+ * supplies <code>java:/something</code>. Other beans that have a
+ * demand on <code>java:/something</code> cannot be installed until <code>java:/something</code>
+ * is supplied.  
  *
+ * @see Supplys
+ * @see Demands
+ * @see Demand
+ * @see org.jboss.beans.metadata.spi.BeanMetaData#getSupplies()
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)

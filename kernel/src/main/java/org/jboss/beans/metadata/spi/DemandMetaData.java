@@ -25,8 +25,10 @@ import org.jboss.dependency.spi.ControllerState;
 import org.jboss.util.JBossInterface;
 
 /**
- * Metadata about what a bean demands.
+ * Metadata about what a bean demands. A demand is a dependency
+ * that does not use injection. 
  * 
+ * @see SupplyMetaData
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @version $Revision$
@@ -34,7 +36,7 @@ import org.jboss.util.JBossInterface;
 public interface DemandMetaData extends MetaDataVisitorNode, JBossInterface
 {
    /**
-    * What is demanded
+    * The name of the demanded bean
     * 
     * @return the demand
     */
@@ -48,7 +50,7 @@ public interface DemandMetaData extends MetaDataVisitorNode, JBossInterface
    ControllerState getWhenRequired();
 
    /**
-    * Get the target state
+    * Get the target state of the demanded bean
     *
     * @return the target state
     */

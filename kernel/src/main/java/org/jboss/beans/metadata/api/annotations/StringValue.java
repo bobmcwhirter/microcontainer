@@ -27,7 +27,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * String value.
+ * String value. Contains the String representation of a value,
+ * with a type to cast it to the correct type.
+ * 
+ * <pre>
+ * void setInteger(&#64;StringValue(value="123", type="int") int i){}
+ * </pre>
+ * causes the parameter <code>i</code> to be called with the int <code>123</code>.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */

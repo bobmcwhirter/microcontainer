@@ -26,7 +26,8 @@ import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.metadata.spi.MetaData;
 
 /**
- * Annotations adapter contract based on metadata.
+ * Annotations adapter contract based on metadata. Implementing classes specify the annotations to
+ * look for and build up the resulting {@link BeanMetaData}.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
@@ -35,9 +36,9 @@ public interface BeanMetaDataAnnotationAdapter
    /**
     * Apply the annotations on bean metadata.
     *
-    * @param beanInfo the bean info
-    * @param metaData the metadata
-    * @param beanMetaData the bean meta data
+    * @param beanInfo the bean info describing the class 
+    * @param metaData the metadata that might 
+    * @param beanMetaData the bean meta data we are working on.
     * @throws Throwable for any error
     */
    void applyAnnotations(BeanInfo beanInfo, MetaData metaData, BeanMetaData beanMetaData) throws Throwable;

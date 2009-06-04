@@ -27,8 +27,27 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Mark the uninstall method.
+ * Unnstall method defined within the bean class itself. Several methods within the bean can be
+ * annotated with this annotation. By default these will be called when the bean is uninstalled from the
+ * {@link org.jboss.dependency.spi.ControllerState#INSTALLED} state. 
  *
+ * For example this configuration:
+ * <pre>
+ * &#64;Bean(name="SomeBean")
+ * public class MyBean
+ * {
+ *    &#64;Uninstall
+ *    public void uninstallation()
+ *    {
+ *    }
+ * }
+ * </pre>
+ * When SomeBean enters the INSTALLED state, the Microcontainer calls the <code>uninstallation</code> method.
+ * You can also specify parameters if necessary, see {@link Constructor} for an example.
+ *
+ * @see ExternalInstall
+ * @see ExternalInstalls
+ * @see org.jboss.beans.metadata.spi.BeanMetaData#getUninstalls()
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)

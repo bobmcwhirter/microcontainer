@@ -24,7 +24,7 @@ package org.jboss.beans.metadata.spi;
 import java.util.List;
 
 /**
- * ParameterizedMetaData.
+ * ParameterizedMetaData is a holder for a list of {@link ParameterMetaData}
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $

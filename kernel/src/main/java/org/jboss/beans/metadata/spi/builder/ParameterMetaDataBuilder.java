@@ -21,10 +21,12 @@
 */
 package org.jboss.beans.metadata.spi.builder;
 
+import org.jboss.beans.metadata.spi.ParameterMetaData;
+import org.jboss.beans.metadata.spi.ParameterizedMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 
 /**
- * ParameterMetaDataBuilder.
+ * ParameterMetaDataBuilder, used to add parameters to a parameterized part of the metadata
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
@@ -34,6 +36,7 @@ public interface ParameterMetaDataBuilder
    /**
     * Add a parameter
     * 
+    * @see ParameterizedMetaData#getParameters()
     * @param type the type
     * @param value the value
     * @return the parameter
@@ -43,6 +46,7 @@ public interface ParameterMetaDataBuilder
    /**
     * Add a parameter
     * 
+    * @see ParameterizedMetaData#getParameters()
     * @param type the type
     * @param value the value
     * @return the builder
@@ -52,6 +56,7 @@ public interface ParameterMetaDataBuilder
    /**
     * Add a parameter
     * 
+    * @see ParameterizedMetaData#getParameters()
     * @param type the type
     * @param value the value
     * @return the builder

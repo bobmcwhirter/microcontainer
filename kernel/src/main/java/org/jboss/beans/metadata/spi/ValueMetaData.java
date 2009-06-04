@@ -39,7 +39,7 @@ import org.jboss.xb.annotations.JBossXmlGroupText;
 import org.jboss.xb.annotations.JBossXmlGroupWildcard;
 
 /**
- * Metadata about a value.
+ * Metadata about a value used for a parameter or property.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$

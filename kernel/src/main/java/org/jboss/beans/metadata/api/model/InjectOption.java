@@ -24,15 +24,36 @@ package org.jboss.beans.metadata.api.model;
 import org.jboss.xb.annotations.JBossXmlEnum;
 
 /**
- * Injection option - strict or optional / callback.
+ * Injection option defines how dependencies are injected.
+ * Unless specified when creating the injection, the default is 
+ * {@link #STRICT}
  *
  * @author <a href="mailto:ales.justin@gmail.com">Ales Justin</a>
  */
 @JBossXmlEnum(ignoreCase=true)
 public enum InjectOption
 {
+   /**
+    * If the injected dependency is not available
+    * the target bean will wait until the dependency 
+    * becomes available.
+    */
    STRICT(MicrocontainerConstants.STRICT),
+   /**
+    * If the injected dependency is not available
+    * the target bean will not wait until the dependency 
+    * becomes available, but move through the controller
+    * lifecycle. If the injected dependency becomes available
+    * at a later stage, it is injected then. 
+    */
    CALLBACK(MicrocontainerConstants.CALLBACK),
+   /**
+    * If the injected dependency is not available
+    * the target bean will not wait until the dependency 
+    * becomes available, but move through the controller
+    * lifecycle. If the injected dependency becomes available
+    * at a later stage, it is ignored.
+    */
    OPTIONAL(MicrocontainerConstants.OPTIONAL);
 
    private String optionString;

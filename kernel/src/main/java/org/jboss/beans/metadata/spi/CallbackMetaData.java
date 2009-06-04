@@ -22,38 +22,44 @@
 package org.jboss.beans.metadata.spi;
 
 import org.jboss.dependency.spi.Cardinality;
+import org.jboss.dependency.spi.Controller;
+import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerState;
 
 /**
- * Metadata about a callback method.
+ * Metadata about a callback method that should be invoked on us when a bean of a specific type is
+ * installed into the {@link Controller}.
  *
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  */
 public interface CallbackMetaData extends LifecycleMetaData
 {
    /**
-    * Get the cardinality.
+    * Get the cardinality. This is the number of beans as a range of a certain type that must have been registered
+    * with the {@link Controller} before invoking the callback method/property/attribute specified 
+    * by a {@link #getProperty()} for that type on a bean's {@link ControllerContext}.
     *
     * @return cardinality
     */
    Cardinality getCardinality();
 
    /**
-    * Get the property name.
+    * Get the name of the property that should be invoked when triggering the callback. Alternatively,
+    * a method should be called, specified by {@link #getMethodName()}.
     *
     * @return the property name.
     */
    String getProperty();
 
    /**
-    * Get the required state of the dependency
+    * Get the required state of the items we are listening for. The default is {@link ControllerState#INSTALLED}.
     *
     * @return the required state
     */
    ControllerState getDependentState();
 
    /**
-    * Get signature.
+    * Get signature of the method/property. This is required if overloading has been used.
     *
     * @return method / property parameter signature
     */

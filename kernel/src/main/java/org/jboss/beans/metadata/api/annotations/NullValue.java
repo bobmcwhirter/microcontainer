@@ -27,7 +27,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Null value.
+ * Null value. Used to specify that a value is null.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
@@ -37,7 +37,7 @@ public @interface NullValue
 {
    /**
     * Is valid.
-    * Used in @Parameter and @value to define
+    * Used in @{@link Parameter} and @{@link Value} to define
     * unused value.
     *
     * @return is value valid

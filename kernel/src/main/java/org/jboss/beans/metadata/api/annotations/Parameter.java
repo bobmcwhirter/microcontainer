@@ -27,7 +27,10 @@ import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 
 /**
- * The parameter.
+ * The parameter. Similar to @{@link Value},
+ * but is used for {@link ValueFactory#parameter()}
+ * and {@link ValueFactory#parameters()}. ValueFactory, in turn,
+ * may be used within a {@link Value#valueFactory()}.
  * We must distingush between @Value and @Parameter,
  * since annotations don't allow cyclic dependencies.
  * ValueFactory uses @Parameter to break the cycle.

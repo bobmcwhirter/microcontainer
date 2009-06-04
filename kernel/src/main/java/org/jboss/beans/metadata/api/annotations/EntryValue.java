@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 
 /**
- * Map entry value.
+ * Represents an entry in a {@link MapValue}
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */

@@ -27,9 +27,33 @@ import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 
 /**
- * Define external install.
- * Must define other bean to execute instal method on.
+ * Install method defined within another bean. By default these will be called when the bean enters the
+ * {@link org.jboss.dependency.spi.ControllerState#INSTALLED} state, and the other bean must have entered
+ * the INSTALLED state. 
  *
+ * For example this configuration:
+ * <pre>
+ * &#64;Bean(name="SomeBean")
+ * &#64;ExternalInstall(bean="OtherBean", method="someMethod")
+ * public class MyBean
+ * {
+ * }
+ * </pre>
+ * When SomeBean enters the INSTALLED state, the Microcontainer calls the <code>someMethod</code> method on OtherBean.
+ * You can also specify parameters if necessary:
+ * <pre>
+ * &#64;Bean(name="SomeBean")
+ * &#64;ExternalInstall(bean="OtherBean", method="otherMethod", parameters={@Value(thisValue=@ThisValue)})
+ * public class MyBean
+ * {
+ * }
+ * </pre>
+ * When SomeBean enters the INSTALLED state, the Microcontainer calls the <code>otherMethod</code> method on OtherBean
+ * passing in a reference to the SomeBean being installed.
+ *
+ * @see InstallMethod
+ * @see ExternalInstalls
+ * @see org.jboss.beans.metadata.spi.BeanMetaData#getInstalls()
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
@@ -37,21 +61,21 @@ import java.lang.annotation.ElementType;
 public @interface ExternalInstall
 {
    /**
-    * Get the bean.
+    * Get the name of the bean containing the install method.
     *
     * @return the bean
     */
    String bean();
 
    /**
-    * Get the method.
+    * Get the name of the install method.
     *
     * @return the method
     */
    String method();
 
    /**
-    * Get the dependant state.
+    * Get the state the bean containing the install method must be in.
     *
     * @return the dependant state
     */

@@ -27,7 +27,12 @@ import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.metadata.spi.MetaData;
 
 /**
- * DependencyBuilder.
+ * DependencyBuilder helps to determine extra dependencies during the
+ * {@link org.jboss.dependency.spi.ControllerState#DESCRIBED} state.
+ * The default implementation does not determine extra information,
+ * but if used with <code>jboss-aop-mc-int.jar</code> on the classpath, 
+ * extra dependencies coming from AOP will be returned as a list
+ * of {@link DependencyBuilderListItem}.  
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 69888 $

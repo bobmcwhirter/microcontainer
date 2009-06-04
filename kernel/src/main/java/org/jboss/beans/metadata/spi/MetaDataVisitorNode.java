@@ -23,8 +23,12 @@ package org.jboss.beans.metadata.spi;
 
 import java.util.Iterator;
 
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
+
 /**
- * A metadata vistor node.
+ * A metadata vistor node. Each type of metadata in this package implements
+ * this interface and knows how to augment the {@link KernelControllerContext}
+ * with the information contained.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
@@ -32,14 +36,14 @@ import java.util.Iterator;
 public interface MetaDataVisitorNode
 {
    /**
-    * Visit the node
+    * Visit the node before any classloading has been set up.
     * 
     * @param vistor the visitor
     */
    public void initialVisit(MetaDataVisitor vistor);
    
    /**
-    * Revisit the node
+    * Revisit the node once classloading has been set up.
     *
     * @param vistor the visitor
     */

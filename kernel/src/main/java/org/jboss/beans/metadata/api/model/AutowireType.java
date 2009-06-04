@@ -27,22 +27,37 @@ import org.jboss.util.JBossStringBuilder;
 import org.jboss.xb.annotations.JBossXmlEnum;
 
 /**
- * Autowire type:
- *  * ByClass - matching the class type of value (default)
- *  * ByName - matching the property name
- *  * Constructor - matching the constructor args
- *  * Auto - matching constructor or by type
- *  * None - do not autowire
+ * Autowire type.
+ * When autowiring is used, there is no need to explicitly specify the name of the bean 
+ * you want to inject. Instead a search will be done according to this enum.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @JBossXmlEnum(ignoreCase=true)
 public enum AutowireType
 {
+   /**
+    * No autowiring will take place
+    */
    NONE(MicrocontainerConstants.NONE),
+   /**
+    * The type of the target property is used to look up a bean of that type in the microcontainer,
+    * which is then injected.
+    */
    @XmlEnumValue("ByClass") BY_CLASS(MicrocontainerConstants.BY_CLASS),
+   /**
+    * The name of the target property is used to look up a bean with that name in the microcontainer,
+    * which is then injected.
+    */
    @XmlEnumValue("ByName") BY_NAME(MicrocontainerConstants.BY_NAME),
+   /**
+    * The types of the constructor arguments are used to look for beans of those types,
+    * which are then injected into the constructor parameters. 
+    */
    CONSTRUCTOR(MicrocontainerConstants.CONSTRUCTOR),
+   /**
+    * Automatically follows CONSTRUCTOR or BY_CLASS
+    */
    AUTO(MicrocontainerConstants.AUTO);
 
    /** The type string */

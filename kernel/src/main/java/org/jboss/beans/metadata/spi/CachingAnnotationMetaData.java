@@ -24,7 +24,9 @@ package org.jboss.beans.metadata.spi;
 import java.lang.annotation.Annotation;
 
 /**
- * CachingAnnotationMetaData.
+ * A cached annotation metadata that does not try to load up the
+ * annotation using a classloader every time the {@link #getAnnotationInstance()}
+ * or {@link #getAnnotationInstance(ClassLoader)} methods are called.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision: 1.1 $
@@ -32,7 +34,8 @@ import java.lang.annotation.Annotation;
 public interface CachingAnnotationMetaData extends AnnotationMetaData
 {
    /**
-    * Retrieve any cached annotation and flush it
+    * Retrieve any cached annotation and flush it. The next call to {@link #getAnnotationInstance()}
+    * or {@link #getAnnotationInstance(ClassLoader)} will then need to load it up using the classloader.
     * 
     * @return the annotation instance or null if non was constructed
     */

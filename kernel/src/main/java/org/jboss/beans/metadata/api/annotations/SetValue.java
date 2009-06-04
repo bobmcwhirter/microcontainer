@@ -27,8 +27,18 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Set value injection.
- *
+ * Creates a set that can be used as a parameter
+ * <pre>
+ * &#64;SetValue(elementClass="java.lang.String", 
+ *                 clazz="org.jboss.example.CustomSet",  
+ *                 {&#64;Value(string=&#64;StringValue("string1")), 
+ *                 &#64;Value(string=&#64;StringValue("string2")), 
+ *                 &#64;Value(string=&#64;StringValue("string3")), 
+ *                 &#64;Value(string=&#64;StringValue("string4"))}) 
+ * public void setSet(Set collection) {} 
+ * </pre>
+ * creates a Set of the type <code>org.jboss.example.CustomSet</code>, where all the elements are of type String.
+ * 
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
@@ -36,7 +46,7 @@ import java.lang.annotation.Target;
 public @interface SetValue
 {
    /**
-    * Get the set class.
+    * Get the set class. If unspecified, the default is java.util.HashSet.
     *
     * @return the set class
     */
@@ -50,7 +60,7 @@ public @interface SetValue
    Class<?> elementClass() default void.class;
 
    /**
-    * Get the values.
+    * Get the array of the Values in the set.
     *
     * @return the values
     */

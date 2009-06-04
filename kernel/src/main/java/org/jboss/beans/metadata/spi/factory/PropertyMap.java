@@ -44,6 +44,9 @@ import org.jboss.util.JBossStringBuilder;
 
 /**
  * PropertyMap.
+ * Used to copy the properties from the {@link GenericBeanFactoryMetaData}
+ * to the resulting {@link BeanFactory} implementation following the call to 
+ * {@link GenericBeanFactoryMetaData#getBeans()}.
  *
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>

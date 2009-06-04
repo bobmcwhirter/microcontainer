@@ -27,7 +27,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Java bean value.
+ * Java bean value. Instantiates an instance of the class.
+ * 
+ * <pre>
+ * &#64;JavaBeanValue(Person.class)
+ * void setPerson(Person person)
+ * </pre>
+ * instantiates an instance of <code>Person</code> using its default 
+ * constructor, and uses it for the <code>person</code> parameter.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */

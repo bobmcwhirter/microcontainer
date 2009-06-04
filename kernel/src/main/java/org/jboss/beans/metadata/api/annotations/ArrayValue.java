@@ -27,7 +27,15 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Injecting array value.
+ * Creates an array that can be used as a parameter.
+ * 
+ * <pre>
+ * &#64;ArrayValue(elementClass="java.lang.Float", 
+ *            {&#64;Value(string=&#64;StringValue("1.0")), 
+ *            &#64;Value(string=&#64;StringValue("2.0"))}) 
+ * public void setArray(Float[] array) {}
+ * </pre>
+ * creates a Float array with the entries {1.0, 2.0}
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
@@ -43,7 +51,7 @@ public @interface ArrayValue
    Class<?> clazz() default void.class;
 
    /**
-    * Array's element class.
+    * Array's element class. If absent, the default is Object.
     *
     * @return element class
     */

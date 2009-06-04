@@ -27,8 +27,35 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Array of external uninstalls.
+ * Used to define one or more uninstall methods defined in other beans.<p>
+ * 
+ * By default these will be called when the bean is uninstalled from the
+ * {@link org.jboss.dependency.spi.ControllerState#INSTALLED} state, and the other bean must be in
+ * the INSTALLED state. 
  *
+ * For example this configuration:
+ * <pre>
+ * &#64;Bean(name="SomeBean")
+ * &#64;ExternalUninstalls(&#64;ExternalInstall(bean="OtherBean", method="someMethod"))
+ * public class MyBean
+ * {
+ * }
+ * </pre>
+ * When SomeBean is uninstalled from the INSTALLED state, the Microcontainer calls the <code>someMethod</code> method on OtherBean.
+ * You can also specify parameters if necessary:
+ * <pre>
+ * &#64;Bean(name="SomeBean")
+ * &#64;ExternalUninstalls(&#64;ExternalInstall(bean="OtherBean", method="otherMethod", parameters={@Value(thisValue=@ThisValue)}))
+ * public class MyBean
+ * {
+ * }
+ * </pre>
+ * When SomeBean is uninstalled from the INSTALLED state, the Microcontainer calls the <code>otherMethod</code> method on OtherBean
+ * passing in a reference to the SomeBean being uninstalled.
+ *
+ * @see ExternalInstall
+ * @see InstallMethod
+ * @see org.jboss.beans.metadata.spi.BeanMetaData#getUninstalls()
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)

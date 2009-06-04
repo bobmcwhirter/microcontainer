@@ -22,7 +22,7 @@
 package org.jboss.kernel.spi.event;
 
 /**
- * A listener
+ * An event in the kernel. 
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$

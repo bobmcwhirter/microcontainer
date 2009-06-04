@@ -27,7 +27,18 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Collection injection.
+ * Creates a collection that can be used as a parameter.
+ * 
+ * <pre>
+ * &#64;CollectionValue(elementClass="java.lang.String", 
+ *                 clazz="org.jboss.example.CustomCollection",  
+ *                 {&#64;Value(string=&#64;StringValue("string1")), 
+ *                 &#64;Value(string=&#64;StringValue("string2")), 
+ *                 &#64;Value(string=&#64;StringValue("string3")), 
+ *                 &#64;Value(string=&#64;StringValue("string4"))}) 
+ * public void setCollection(Collection collection) {} 
+ * </pre>
+ * creates a collection of the type <code>org.jboss.example.CustomCollection</code>, where all the elements are of type String.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
@@ -36,10 +47,12 @@ import java.lang.annotation.Target;
 public @interface CollectionValue
 {
    /**
-    * Get collection class.
+    * Get collection class. By default a {@link java.util.ArrayList}
+    * will be used.
     *
     * @return the collection class
     */
+   
    Class<?> clazz() default void.class;
 
    /**
@@ -50,7 +63,7 @@ public @interface CollectionValue
    Class<?> elementClass() default void.class;
 
    /**
-    * Get values.
+    * An array of the values in the collection.
     *
     * @return the values
     */

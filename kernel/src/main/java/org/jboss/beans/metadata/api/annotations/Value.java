@@ -27,7 +27,16 @@ import java.lang.annotation.Target;
 import java.lang.annotation.ElementType;
 
 /**
- * The value.
+ * Used to hold a value within one of the values representing a collection or an
+ * external method requiring parameters
+ * 
+ * @see ArrayValue
+ * @see CollectionValue
+ * @see EntryValue
+ * @see ExternalInstall
+ * @see Factory
+ * @see ListValue
+ * @see SetValue
  * @see Parameter
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>

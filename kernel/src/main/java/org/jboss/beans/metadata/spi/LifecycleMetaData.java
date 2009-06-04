@@ -32,35 +32,37 @@ import org.jboss.dependency.spi.ControllerState;
 public interface LifecycleMetaData extends ParameterizedMetaData, FeatureMetaData
 {
    /**
-    * Get the state
-    * 
+    * Get when the dependency is required. 
+    * The default is {@link ControllerState#CONFIGURED}    
+    *  
     * @return the state
     */
    ControllerState getState();
    
    /**
-    * Set the state
-    * 
+    * Set when the dependency is required. 
+    * The default is {@link ControllerState#CONFIGURED}
+    *  
     * @param state the state
     */
    void setState(ControllerState state);
    
    /**
-    * Get the method name.
+    * Get the method name that should be called.
     *
     * @return the method name.
     */
    String getMethodName();
 
    /**
-    * Set the method name
+    * Set the method name that shuld be called.
     * 
     * @param methodName the method name
     */
    void setMethodName(String methodName);
    
    /**
-    * Is default ignored.
+    * Is ignored by default.
     *
     * @return should we ignore default
     */

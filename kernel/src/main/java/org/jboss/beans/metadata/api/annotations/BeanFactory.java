@@ -30,7 +30,7 @@ import org.jboss.beans.info.spi.BeanAccessMode;
 import org.jboss.dependency.spi.ControllerMode;
 
 /**
- * Mark the MC bean factory.
+ * Used to mark a class as a Microcontainer bean factory and to set properties on the bean metadata.
  *
  * Only useful before actual metadata instantiation,
  * since we need to instantiate GenericBeanFactoryMetaData
@@ -43,7 +43,7 @@ import org.jboss.dependency.spi.ControllerMode;
 public @interface BeanFactory
 {
    /**
-    * Get the name.
+    * Get the bean name.
     *
     * @return bean's name
     */

@@ -28,5 +28,9 @@ package org.jboss.beans.metadata.spi;
  */
 public interface NamedAliasMetaData extends AliasMetaData
 {
+   /**
+    * Gets the name of the alias to use
+    * @return the name of the alias
+    */
    Object getName();
 }

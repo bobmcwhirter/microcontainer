@@ -24,8 +24,10 @@ package org.jboss.beans.metadata.spi;
 import org.jboss.util.JBossInterface;
 
 /**
- * Metadata about what a bean demands.
+ * Metadata about what a bean supplies. This is something that is not bound as a bean itself,
+ * but looked for by a bean that 'demands' it. 
  * 
+ * @see DemandMetaData
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
  */

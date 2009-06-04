@@ -26,10 +26,26 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-
 /**
- * Install callback.
+ * Define an Install callback on a bean to be notified whenever beans
+ * of a particular type are installed into the Microcontainer.
  *
+ * <pre>
+ * &#64;Bean(name="SomeBean")
+ * public class MyBean
+ * {
+ *    &#64;Install
+ *    public void addDatasource(Datasource ds)
+ *    {
+ *       ...
+ *    }
+ * }
+ * </pre>
+ * Whenever a bean of type <code>Datasource</code> is installed, <code>MyBean</code>'s
+ * <code>addDataSource</code> method gets called with the <code>Datasource</code> bean as the parameter.
+ * 
+ * @see Uninstall
+ * @see org.jboss.beans.metadata.spi.BeanMetaData#getInstallCallbacks()
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
@@ -40,23 +56,24 @@ public @interface Install
     * Get the cardinality.
     * Default is no cardinality.
     *
+    * @see org.jboss.dependency.spi.Cardinality
     * @return cardinality
     */
    String cardinality() default "";
 
    /**
-    * Get when required.
+    * Get when required. i.e. my state.
     * Default is Configured.
     *
-    * @return when required.
+    * @return String representation of the {@link org.jboss.dependency.spi.ControllerState} when required.
     */
    String whenRequired() default "Installed";
 
    /**
-    * Get dependent state.
+    * Get dependent state, i.e. the state the beans we are listening for must be in
     * Default is Installed.
     *
-    * @return dependent state.
+    * @return String representation of the dependenct {@link org.jboss.dependency.spi.ControllerState}.
     */
    String dependentState() default "Installed";
 }

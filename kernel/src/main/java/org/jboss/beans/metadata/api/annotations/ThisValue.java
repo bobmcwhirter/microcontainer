@@ -28,7 +28,7 @@ import java.lang.annotation.Target;
 
 /**
  * This value.
- * Get the underlying target.
+ * Get the underlying target. See {@link ExternalInstall} for an example of the use
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */

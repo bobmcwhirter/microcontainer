@@ -22,7 +22,8 @@
 package org.jboss.kernel.spi.event;
 
 /**
- * A filter
+ * A filter to narrow down which {@link KernelEvent}s a {@link KernelEventListener}
+ * is interested in. They are managed by the {@link KernelEventManager}.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
@@ -30,7 +31,7 @@ package org.jboss.kernel.spi.event;
 public interface KernelEventFilter
 {
    /**
-    * Invoked when an event occurs
+    * Invoked when an event occurs to see if a particular {@link KernelEventListener} is interested in it.
     * 
     * @param event the event
     * @param handback the handback

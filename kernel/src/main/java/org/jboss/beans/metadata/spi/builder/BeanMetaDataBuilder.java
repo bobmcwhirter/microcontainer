@@ -37,6 +37,9 @@ import org.jboss.beans.metadata.plugins.builder.BeanMetaDataBuilderFactory;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.beans.metadata.spi.BeanMetaDataFactory;
 import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
+import org.jboss.beans.metadata.spi.ConstructorMetaData;
+import org.jboss.beans.metadata.spi.LifecycleMetaData;
+import org.jboss.beans.metadata.spi.PropertyMetaData;
 import org.jboss.beans.metadata.spi.RelatedClassMetaData;
 import org.jboss.beans.metadata.spi.ValueMetaData;
 import org.jboss.dependency.spi.Cardinality;
@@ -44,9 +47,28 @@ import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.ErrorHandlingMode;
 import org.jboss.dependency.spi.graph.SearchInfo;
+import org.jboss.kernel.api.dependency.MatcherFactory;
 
 /**
- * BeanMetaDataBuilder contract.
+ * The BeanMetaDataBuilder is a class that allows you to construct a {@link BeanMetaData}
+ * programatically.<p>
+ * Users should first call one of the <code>createBuilder()</code> methods, do some work on
+ * the returned builder and then call <code>getBeanMetaData()</code>. e.g.:
+ * <pre>
+ * BeanMetaDataBuilder builder = BeanMetaDataBuilder.createBuilder("MyBean", "org.acme.Foo");
+ * builder.addAnnotation("@org.acme.Marker").addPropertyMetaData("simple", "Simple");
+ * ValueMetaData inject = aspectBuilder.createInject("OtherBean");
+ * builder.addPropertyMetaData("injected", inject);
+ * BeanMetaData bmd = builder.getBeanMetaData();
+ * </pre> 
+ * will result in a similar BeanMetaData to deploying the following xml
+ * <pre>
+ * &lt;bean name="MyBean" class="org.acme.Foo"&gt;
+ *   &lt;annotation&gt;@org.acme.Marker&lt;/annotation&gt;
+ *   &lt;property name="simple"&gt;Simple&lt;/property&gt
+ *   &lt;property name="injected"&gt;&lt;inject name="OtherBean"/&gt;&lt;/property&gt
+ * &lt;/bean&gt;
+ * </pre> 
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  * @author <a href="mailto:adrian@jboss.org">Adrian Brock</a>
@@ -54,10 +76,10 @@ import org.jboss.dependency.spi.graph.SearchInfo;
 public abstract class BeanMetaDataBuilder
 {
    /**
-    * Create builder from bean.
+    * Create builder from a bean's class name.
     *
     * @param beanClassName bean class name
-    * @return new Builder
+    * @return a new BeanMetaDataBuilder
     */
    public static BeanMetaDataBuilder createBuilder(String beanClassName)
    {
@@ -65,11 +87,11 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Create builder from name and bean.
+    * Create builder from name and bean's classname.
     *
     * @param beanInstanceName bean name
     * @param beanClassName bean class name
-    * @return new Builder
+    * @return a new BeanMetaDataBuilder
     */
    public static BeanMetaDataBuilder createBuilder(String beanInstanceName, String beanClassName)
    {
@@ -77,10 +99,10 @@ public abstract class BeanMetaDataBuilder
    }
    
    /**
-    * Create builder from BeanMetaData
+    * Create builder from an existing BeanMetaData
     * 
     * @param beanMetaData the bean metadata
-    * @return new Builder()
+    * @return a new BeanMetaDataBuilder
     */
    public static BeanMetaDataBuilder createBuilder(BeanMetaData beanMetaData)
    {
@@ -107,7 +129,7 @@ public abstract class BeanMetaDataBuilder
     * Note: this one includes all nested beans from
     * underlying bean metadata.
     *
-     * @return bean meta data factory
+    * @return bean meta data factory
     */
    public abstract BeanMetaDataFactory getBeanMetaDataFactory();
 
@@ -131,100 +153,119 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Set the bean name.
+    * Set the bean name
     *
+    * @see BeanMetaData#getName()
     * @param name the name
-    * @return the builder
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder setName(String name);
 
    /**
-    * Set the bean.
+    * Set the bean class.
     *
+    * @see BeanMetaData#getBean()
     * @param bean the bean class name
-    * @return the builder
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder setBean(String bean);
 
    /**
-    * Set the aliases
+    * Set the aliases. This overwrites any existing aliases.
     * 
+    * @see BeanMetaData#getAliases()
     * @param aliases the aliases
-    * @return the builder
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder setAliases(Set<Object> aliases);
 
    /**
-    * Add related class.
+    * Add related class to the set of related classes.
     *
+    * @see BeanMetaData#getRelated()
     * @param className the related class name
     * @param enabled the enabled
-    * @return the builder
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder addRelatedClass(String className, Object... enabled);
 
    /**
-    * Add related class.
+    * Add related class to the set of related classes.
     *
+    * @see BeanMetaData#getRelated()
     * @param related the related class
-    * @return the builder
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder addRelatedClass(RelatedClassMetaData related);
 
    /**
-    * Set the related
+    * Set the related classes. This overwrites any existing related classes.
     *
-    * @param related the related
-    * @return the builder
+    * @see BeanMetaData#getRelated()
+    * @param related the set of related classes
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder setRelated(Set<RelatedClassMetaData> related);
 
    /**
-    * Add alias.
+    * Add alias to the set of aliases.
     *
+    * @see BeanMetaData#getAliases()
     * @param alias the alias
-    * @return the builder
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder addAlias(Object alias);
 
    /**
-    * Set the annotations
+    * Set the annotations. This overwrites any exisisting annotations.
     *
+    * @see BeanMetaData#getAnnotations()
     * @param annotations the annotations
-    * @return the builder
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder setAnnotations(Set<String> annotations);
 
    /**
-    * Add annotation.
+    * Add annotation to the set of annotations, with system property replacement.
     *
-    * @param annotation the annotation
-    * @return the builder
+    * @see #addAnnotation(String, boolean)
+    * @see BeanMetaData#getAnnotations()
+    * @param annotation string representation of the annotation, e.g. <code>@org.acme.Marker</code>
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder addAnnotation(String annotation);
 
    /**
-    * Add annotation.
+    * Add annotation to the set of annotations, with system property replacement.
     *
-    * @param annotation the annotation
-    * @return the builder
+    * @see #addAnnotation(String, boolean)
+    * @see BeanMetaData#getAnnotations()
+    * @param annotation the annotation instance
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder addAnnotation(Annotation annotation);
 
    /**
-    * Add annotation.
+    * Add annotation to the set of annotations.
     *
-    * @param annotation the annotation
-    * @param replace the replace flag
-    * @return the builder
+    * @param annotation string representation of the annotation, e.g. <code>@org.acme.Marker</code>
+    * @param replace whether system property replacement should happen on the values. e.g. if we have
+    * <code>@org.acme.WithProperty("${test.property}")</code> and the value of 
+    * <code>-Dtest.property=hello</code>, this becomes <code>@org.acme.WithProperty("hello")</code>.
+    * 
+    * @see BeanMetaData#getAnnotations()
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder addAnnotation(String annotation, boolean replace);
 
    /**
-    * Set the mode
+    * Set the controller mode to use for the 
+    * {@link org.jboss.kernel.spi.dependency.KernelControllerContext} constructed
+    * from the {@link BeanMetaData} created from this builder.
     * 
-    * @param modeString the mode
-    * @return the builder
+    * @see BeanMetaData#getMode()
+    * @param modeString the name of the {@link org.jboss.dependency.spi.ControllerMode}
+    * @return this builder
     */
    public BeanMetaDataBuilder setMode(String modeString)
    {
@@ -232,61 +273,73 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Set the mode
+    * Set the controller mode to use for the 
+    * {@link org.jboss.kernel.spi.dependency.KernelControllerContext} constructed
+    * from the {@link BeanMetaData} created from this builder.
     * 
+    * @see BeanMetaData#getMode()
     * @param mode the mode
-    * @return the builder
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder setMode(ControllerMode mode);
 
    /**
-    * Set the access mode
+    * Set the bean access mode to use for the bean.
     *
+    * @see BeanMetaData#getAccessMode()
     * @param mode the access mode
-    * @return the builder
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder setAccessMode(BeanAccessMode mode);
 
    /**
-    * Set the error handling mode
+    * Set the error handling mode to use for the 
+    * {@link org.jboss.kernel.spi.dependency.KernelControllerContext} constructed
+    * from the {@link BeanMetaData} created from this builder.
     *
+    * @see BeanMetaData#getErrorHandlingMode()
     * @param mode the error handling mode
-    * @return the builder
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder setErrorHandlingMode(ErrorHandlingMode mode);
 
    /**
-    * Set the autowire type
+    * Set the autowire type to be used for the  
+    * {@link org.jboss.kernel.spi.dependency.KernelControllerContext} constructed
+    * from the {@link BeanMetaData} created from this builder.
     *
+    * @see BeanMetaData#getAutowireType()
     * @param type the autowire type
-    * @return the builder
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder setAutowireType(AutowireType type);
 
    /**
-    * Is bean autowire candidate.
+    * Set whether the bean is an autowire candidate
     *
+    * @see BeanMetaData#isAutowireCandidate()
     * @param candidate the candidate flag
-    * @return the builder
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder setAutowireCandidate(boolean candidate);
 
    /**
     * Set that we don't want to use the deployment classloader
     * 
-    * @return the builder
+    * @see BeanMetaData#getClassLoader()
+    * @return this builder
     */
-
    public BeanMetaDataBuilder setNoClassLoader()
    {
       return setClassLoader(createNull());
    }
 
    /**
-    * Set the classloader
+    * Set the classloader to be used to load the class for this bean
     * 
+    * @see BeanMetaData#getClassLoader()
     * @param classLoader the classloader
-    * @return the builder
+    * @return this builder
     */
    public BeanMetaDataBuilder setClassLoader(Object classLoader)
    {
@@ -294,26 +347,30 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Set the classloader
+    * Set the classloader to be used to load the class for this bean
     * 
-    * @param classLoader the classloader
-    * @return the builder
+    * @see BeanMetaData#getClassLoader()
+    * @param classLoader a value metadata containing the classloader
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder setClassLoader(ValueMetaData classLoader);
 
    /**
-    * Set the classloader
+    * Set the classloader to be used to load the class for this bean
     * 
+    * @see BeanMetaData#getClassLoader()
     * @param classLoader the classloader
-    * @return the builder
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder setClassLoader(ClassLoaderMetaData classLoader);
 
    /**
-    * Set the factory
+    * Set the non-static factory bean to use constructing the bean
     * 
+    * @see BeanMetaData#getConstructor()
+    * @see ConstructorMetaData#getFactory()
     * @param factory the factory
-    * @return the builder
+    * @return this builder
     */
    public BeanMetaDataBuilder setFactory(Object factory)
    {
@@ -321,10 +378,12 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Set the factory
+    * Set the non-static factory bean to use constructing the bean
     * 
+    * @see BeanMetaData#getConstructor()
+    * @see ConstructorMetaData#getFactory()
     * @param bean the bean name
-    * @return the builder
+    * @return this builder
     */
    public BeanMetaDataBuilder setFactory(String bean)
    {
@@ -332,11 +391,13 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Set the factory
+    * Set the non-static factory bean to use constructing the bean
     * 
+    * @see BeanMetaData#getConstructor()
+    * @see ConstructorMetaData#getFactory()
     * @param bean the bean name
     * @param property the property name for the factory
-    * @return the builder
+    * @return this builder
     */
    public BeanMetaDataBuilder setFactory(String bean, String property)
    {
@@ -344,327 +405,397 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Set the factory
+    * Set the non-static factory bean to use constructing the bean
     * 
+    * @see BeanMetaData#getConstructor()
+    * @see ConstructorMetaData#getFactory()
     * @param factory the factory
-    * @return the builder
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder setFactory(ValueMetaData factory);
 
    /**
-    * Set the factory class
+    * Set the non-static factory class to use constructing the bean
     * 
-    * @param factoryClass the factory class
-    * @return the builder
+    * @see BeanMetaData#getConstructor()
+    * @see ConstructorMetaData#getFactoryClass()
+    * @param factoryClass the factory class name
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder setFactoryClass(String factoryClass);
 
    /**
-    * Set the factory method
+    * Set the factory method to use constructing the bean. 
     * 
-    * @param factoryMethod the factory method
-    * @return the builder
+    * @see BeanMetaData#getConstructor()
+    * @see ConstructorMetaData#getFactoryMethod()
+    * @param factoryMethod the name of the factory method
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder setFactoryMethod(String factoryMethod);
 
    /**
-    * Set the constructor value
+    * Set the constructor value to use constructing the bean
     * 
+    * @see BeanMetaData#getConstructor()
+    * @see ConstructorMetaData#getValue()
     * @param value the object "constructed"
-    * @return the builder
+    * @return this builder
     */
-   
    public BeanMetaDataBuilder setConstructorValue(Object value)
    {
       return setConstructorValue(createValue(value));
    }
 
    /**
-    * Set the constructor value
+    * Set the constructor value to use constructing the bean
     * 
-    * @param type the type
+    * @see BeanMetaData#getConstructor()
+    * @see ConstructorMetaData#getValue()
+    * @param type the type of the object
     * @param value the object "constructed"
-    * @return the builder
+    * @return this builder
     */
-   
    public BeanMetaDataBuilder setConstructorValue(String type, String value)
    {
       return setConstructorValue(createString(type, value));
    }
 
    /**
-    * Set the constructor value
+    * Set the constructor value to use constructing the bean
     * 
+    * @see BeanMetaData#getConstructor()
+    * @see ConstructorMetaData#getValue()
     * @param value the object "constructed"
-    * @return the builder
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder setConstructorValue(ValueMetaData value);
 
    /**
-    * Add a constructor parameter
+    * Add a constructor parameter to use when calling the constructor or a factory method
     * 
+    * @see BeanMetaData#getConstructor()
+    * @see ConstructorMetaData#getParameters()
     * @param type the parameter type
     * @param value the value
-    * @return the builder
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder addConstructorParameter(String type, Object value);
 
    /**
-    * Add a constructor parameter
+    * Add a constructor parameter to use when calling the constructor or a factory method
     * 
+    * @see BeanMetaData#getConstructor()
+    * @see ConstructorMetaData#getParameters()
     * @param type the parameter type
-    * @param value the value
-    * @return the builder
+    * @param value String representation of the value
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder addConstructorParameter(String type, String value);
 
    /**
-    * Add a constructor parameter
+    * Add a constructor parameter to use when calling the constructor or a factory method
     * 
+    * @see BeanMetaData#getConstructor()
+    * @see ConstructorMetaData#getParameters()
     * @param type the parameter type
     * @param value the value
-    * @return the builder
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder addConstructorParameter(String type, ValueMetaData value);
 
    /**
-    * Add a property, replace it if it already exists
+    * Add a property to the beans set of properties, replace it if it already exists
     * 
+    * @see BeanMetaData#getProperties()
     * @param name the property name
     * @param value the value
-    * @return the builder
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder addPropertyMetaData(String name, Object value);
 
    /**
-    * Add a property, replace it if it already exists
+    * Add a property to the beans set of properties, replace it if it already exists
     * 
+    * @see BeanMetaData#getProperties()
     * @param name the property name
     * @param value the value
-    * @return the builder
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder addPropertyMetaData(String name, String value);
 
    /**
-    * Add a property, replace it if it already exists
+    * Add a property to the beans set of properties, replace it if it already exists
     * 
+    * @see BeanMetaData#getProperties()
     * @param name the property name
     * @param value the value
-    * @return the builder
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder addPropertyMetaData(String name, ValueMetaData value);
 
    /**
-    * Add a property, replace it if it already exists
+    * Add a property to the beans set of properties, replace it if it already exists
     * 
+    * @see BeanMetaData#getProperties()
     * @param name the property name
     * @param value the value
-    * @return the builder
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder addPropertyMetaData(String name, Collection<ValueMetaData> value);
 
    /**
-    * Add a property annotation.
+    * Add an annotation to a property, with system property replacement
     *
+    * @see #addPropertyAnnotation(String, String, boolean)
+    * @see BeanMetaData#getProperties()
+    * @see PropertyMetaData#getAnnotations()
     * @param name the property name
-    * @param annotation the annotation
-    * @return the builder
+    * @param annotation the annotation in string format, e.g. <code>@org.acme.Marker</code>
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder addPropertyAnnotation(String name, String annotation);
 
    /**
-    * Add a property annotation.
+    * Add an annotation to a property, with system property replacement
     *
+    * @see #addPropertyAnnotation(String, String, boolean)
+    * @see BeanMetaData#getProperties()
+    * @see PropertyMetaData#getAnnotations()
     * @param name the property name
-    * @param annotation the annotation
-    * @param replace the replace flag
-    * @return the builder
+    * @param annotation string representation of the annotation, e.g. <code>@org.acme.Marker</code>
+    * @param replace whether system property replacement should happen on the values. e.g. if we have
+    * <code>@org.acme.WithProperty("${test.property}")</code> and the value of 
+    * <code>-Dtest.property=hello</code>, this becomes <code>@org.acme.WithProperty("hello")</code>.
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder addPropertyAnnotation(String name, String annotation, boolean replace);
 
    /**
     * Add a property annotation.
     *
+    * @see #addPropertyAnnotation(String, String, boolean)
+    * @see BeanMetaData#getProperties()
+    * @see PropertyMetaData#getAnnotations()
     * @param name the property name
     * @param annotation the annotation
-    * @return the builder
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder addPropertyAnnotation(String name, Annotation annotation);
 
    /**
-    * Add a property, replace it if it already exists
+    * Add a property to the beans set of properties, replace it if it already exists
     * 
+    * @see BeanMetaData#getProperties()
     * @param name the property name
     * @param value the value
-    * @return the builder
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder addPropertyMetaData(String name, Map<ValueMetaData, ValueMetaData> value);
    
    /**
     * Should we ignore default create invocation.
     *
-    * @return the builder
+    * @see BeanMetaData#getCreate()
+    * @see LifecycleMetaData#isIgnored()
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder ignoreCreate();
 
    /**
     * Set the create method
     * 
+    * @see BeanMetaData#getCreate()
+    * @see LifecycleMetaData#getMethodName()
     * @param methodName the method name
-    * @return the builder
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder setCreate(String methodName);
 
    /**
-    * Add a create parameter
+    * Add a parameter to be passed in to the create method
     * 
+    * @see BeanMetaData#getCreate()
+    * @see LifecycleMetaData#getParameters()
     * @param type the parameter type
     * @param value the value
-    * @return the builder
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder addCreateParameter(String type, Object value);
 
    /**
-    * Add a create parameter
+    * Add a parameter to be passed in to the create method
     * 
+    * @see BeanMetaData#getCreate()
+    * @see LifecycleMetaData#getParameters()
     * @param type the parameter type
-    * @param value the value
-    * @return the builder
+    * @param value String representation of the parameter value
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder addCreateParameter(String type, String value);
 
    /**
-    * Add a create parameter
+    * Add a parameter to be passed in to the create method
     * 
     * @param type the parameter type
-    * @param value the value
-    * @return the builder
+    * @param value the parameter value
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder addCreateParameter(String type, ValueMetaData value);
 
    /**
     * Should we ignore default start invocation.
     *
-    * @return the builder
+    * @see BeanMetaData#getStart()
+    * @see LifecycleMetaData#isIgnored()
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder ignoreStart();
 
    /**
     * Set the start method
     * 
+    * @see BeanMetaData#getStart()
+    * @see LifecycleMetaData#getMethodName()
     * @param methodName the method name
-    * @return the builder
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder setStart(String methodName);
 
    /**
-    * Add a start parameter
+    * Add a parameter to be passed in to the start method
     * 
+    * @see BeanMetaData#getStart()
+    * @see LifecycleMetaData#getParameters()
     * @param type the parameter type
-    * @param value the value
-    * @return the builder
+    * @param value the parameter value
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder addStartParameter(String type, Object value);
 
    /**
-    * Add a start parameter
+    * Add a parameter to be passed in to the start method
     * 
-    * @param type the parameter type
+    * @see BeanMetaData#getStart()
+    * @see LifecycleMetaData#getParameters()
+    * @param type String representation of the parameter type
     * @param value the value
-    * @return the builder
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder addStartParameter(String type, String value);
 
    /**
-    * Add a start parameter
+    * Add a parameter to be passed in to the start method
     * 
+    * @see BeanMetaData#getStart()
+    * @see LifecycleMetaData#getParameters()
     * @param type the parameter type
-    * @param value the value
-    * @return the builder
+    * @param value the parameter value
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder addStartParameter(String type, ValueMetaData value);
 
    /**
     * Should we ignore default stop invocation.
     *
-    * @return the builder
+    * @see BeanMetaData#getStop()
+    * @see LifecycleMetaData#isIgnored()
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder ignoreStop();
 
    /**
     * Set the stop method
     * 
+    * @see BeanMetaData#getStop()
+    * @see LifecycleMetaData#getMethodName()
     * @param methodName the method name
-    * @return the builder
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder setStop(String methodName);
 
    /**
-    * Add a stop parameter
+    * Add a parameter to be passed in to the stop method
     * 
+    * @see BeanMetaData#getStop()
+    * @see LifecycleMetaData#getParameters()
     * @param type the parameter type
-    * @param value the value
-    * @return the builder
+    * @param value the parameter value
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder addStopParameter(String type, Object value);
 
    /**
-    * Add a stop parameter
+    * Add a parameter to be passed in to the stop method
     * 
+    * @see BeanMetaData#getStop()
+    * @see LifecycleMetaData#getParameters()
     * @param type the parameter type
-    * @param value the value
-    * @return the builder
+    * @param value the parameter value
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder addStopParameter(String type, String value);
 
    /**
-    * Add a stop parameter
+    * Add a parameter to be passed in to the stop method
     * 
+    * @see BeanMetaData#getStop()
+    * @see LifecycleMetaData#getParameters()
     * @param type the parameter type
-    * @param value the value
-    * @return the builder
+    * @param value the parameter value
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder addStopParameter(String type, ValueMetaData value);
 
    /**
     * Should we ignore default destroy invocation.
     *
-    * @return the builder
+    * @See {@link BeanMetaData#getDestroy()}
+    * @see LifecycleMetaData#isIgnored()
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder ignoreDestroy();
 
    /**
     * Set the destroy method
     * 
+    * @see BeanMetaData#getDestroy()
+    * @see LifecycleMetaData#getMethodName()
     * @param methodName the method name
-    * @return the builder
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder setDestroy(String methodName);
 
    /**
-    * Add a destroy parameter
+    * Add a parameter to be passed in to the destroy method
     * 
+    * @see BeanMetaData#getDestroy()
+    * @see LifecycleMetaData#getParameters()
     * @param type the parameter type
-    * @param value the value
-    * @return the builder
+    * @param value the parameter value
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder addDestroyParameter(String type, Object value);
 
    /**
-    * Add a destroy parameter
+    * Add a parameter to be passed in to the destroy method
     * 
+    * @see BeanMetaData#getDestroy()
+    * @see LifecycleMetaData#getParameters()
     * @param type the parameter type
-    * @param value the value
-    * @return the builder
+    * @param value the parameter value
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder addDestroyParameter(String type, String value);
 
    /**
-    * Add a destroy parameter
+    * Add a parameter to be passed in to the destroy method
     * 
+    * @see BeanMetaData#getDestroy()
+    * @see LifecycleMetaData#getParameters()
     * @param type the parameter type
-    * @param value the value
-    * @return the builder
+    * @param value the parameter value
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder addDestroyParameter(String type, ValueMetaData value);
 
@@ -672,7 +803,7 @@ public abstract class BeanMetaDataBuilder
     * Add a supply
     * 
     * @param supply the supply
-    * @return the builder
+    * @return this builder
     */
    public BeanMetaDataBuilder addSupply(Object supply)
    {
@@ -684,15 +815,18 @@ public abstract class BeanMetaDataBuilder
     * 
     * @param supply the supply
     * @param type the supply type
-    * @return the builder
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder addSupply(Object supply, String type);
 
    /**
-    * Add a demand
+    * Add a demand using the default value for when the supply is required by the demanding bean 
+    * {@link ControllerState#DESCRIBED} and the default value for the state of the supply 
+    * (link {@link ControllerState#INSTALLED} 
     * 
+    * @see BeanMetaData#getDemands()
     * @param demand the demand
-    * @return the builder
+    * @return this builder
     */
    public BeanMetaDataBuilder addDemand(Object demand)
    {
@@ -700,12 +834,15 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add a demand
+    * Add a demand using the default value for the state of the supply 
+    * (link {@link ControllerState#INSTALLED}.
     * 
+    * @see BeanMetaData#getDemands()
+    * @see MatcherFactory
     * @param demand the demand
-    * @param whenRequired when the demand is required
-    * @param transformer the transformer
-    * @return the builder
+    * @param whenRequired string represenation of the when the demand is required
+    * @param transformer the transformer name as described in {@link MatcherFactory}
+    * @return this builder
     */
    public BeanMetaDataBuilder addDemand(Object demand, String whenRequired, String transformer)
    {
@@ -716,12 +853,15 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add a demand
+    * Add a demand using the default value for the state of the supply 
+    * (link {@link ControllerState#INSTALLED} and the 
     * 
+    * @see BeanMetaData#getDemands()
+    * @see MatcherFactory
     * @param demand the demand
     * @param whenRequired when the demand is required
-    * @param transformer the transformer
-    * @return the builder
+    * @param transformer the transformer name as described in {@link MatcherFactory}
+    * @return this builder
     */
    public BeanMetaDataBuilder addDemand(Object demand, ControllerState whenRequired, String transformer)
    {
@@ -729,29 +869,33 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add a demand
-    *
+    * Add a demand 
+    * 
+    * @see BeanMetaData#getDemands()
+    * @see MatcherFactory
     * @param demand the demand
     * @param whenRequired when the demand is required
-    * @param targetState the target state
-    * @param transformer the transformer
-    * @return the builder
+    * @param targetState the target state of the supply
+    * @param transformer the transformer name as described in {@link MatcherFactory}
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder addDemand(Object demand, ControllerState whenRequired, ControllerState targetState, String transformer);
 
    /**
     * Add a dependency
-    * 
-    * @param dependency the dependency
-    * @return the builder
+    *
+    * @see BeanMetaData#getDepends()
+    * @param dependency the name of the dependency, i.e. bean name
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder addDependency(Object dependency);
 
    /**
-    * Add an install
+    * Add an install where the install method resides in the bean being built here
     * 
-    * @param methodName the method name
-    * @return the builder
+    * @see BeanMetaData#getInstalls()
+    * @param methodName the name of the method to be called upon install
+    * @return this builder
     */
    public BeanMetaDataBuilder addInstall(String methodName)
    {
@@ -759,12 +903,14 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an install
+    * Add an install where the install method resides in the bean being build here,
+    * taking a single parameter.
     * 
-    * @param methodName the method name
+    * @see BeanMetaData#getInstalls()
+    * @param methodName the name of the method to be called upon install
     * @param type the parameter type
-    * @param value the value
-    * @return the builder
+    * @param value the parameter value
+    * @return this builder
     */
    public BeanMetaDataBuilder addInstall(String methodName, String type, Object value)
    {
@@ -772,12 +918,14 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an install
+    * Add an install where the install method resides in the bean being build here,
+    * taking a single parameter.
     * 
-    * @param methodName the method name
+    * @see BeanMetaData#getInstalls()
+    * @param methodName the name of the method to be called upon install
     * @param type the parameter type
-    * @param value the value
-    * @return the builder
+    * @param value String representation of the parameter value
+    * @return this builder
     */
    public BeanMetaDataBuilder addInstall(String methodName, String type, String value)
    {
@@ -785,12 +933,14 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an install
+    * Add an install where the install method resides in the bean being build here,
+    * taking a single parameter.
     * 
-    * @param methodName the method name
+    * @see BeanMetaData#getInstalls()
+    * @param methodName the name of the method to be called upon install
     * @param type the parameter type
-    * @param value the value
-    * @return the builder
+    * @param value the parameter value
+    * @return this builder
     */
    public BeanMetaDataBuilder addInstall(String methodName, String type, ValueMetaData value)
    {
@@ -798,12 +948,17 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an install
+    * Add an install where the install method resides in the bean being build here,
+    * taking several parameters. The <code>types</code> and <code>values</code>
+    * arrays must have the same lengths, and <code>types[i]</code> is the type of
+    * <code>values[i]</code>.
     * 
+    * @see BeanMetaData#getInstalls()
+    * @param methodName the name of the method to be called upon install
     * @param methodName the method name
     * @param types the parameter types
-    * @param values the values
-    * @return the builder
+    * @param values the parameter values
+    * @return this builder
     */
    public BeanMetaDataBuilder addInstall(String methodName, String[] types, Object[] values)
    {
@@ -811,12 +966,16 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an install
+    * Add an install where the install method resides in the bean being build here,
+    * taking several parameters. The <code>types</code> and <code>values</code>
+    * arrays must have the same lengths, and <code>types[i]</code> is the type of
+    * <code>values[i]</code>.
     * 
-    * @param methodName the method name
+    * @see BeanMetaData#getInstalls()
+    * @param methodName the name of the method to be called upon install
     * @param types the parameter types
-    * @param values the values
-    * @return the builder
+    * @param values the string representations of the parameter values
+    * @return this builder
     */
    public BeanMetaDataBuilder addInstall(String methodName, String[] types, String[] values)
    {
@@ -824,12 +983,16 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an install
+    * Add an install where the install method resides in the bean being build here,
+    * taking several parameters. The <code>types</code> and <code>values</code>
+    * arrays must have the same lengths, and <code>types[i]</code> is the type of
+    * <code>values[i]</code>.
     * 
-    * @param methodName the method name
+    * @see BeanMetaData#getInstalls()
+    * @param methodName the name of the method to be called upon install
     * @param types the parameter types
-    * @param values the values
-    * @return the builder
+    * @param values the parameter values
+    * @return this builder
     */
    public BeanMetaDataBuilder addInstall(String methodName, String[] types, ValueMetaData[] values)
    {
@@ -837,11 +1000,13 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an install with a this parameter
+    * Add an install, where the install method resides in another bean, passing in a single
+    * parameter which is the 'this' pointer to the bean being created here.
     * 
-    * @param methodName the method name
-    * @param bean the bean name
-    * @return the builder
+    * @see BeanMetaData#getInstalls()
+    * @param methodName the name of the method to be called upon install
+    * @param bean the name of the bean containing the method to be called upon install
+    * @return this builder
     */
    public BeanMetaDataBuilder addInstallWithThis(String methodName, String bean)
    {
@@ -849,12 +1014,14 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an install with a this parameter
+    * Add an install, where the install method resides in another bean, passing in a single
+    * parameter which is the 'this' pointer to the bean being created here
     * 
-    * @param methodName the method name
-    * @param bean the bean name
-    * @param state the state of the bean
-    * @return the builder
+    * @see BeanMetaData#getInstalls()
+    * @param methodName the name of the method to be called upon install
+    * @param bean the name of the bean containing the method to be called upon install
+    * @param state the required state of the bean containing the install method
+    * @return this builder
     */
    public BeanMetaDataBuilder addInstallWithThis(String methodName, String bean, ControllerState state)
    {
@@ -862,13 +1029,15 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an install with a this parameter
+    * Add an install, where the install method resides in another bean, passing in a single
+    * parameter which is the 'this' pointer to the bean being created here
     *
-    * @param methodName the method name
-    * @param bean the bean name
+    * @see BeanMetaData#getInstalls()
+    * @param methodName the name of the method to be called upon install
+    * @param bean the name of the bean containing the method to be called upon install
     * @param state the state of the bean
-    * @param whenRequired the state when to install
-    * @return the builder
+    * @param whenRequired the state when to call install
+    * @return this builder
     */
    public BeanMetaDataBuilder addInstallWithThis(String methodName, String bean, ControllerState state, ControllerState whenRequired)
    {
@@ -878,11 +1047,12 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an install
+    * Add an install where the install method resides in another bean
     * 
-    * @param methodName the method name
-    * @param bean the bean name
-    * @return the builder
+    * @see BeanMetaData#getInstalls()
+    * @param methodName the name of the method to be called upon install
+    * @param bean the name of the bean containing the method to be called upon install
+    * @return this builder
     */
    public BeanMetaDataBuilder addInstall(String methodName, String bean)
    {
@@ -891,13 +1061,15 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an install
+    * Add an install where the install method resides in another bean,
+    * taking a single parameter
     * 
-    * @param methodName the method name
-    * @param bean the bean name
+    * @see BeanMetaData#getInstalls()
+    * @param methodName the name of the method to be called upon install
+    * @param bean the name of the bean containing the method to be called upon install
     * @param type the parameter type
     * @param value the value
-    * @return the builder
+    * @return this builder
     */
    public BeanMetaDataBuilder addInstall(String methodName, String bean, String type, Object value)
    {
@@ -907,13 +1079,15 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an install
+    * Add an install where the install method resides in another bean,
+    * taking a single parameter
     * 
-    * @param methodName the method name
-    * @param bean the bean name
+    * @see BeanMetaData#getInstalls()
+    * @param methodName the name of the method to be called upon install
+    * @param bean the name of the bean containing the method to be called upon install
     * @param type the parameter type
-    * @param value the value
-    * @return the builder
+    * @param value the string representation of the parameter value
+    * @return this builder
     */
    public BeanMetaDataBuilder addInstall(String methodName, String bean, String type, String value)
    {
@@ -923,13 +1097,15 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an install
+    * Add an install where the install method resides in another bean,
+    * taking a single parameter
     * 
-    * @param methodName the method name
-    * @param bean the bean name
+    * @see BeanMetaData#getInstalls()
+    * @param methodName the name of the method to be called upon install
+    * @param bean the name of the bean containing the method to be called upon install
     * @param type the parameter type
-    * @param value the value
-    * @return the builder
+    * @param value the parameter value
+    * @return this builder
     */
    public BeanMetaDataBuilder addInstall(String methodName, String bean, String type, ValueMetaData value)
    {
@@ -939,13 +1115,17 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an install
+    * Add an install where the install method resides in another bean,
+    * taking several parameters. The <code>types</code> and <code>values</code>
+    * arrays must have the same lengths, and <code>types[i]</code> is the type of
+    * <code>values[i]</code>.
     * 
-    * @param methodName the method name
-    * @param bean the bean name
+    * @see BeanMetaData#getInstalls()
+    * @param methodName the name of the method to be called upon install
+    * @param bean the name of the bean containing the method to be called upon install
     * @param types the parameter types
-    * @param values the values
-    * @return the builder
+    * @param values the parameter values
+    * @return this builder
     */
    public BeanMetaDataBuilder addInstall(String methodName, String bean, String[] types, Object[] values)
    {
@@ -956,13 +1136,17 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an install
+    * Add an install where the install method resides in in another bean,
+    * taking several parameters. The <code>types</code> and <code>values</code>
+    * arrays must have the same lengths, and <code>types[i]</code> is the type of
+    * <code>values[i]</code>.
     * 
-    * @param methodName the method name
-    * @param bean the bean name
+    * @see BeanMetaData#getInstalls()
+    * @param methodName the name of the method to be called upon install
+    * @param bean the name of the bean containing the method to be called upon install
     * @param types the parameter types
-    * @param values the values
-    * @return the builder
+    * @param values the string representations of the parameter values
+    * @return this builder
     */
    public BeanMetaDataBuilder addInstall(String methodName, String bean, String[] types, String[] values)
    {
@@ -973,13 +1157,17 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an install
+    * Add an install where the install method resides in in another bean,
+    * taking several parameters. The <code>types</code> and <code>values</code>
+    * arrays must have the same lengths, and <code>types[i]</code> is the type of
+    * <code>values[i]</code>.
     * 
-    * @param methodName the method name
-    * @param bean the bean name
+    * @see BeanMetaData#getInstalls()
+    * @param methodName the name of the method to be called upon install
+    * @param bean the name of the bean containing the method to be called upon install
     * @param types the parameter types
-    * @param values the values
-    * @return the builder
+    * @param values the parameter values
+    * @return this builder
     */
    public BeanMetaDataBuilder addInstall(String methodName, String bean, String[] types, ValueMetaData[] values)
    {
@@ -990,10 +1178,12 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an install
+    * Add an install where the install method resides in the bean being built here,
+    * returning a parameter builder that can be used to add parameters.
     * 
-    * @param methodName the method name
-    * @return the builder
+    * @see BeanMetaData#getInstalls()
+    * @param methodName the name of the method to be called upon install
+    * @return the parameter builder
     */
    public ParameterMetaDataBuilder addInstallWithParameters(String methodName)
    {
@@ -1001,11 +1191,13 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an install
+    * Add an install where the install method resides in another bean,
+    * returning a parameter builder that can be used to add parameters.
     * 
-    * @param methodName the method name
-    * @param bean the bean name
-    * @return the builder
+    * @see BeanMetaData#getInstalls()
+    * @param methodName the name of the method to be called upon install
+    * @param bean the name of the bean containing the method to be called upon install
+    * @return the parameter builder
     */
    public ParameterMetaDataBuilder addInstallWithParameters(String methodName, String bean)
    {
@@ -1013,10 +1205,12 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an install
+    * Add an install where the install method resides in another bean,
+    * returning a parameter builder that can be used to add parameters.
     * 
-    * @param methodName the method name
-    * @param bean the bean name
+    * @see BeanMetaData#getInstalls()
+    * @param methodName the name of the method to be called upon install
+    * @param bean the name of the bean containing the method to be called upon install
     * @param state the state of the bean
     * @return the parameter builder
     */
@@ -1026,21 +1220,24 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an install
+    * Add an install where the install method resides in another bean,
+    * returning a parameter builder that can be used to add parameters.
     *
-    * @param methodName the method name
-    * @param bean the bean name
+    * @see BeanMetaData#getInstalls()
+    * @param methodName the name of the method to be called upon install
+    * @param bean the name of the bean containing the method to be called upon install
     * @param state the state of the bean
-    * @param whenRequired the state when to install
+    * @param whenRequired the state when to call install
     * @return the parameter builder
     */
    public abstract ParameterMetaDataBuilder addInstallWithParameters(String methodName, String bean, ControllerState state, ControllerState whenRequired);
 
    /**
-    * Add an uninstall
+    * Add an uninstall where the uninstall method resides in the bean being built here
     * 
-    * @param methodName the method name
-    * @return the builder
+    * @see BeanMetaData#getUninstalls()
+    * @param methodName the name of the method to be called upon uninstall
+    * @return this builder
     */
    public BeanMetaDataBuilder addUninstall(String methodName)
    {
@@ -1048,12 +1245,14 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an uninstall
+    * Add an uninstall where the uninstall method resides in the bean being build here,
+    * taking a single parameter.
     * 
-    * @param methodName the method name
+    * @see BeanMetaData#getUninstalls()
+    * @param methodName the name of the method to be called upon uninstall
     * @param type the parameter type
-    * @param value the value
-    * @return the builder
+    * @param value the parameter value
+    * @return this builder
     */
    public BeanMetaDataBuilder addUninstall(String methodName, String type, Object value)
    {
@@ -1061,12 +1260,14 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an uninstall
+    * Add an uninstall where the uninstall method resides in the bean being build here,
+    * taking a single parameter.
     * 
-    * @param methodName the method name
+    * @see BeanMetaData#getUninstalls()
+    * @param methodName the name of the method to be called upon uninstall
     * @param type the parameter type
-    * @param value the value
-    * @return the builder
+    * @param value String representation of the parameter value
+    * @return this builder
     */
    public BeanMetaDataBuilder addUninstall(String methodName, String type, String value)
    {
@@ -1074,12 +1275,14 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an uninstall
+    * Add an uninstall where the uninstall method resides in the bean being build here,
+    * taking a single parameter.
     * 
-    * @param methodName the method name
+    * @see BeanMetaData#getUninstalls()
+    * @param methodName the name of the method to be called upon uninstall
     * @param type the parameter type
-    * @param value the value
-    * @return the builder
+    * @param value the parameter value
+    * @return this builder
     */
    public BeanMetaDataBuilder addUninstall(String methodName, String type, ValueMetaData value)
    {
@@ -1087,12 +1290,17 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an uninstall
+    * Add an uninstall where the uninstall method resides in the bean being build here,
+    * taking several parameters. The <code>types</code> and <code>values</code>
+    * arrays must have the same lengths, and <code>types[i]</code> is the type of
+    * <code>values[i]</code>.
     * 
+    * @see BeanMetaData#getUninstalls()
+    * @param methodName the name of the method to be called upon uninstall
     * @param methodName the method name
     * @param types the parameter types
-    * @param values the values
-    * @return the builder
+    * @param values the parameter values
+    * @return this builder
     */
    public BeanMetaDataBuilder addUninstall(String methodName, String[] types, Object[] values)
    {
@@ -1100,12 +1308,16 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an uninstall
+    * Add an uninstall where the uninstall method resides in the bean being build here,
+    * taking several parameters. The <code>types</code> and <code>values</code>
+    * arrays must have the same lengths, and <code>types[i]</code> is the type of
+    * <code>values[i]</code>.
     * 
-    * @param methodName the method name
+    * @see BeanMetaData#getUninstalls()
+    * @param methodName the name of the method to be called upon uninstall
     * @param types the parameter types
-    * @param values the values
-    * @return the builder
+    * @param values the string representations of the parameter values
+    * @return this builder
     */
    public BeanMetaDataBuilder addUninstall(String methodName, String[] types, String[] values)
    {
@@ -1113,12 +1325,16 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an uninstall
+    * Add an uninstall where the uninstall method resides in the bean being build here,
+    * taking several parameters. The <code>types</code> and <code>values</code>
+    * arrays must have the same lengths, and <code>types[i]</code> is the type of
+    * <code>values[i]</code>.
     * 
-    * @param methodName the method name
+    * @see BeanMetaData#getUninstalls()
+    * @param methodName the name of the method to be called upon uninstall
     * @param types the parameter types
-    * @param values the values
-    * @return the builder
+    * @param values the parameter values
+    * @return this builder
     */
    public BeanMetaDataBuilder addUninstall(String methodName, String[] types, ValueMetaData[] values)
    {
@@ -1126,11 +1342,13 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an uninstall with a this parameter
+    * Add an uninstall, where the uninstall method resides in another bean, passing in a single
+    * parameter which is the 'this' pointer to the bean being created here.
     * 
-    * @param methodName the method name
-    * @param bean the bean name
-    * @return the builder
+    * @see BeanMetaData#getUninstalls()
+    * @param methodName the name of the method to be called upon uninstall
+    * @param bean the name of the bean containing the method to be called upon uninstall
+    * @return this builder
     */
    public BeanMetaDataBuilder addUninstallWithThis(String methodName, String bean)
    {
@@ -1138,12 +1356,14 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an uninstall with a this parameter
+    * Add an uninstall, where the uninstall method resides in another bean, passing in a single
+    * parameter which is the 'this' pointer to the bean being created here
     * 
-    * @param methodName the method name
-    * @param bean the bean name
-    * @param state the state when to uninstall
-    * @return the builder
+    * @see BeanMetaData#getUninstalls()
+    * @param methodName the name of the method to be called upon uninstall
+    * @param bean the name of the bean containing the method to be called upon uninstall
+    * @param state the required state of the bean containing the uninstall method
+    * @return this builder
     */
    public BeanMetaDataBuilder addUninstallWithThis(String methodName, String bean, ControllerState state)
    {
@@ -1151,13 +1371,15 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an uninstall with a this parameter
+    * Add an uninstall, where the uninstall method resides in another bean, passing in a single
+    * parameter which is the 'this' pointer to the bean being created here
     *
-    * @param methodName the method name
-    * @param bean the bean name
+    * @see BeanMetaData#getUninstalls()
+    * @param methodName the name of the method to be called upon uninstall
+    * @param bean the name of the bean containing the method to be called upon uninstall
     * @param state the state of the bean
-    * @param whenRequired the state when to uninstall
-    * @return the builder
+    * @param whenRequired the state when to call uninstall
+    * @return this builder
     */
    public BeanMetaDataBuilder addUninstallWithThis(String methodName, String bean, ControllerState state, ControllerState whenRequired)
    {
@@ -1167,11 +1389,12 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an uninstall
+    * Add an uninstall where the uninstall method resides in another bean
     * 
-    * @param methodName the method name
-    * @param bean the bean name
-    * @return the builder
+    * @see BeanMetaData#getUninstalls()
+    * @param methodName the name of the method to be called upon uninstall
+    * @param bean the name of the bean containing the method to be called upon uninstall
+    * @return this builder
     */
    public BeanMetaDataBuilder addUninstall(String methodName, String bean)
    {
@@ -1180,13 +1403,15 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an uninstall
+    * Add an uninstall where the uninstall method resides in another bean,
+    * taking a single parameter
     * 
-    * @param methodName the method name
-    * @param bean the bean name
+    * @see BeanMetaData#getUninstalls()
+    * @param methodName the name of the method to be called upon uninstall
+    * @param bean the name of the bean containing the method to be called upon uninstall
     * @param type the parameter type
-    * @param value the value
-    * @return the builder
+    * @param value the parameter value
+    * @return this builder
     */
    public BeanMetaDataBuilder addUninstall(String methodName, String bean, String type, Object value)
    {
@@ -1196,13 +1421,15 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an uninstall
+    * Add an uninstall where the uninstall method resides in another bean,
+    * taking a single parameter
     * 
-    * @param methodName the method name
-    * @param bean the bean name
+    * @see BeanMetaData#getUninstalls()
+    * @param methodName the name of the method to be called upon uninstall
+    * @param bean the name of the bean containing the method to be called upon uninstall
     * @param type the parameter type
-    * @param value the value
-    * @return the builder
+    * @param value the string representation of the parameter value
+    * @return this builder
     */
    public BeanMetaDataBuilder addUninstall(String methodName, String bean, String type, String value)
    {
@@ -1212,13 +1439,15 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an uninstall
+    * Add an uninstall where the uninstall method resides in another bean,
+    * taking a single parameter
     * 
-    * @param methodName the method name
-    * @param bean the bean name
+    * @see BeanMetaData#getUninstalls()
+    * @param methodName the name of the method to be called upon uninstall
+    * @param bean the name of the bean containing the method to be called upon uninstall
     * @param type the parameter type
-    * @param value the value
-    * @return the builder
+    * @param value the parameter value
+    * @return this builder
     */
    public BeanMetaDataBuilder addUninstall(String methodName, String bean, String type, ValueMetaData value)
    {
@@ -1228,13 +1457,17 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an uninstall
+    * Add an uninstall where the uninstall method resides in another bean,
+    * taking several parameters. The <code>types</code> and <code>values</code>
+    * arrays must have the same lengths, and <code>types[i]</code> is the type of
+    * <code>values[i]</code>.
     * 
-    * @param methodName the method name
-    * @param bean the bean name
+    * @see BeanMetaData#getUninstalls()
+    * @param methodName the name of the method to be called upon uninstall
+    * @param bean the name of the bean containing the method to be called upon uninstall
     * @param types the parameter types
-    * @param values the values
-    * @return the builder
+    * @param values the parameter values
+    * @return this builder
     */
    public BeanMetaDataBuilder addUninstall(String methodName, String bean, String[] types, Object[] values)
    {
@@ -1245,13 +1478,17 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an uninstall
+    * Add an uninstall where the uninstall method resides in in another bean,
+    * taking several parameters. The <code>types</code> and <code>values</code>
+    * arrays must have the same lengths, and <code>types[i]</code> is the type of
+    * <code>values[i]</code>.
     * 
-    * @param methodName the method name
-    * @param bean the bean name
+    * @see BeanMetaData#getUninstalls()
+    * @param methodName the name of the method to be called upon uninstall
+    * @param bean the name of the bean containing the method to be called upon uninstall
     * @param types the parameter types
-    * @param values the values
-    * @return the builder
+    * @param values the string representations of the parameter values
+    * @return this builder
     */
    public BeanMetaDataBuilder addUninstall(String methodName, String bean, String[] types, String[] values)
    {
@@ -1262,13 +1499,17 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an uninstall
+    * Add an uninstall where the uninstall method resides in in another bean,
+    * taking several parameters. The <code>types</code> and <code>values</code>
+    * arrays must have the same lengths, and <code>types[i]</code> is the type of
+    * <code>values[i]</code>.
     * 
-    * @param methodName the method name
-    * @param bean the bean name
+    * @see BeanMetaData#getUninstalls()
+    * @param methodName the name of the method to be called upon uninstall
+    * @param bean the name of the bean containing the method to be called upon uninstall
     * @param types the parameter types
-    * @param values the values
-    * @return the builder
+    * @param values the parameter values
+    * @return this builder
     */
    public BeanMetaDataBuilder addUninstall(String methodName, String bean, String[] types, ValueMetaData[] values)
    {
@@ -1279,10 +1520,12 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an uninstall
+    * Add an uninstall where the uninstall method resides in the bean being built here,
+    * returning a parameter builder that can be used to add parameters.
     * 
-    * @param methodName the method name
-    * @return the builder
+    * @see BeanMetaData#getUninstalls()
+    * @param methodName the name of the method to be called upon uninstall
+    * @return the parameter builder
     */
    public ParameterMetaDataBuilder addUninstallWithParameters(String methodName)
    {
@@ -1290,11 +1533,13 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an uninstall
+    * Add an uninstall where the uninstall method resides in another bean,
+    * returning a parameter builder that can be used to add parameters.
     * 
-    * @param methodName the method name
-    * @param bean the bean name
-    * @return the builder
+    * @see BeanMetaData#getUninstalls()
+    * @param methodName the name of the method to be called upon uninstall
+    * @param bean the name of the bean containing the method to be called upon uninstall
+    * @return the parameter builder
     */
    public ParameterMetaDataBuilder addUninstallWithParameters(String methodName, String bean)
    {
@@ -1302,10 +1547,12 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Add an uninstall
+    * Add an uninstall where the uninstall method resides in another bean,
+    * returning a parameter builder that can be used to add parameters.
     * 
-    * @param methodName the method name
-    * @param bean the bean name
+    * @see BeanMetaData#getUninstalls()
+    * @param methodName the name of the method to be called upon uninstall
+    * @param bean the name of the bean containing the method to be called upon uninstall
     * @param state the state of the bean
     * @return the parameter builder
     */
@@ -1315,12 +1562,14 @@ public abstract class BeanMetaDataBuilder
    }
    
    /**
-    * Add an uninstall
+    * Add an uninstall where the uninstall method resides in another bean,
+    * returning a parameter builder that can be used to add parameters.
     *
-    * @param methodName the method name
-    * @param bean the bean name
+    * @see BeanMetaData#getUninstalls()
+    * @param methodName the name of the method to be called upon uninstall
+    * @param bean the name of the bean containing the method to be called upon uninstall
     * @param state the state of the bean
-    * @param whenRequired the state when to uninstall
+    * @param whenRequired the state when to call uninstall
     * @return the parameter builder
     */
    public abstract ParameterMetaDataBuilder addUninstallWithParameters(String methodName, String bean, ControllerState state, ControllerState whenRequired);
@@ -1328,8 +1577,9 @@ public abstract class BeanMetaDataBuilder
    /**
     * Add property install callback.
     *
+    * @see BeanMetaData#getInstallCallbacks()
     * @param property the property name
-    * @return the builder
+    * @return this builder
     */
    public BeanMetaDataBuilder addPropertyInstallCallback(String property)
    {
@@ -1339,9 +1589,10 @@ public abstract class BeanMetaDataBuilder
    /**
     * Add property install callback.
     *
+    * @see BeanMetaData#getInstallCallbacks()
     * @param property the property name
     * @param whenRequired the when required state
-    * @return the builder
+    * @return this builder
     */
    public BeanMetaDataBuilder addPropertyInstallCallback(String property, ControllerState whenRequired)
    {
@@ -1351,9 +1602,10 @@ public abstract class BeanMetaDataBuilder
    /**
     * Add property install callback.
     *
+    * @see BeanMetaData#getInstallCallbacks()
     * @param property the property name
     * @param cardinality the cardinality
-    * @return the builder
+    * @return this builder
     */
    public BeanMetaDataBuilder addPropertyInstallCallback(String property, Cardinality cardinality)
    {
@@ -1363,10 +1615,11 @@ public abstract class BeanMetaDataBuilder
    /**
     * Add property install callback.
     *
+    * @see BeanMetaData#getInstallCallbacks()
     * @param property the property name
     * @param whenRequired the when required state
     * @param cardinality the cardinality
-    * @return the builder
+    * @return this builder
     */
    public BeanMetaDataBuilder addPropertyInstallCallback(String property, ControllerState whenRequired, Cardinality cardinality)
    {
@@ -1376,12 +1629,13 @@ public abstract class BeanMetaDataBuilder
    /**
     * Add property install callback.
     *
+    * @see BeanMetaData#getInstallCallbacks()
     * @param property the property name
     * @param signature the property signature
     * @param whenRequired the when required state
     * @param dependentState the dependant state
     * @param cardinality the cardinality
-    * @return the builder
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder addPropertyInstallCallback(
          String property,
@@ -1393,8 +1647,9 @@ public abstract class BeanMetaDataBuilder
    /**
     * Add property uninstall callback.
     *
+    * @see BeanMetaData#getUninstallCallbacks()
     * @param property the property name
-    * @return the builder
+    * @return this builder
     */
    public BeanMetaDataBuilder addPropertyUninstallCallback(String property)
    {
@@ -1404,9 +1659,10 @@ public abstract class BeanMetaDataBuilder
    /**
     * Add property uninstall callback.
     *
+    * @see BeanMetaData#getUninstallCallbacks()
     * @param property the property name
     * @param whenRequired the when required state
-    * @return the builder
+    * @return this builder
     */
    public BeanMetaDataBuilder addPropertyUninstallCallback(String property, ControllerState whenRequired)
    {
@@ -1416,9 +1672,10 @@ public abstract class BeanMetaDataBuilder
    /**
     * Add property uninstall callback.
     *
+    * @see BeanMetaData#getUninstallCallbacks()
     * @param property the property name
     * @param cardinality the cardinality
-    * @return the builder
+    * @return this builder
     */
    public BeanMetaDataBuilder addPropertyUninstallCallback(String property, Cardinality cardinality)
    {
@@ -1428,10 +1685,11 @@ public abstract class BeanMetaDataBuilder
    /**
     * Add property uninstall callback.
     *
+    * @see BeanMetaData#getUninstallCallbacks()
     * @param property the property name
     * @param whenRequired the when required state
     * @param cardinality the cardinality
-    * @return the builder
+    * @return this builder
     */
    public BeanMetaDataBuilder addPropertyUninstallCallback(String property, ControllerState whenRequired, Cardinality cardinality)
    {
@@ -1441,12 +1699,13 @@ public abstract class BeanMetaDataBuilder
    /**
     * Add property uninstall callback.
     *
+    * @see BeanMetaData#getUninstallCallbacks()
     * @param property the property name
     * @param signature the property signature
     * @param whenRequired the when required state
     * @param dependentState the dependant state
     * @param cardinality the cardinality
-    * @return the builder
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder addPropertyUninstallCallback(
          String property,
@@ -1458,8 +1717,9 @@ public abstract class BeanMetaDataBuilder
    /**
     * Add method install callback.
     *
+    * @see BeanMetaData#getInstallCallbacks()
     * @param method the method name
-    * @return the builder
+    * @return this builder
     */
    public BeanMetaDataBuilder addMethodInstallCallback(String method)
    {
@@ -1469,9 +1729,10 @@ public abstract class BeanMetaDataBuilder
    /**
     * Add method install callback.
     *
+    * @see BeanMetaData#getInstallCallbacks()
     * @param method the method name
     * @param whenRequired the when required state
-    * @return the builder
+    * @return this builder
     */
    public BeanMetaDataBuilder addMethodInstallCallback(String method, ControllerState whenRequired)
    {
@@ -1481,9 +1742,10 @@ public abstract class BeanMetaDataBuilder
    /**
     * Add method install callback.
     *
+    * @see BeanMetaData#getInstallCallbacks()
     * @param method the method name
     * @param cardinality the cardinality
-    * @return the builder
+    * @return this builder
     */
    public BeanMetaDataBuilder addMethodInstallCallback(String method, Cardinality cardinality)
    {
@@ -1493,10 +1755,11 @@ public abstract class BeanMetaDataBuilder
    /**
     * Add method install callback.
     *
+    * @see BeanMetaData#getInstallCallbacks()
     * @param method the method name
     * @param whenRequired the when required state
     * @param cardinality the cardinality
-    * @return the builder
+    * @return this builder
     */
    public BeanMetaDataBuilder addMethodInstallCallback(String method, ControllerState whenRequired, Cardinality cardinality)
    {
@@ -1506,12 +1769,13 @@ public abstract class BeanMetaDataBuilder
    /**
     * Add method install callback.
     *
+    * @see BeanMetaData#getInstallCallbacks()
     * @param method the method name
     * @param signature the method signature
     * @param whenRequired the when required state
     * @param dependentState the dependant state
     * @param cardinality the cardinality
-    * @return the builder
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder addMethodInstallCallback(
          String method,
@@ -1523,8 +1787,9 @@ public abstract class BeanMetaDataBuilder
    /**
     * Add method uninstall callback.
     *
+    * @see BeanMetaData#getUninstallCallbacks()
     * @param method the method name
-    * @return the builder
+    * @return this builder
     */
    public BeanMetaDataBuilder addMethodUninstallCallback(String method)
    {
@@ -1534,9 +1799,10 @@ public abstract class BeanMetaDataBuilder
    /**
     * Add method uninstall callback.
     *
+    * @see BeanMetaData#getUninstallCallbacks()
     * @param method the method name
     * @param whenRequired the when required state
-    * @return the builder
+    * @return this builder
     */
    public BeanMetaDataBuilder addMethodUninstallCallback(String method, ControllerState whenRequired)
    {
@@ -1546,9 +1812,10 @@ public abstract class BeanMetaDataBuilder
    /**
     * Add method uninstall callback.
     *
+    * @see BeanMetaData#getUninstallCallbacks()
     * @param method the method name
     * @param cardinality the cardinality
-    * @return the builder
+    * @return this builder
     */
    public BeanMetaDataBuilder addMethodUninstallCallback(String method, Cardinality cardinality)
    {
@@ -1558,10 +1825,11 @@ public abstract class BeanMetaDataBuilder
    /**
     * Add method uninstall callback.
     *
+    * @see BeanMetaData#getUninstallCallbacks()
     * @param method the method name
     * @param whenRequired the when required state
     * @param cardinality the cardinality
-    * @return the builder
+    * @return this builder
     */
    public BeanMetaDataBuilder addMethodUninstallCallback(String method, ControllerState whenRequired, Cardinality cardinality)
    {
@@ -1571,12 +1839,13 @@ public abstract class BeanMetaDataBuilder
    /**
     * Add method uninstall callback.
     *
+    * @see BeanMetaData#getUninstallCallbacks()
     * @param method the method name
     * @param signature the method signature
     * @param whenRequired the when required state
     * @param dependentState the dependant state
     * @param cardinality the cardinality
-    * @return the builder
+    * @return this builder
     */
    public abstract BeanMetaDataBuilder addMethodUninstallCallback(
          String method,
@@ -1588,6 +1857,7 @@ public abstract class BeanMetaDataBuilder
    /**
     * Create related class name.
     *
+    * @see BeanMetaData#getRelated()
     * @param className the related class name
     * @param enabled the enabled
     * @return new related class meta data
@@ -1609,7 +1879,7 @@ public abstract class BeanMetaDataBuilder
    public abstract ValueMetaData createThis();
    
    /**
-    * Create a value
+    * Create a value containing an object
     * 
     * @param value the already constructed value
     * @return the value
@@ -1626,9 +1896,9 @@ public abstract class BeanMetaDataBuilder
    public abstract ValueMetaData createString(String type, String value);
    
    /**
-    * Create an injection
+    * Create an injection using a bean as what is being injected
     * 
-    * @param bean the bean to inject
+    * @param bean the name of bean to inject
     * @return the injection
     */
    public ValueMetaData createInject(Object bean)
@@ -1637,10 +1907,10 @@ public abstract class BeanMetaDataBuilder
    }
    
    /**
-    * Create an injection
+    * Create an injection being able to specify the the property of a bean as what is being injected
     * 
-    * @param bean the bean to inject
-    * @param property the property of the bean
+    * @param bean the name of the bean 
+    * @param property the name of the property of the bean to inject. If null, the bean itself will be injected
     * @return the injection
     */
    public ValueMetaData createInject(Object bean, String property)
@@ -1649,12 +1919,12 @@ public abstract class BeanMetaDataBuilder
    }
    
    /**
-    * Create an injection
+    * Create an injection being able to specify the property of a bean as what is being injected
     * 
-    * @param bean the bean to inject
-    * @param property the property of the bean
+    * @param bean the name of the bean 
+    * @param property the name of the property of the bean to inject. If null, the bean itself will be injected
     * @param whenRequired when the injection is required
-    * @param dependentState the state of the injected bean
+    * @param dependentState the required state of the injected bean
     * @return the injection
     */
    public ValueMetaData createInject(Object bean, String property, ControllerState whenRequired, ControllerState dependentState)
@@ -1663,20 +1933,23 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Create an injection
-    *
-    * @param bean the bean to inject
-    * @param property the property of the bean
+    * Create an injection being able to specify the property of a bean as what is being injected
+    * 
+    * @param bean the name of the bean 
+    * @param property the name of the property of the bean to inject. If null, the bean itself will be injected
     * @param whenRequired when the injection is required
-    * @param dependentState the state of the injected bean
-    * @param search the search info
+    * @param dependentState the required state of the injected bean
+    * @param search the search info describing how to search for the injected bean if we have a hierarchy of 
+    * {@link org.jboss.dependency.spi.Controller}s 
     * @return the injection
     */
    public abstract ValueMetaData createInject(Object bean, String property, ControllerState whenRequired, ControllerState dependentState, SearchInfo search);
 
    /**
-    * Create contextual injection.
+    * Create contextual injection. This does not need to specify the name of the bean, 
+    * but looks at the target property/parameter type for autowiring
     *
+    * @see BeanMetaData#isAutowireCandidate()
     * @return the contextual injection
     */
    public ValueMetaData createContextualInject()
@@ -1685,8 +1958,10 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Create contextual injection.
+    * Create contextual injection. This does not need to specify the name of the bean, 
+    * but looks at the target property/parameter type for autowiring
     *
+    * @see BeanMetaData#isAutowireCandidate()
     * @param whenRequired when the injection is required
     * @param dependentState the state of the injected bean
     * @return the contextual injection
@@ -1697,11 +1972,14 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Create contextual injection.
+    * Create contextual injection. This does not need to specify the name of the bean, 
+    * but looks at the target property/parameter type for autowiring
     *
+    * @see BeanMetaData#isAutowireCandidate()
+    * @see BeanMetaData#getAutowireType()
     * @param whenRequired when the injection is required
     * @param dependentState the state of the injected bean
-    * @param autowire the autowire type
+    * @param autowire the autowire type. If null, the type is {@link AutowireType#BY_CLASS} 
     * @param option the inject option
     * @return the contextual injection
     */
@@ -1711,21 +1989,23 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Create contextual injection.
+    * Create contextual injection. This does not need to specify the name of the bean, 
+    * but looks at the target property/parameter type for autowiring
     *
     * @param whenRequired when the injection is required
     * @param dependentState the state of the injected bean
     * @param autowire the autowire type
     * @param option the inject option
-    * @param search the search info
+    * @param search the search info describing how to search for the injected bean if we have a hierarchy of 
+    * {@link org.jboss.dependency.spi.Controller}s 
     * @return the contextual injection
     */
    public abstract ValueMetaData createContextualInject(ControllerState whenRequired, ControllerState dependentState, AutowireType autowire, InjectOption option, SearchInfo search);
 
    /**
-    * Create from context injection.
+    * Inject values from the context of the bean we are creating
     *
-    * @param fromContext from context enum
+    * @param fromContext enum specifying what to inject from the {@link org.jboss.kernel.spi.dependency.KernelControllerContext}
     * @return the from context injection
     */
    public ValueMetaData createFromContextInject(FromContext fromContext)
@@ -1734,9 +2014,9 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Create from context injection.
+    * Inject values from the context of another bean
     *
-    * @param fromContext from context enum
+    * @param fromContext enum specifying what to inject from the {@link org.jboss.kernel.spi.dependency.KernelControllerContext}
     * @param contextName the context name
     * @return the from context injection
     */
@@ -1746,11 +2026,11 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Create from context injection.
+    * Inject values from the context of another bean
     *
-    * @param fromContext from context enum
+    * @param fromContext enum specifying what to inject from the {@link org.jboss.kernel.spi.dependency.KernelControllerContext}
     * @param contextName the context name
-    * @param dependentState the state of the injected context
+    * @param dependentState the state of the injected/other context
     * @return the from context injection
     */
    public ValueMetaData createFromContextInject(FromContext fromContext, Object contextName, ControllerState dependentState)
@@ -1759,12 +2039,13 @@ public abstract class BeanMetaDataBuilder
    }
 
    /**
-    * Create from context injection.
+    * Inject values from the context of another bean
     *
-    * @param fromContext from context enum
+    * @param fromContext enum specifying what to inject from the {@link org.jboss.kernel.spi.dependency.KernelControllerContext}
     * @param contextName the context name
-    * @param dependentState the state of the injected context
-    * @param search the search info
+    * @param dependentState the state of the injected/other context
+    * @param search the search info describing how to search for the injected bean if we have a hierarchy of 
+    * {@link org.jboss.dependency.spi.Controller}s 
     * @return the from context injection
     */
    public abstract ValueMetaData createFromContextInject(FromContext fromContext, Object contextName, ControllerState dependentState, SearchInfo search);
@@ -1780,7 +2061,7 @@ public abstract class BeanMetaDataBuilder
    }
    
    /**
-    * Create a new collection
+    * Create a new collection, where we can specify the exact type of Collection we would like
     * 
     * @param collectionType the collection type
     * @param elementType the element type
@@ -1799,7 +2080,7 @@ public abstract class BeanMetaDataBuilder
    }
    
    /**
-    * Create a new list
+    * Create a new list, where we can specify the exact type of List we would like
     * 
     * @param listType the list type
     * @param elementType the element type
@@ -1818,7 +2099,7 @@ public abstract class BeanMetaDataBuilder
    }
    
    /**
-    * Create a new set
+    * Create a new set, where we can specify the exact type of Set we would like
     * 
     * @param setType the set type
     * @param elementType the element type
@@ -1837,7 +2118,7 @@ public abstract class BeanMetaDataBuilder
    }
    
    /**
-    * Create a new array
+    * Create a new array, where we can specify the exact type of array we would like
     * 
     * @param arrayType the array type
     * @param elementType the element type
@@ -1856,7 +2137,7 @@ public abstract class BeanMetaDataBuilder
    }
    
    /**
-    * Create a new map
+    * Create a new map, where we can specify the exact type of Map we would like
     * 
     * @param mapType the map type
     * @param keyType the key type

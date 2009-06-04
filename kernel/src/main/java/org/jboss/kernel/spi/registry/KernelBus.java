@@ -24,10 +24,9 @@ package org.jboss.kernel.spi.registry;
 import org.jboss.kernel.spi.KernelObject;
 
 /**
- * A bus.<p>
- * 
  * The bus allows detatched invocations on named components in
- * the registry. 
+ * the registry. This is similar to how one would invoke on an 
+ * MBean via an MBean server. 
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$

@@ -65,10 +65,14 @@ import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.kernel.plugins.bootstrap.basic.KernelConstants;
 import org.jboss.kernel.spi.config.KernelConfigurator;
+import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.util.JBossObject;
 
 /**
- * GenericBeanFactoryMetaData.
+ * GenericBeanFactoryMetaData. Used to configure, or parse a <code>&lt;beanfactory&gt;</code>
+ * element into, this {@link BeanMetaDataFactory} that can be used to obtain
+ * the bean factories {@link BeanMetaData} so it can be deployed into the {@link KernelController}.
+ * The resulting bean will be an instance of a {@link BeanFactory}. 
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
@@ -148,8 +152,9 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    }
 
    /**
-    * Get the name
+    * Get the name of the bean factory
     * 
+    * @see BeanMetaData#getName(String)
     * @return the name
     */
    public String getName()
@@ -158,8 +163,9 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    }
 
    /**
-    * Set the bean name
+    * Set the bean factory name
     * 
+    * @see BeanMetaData#setName(String)
     * @param name the name
     */
    @XmlAttribute
@@ -169,8 +175,12 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    }
 
    /**
-    * Get the bean class
+    * Get the bean class. This is the type of object that will be 
+    * created by the {@link BeanFactory} once this metadata has been
+    * converted into a {@link BeanFactory} following the call to
+    * {@link #getBeans()} and installing it into the {@link KernelController}
     * 
+    * @see BeanMetaData#getBean()
     * @return the bean class
     */
    public String getBean()
@@ -179,8 +189,12 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    }
 
    /**
-    * Set the bean class
+    * Set the bean class. This is the type of object that will be 
+    * created by the {@link BeanFactory} once this metadata has been
+    * converted into a {@link BeanFactory} following the call to
+    * {@link #getBeans()} and installing it into the {@link KernelController} 
     * 
+    * @see BeanMetaData#getBean()
     * @param bean the bean class
     */
    @XmlAttribute(name="class")
@@ -201,9 +215,9 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
 
    /**
     * Set the factory class.
-
     * Note: this class param must either extend GenericBeanFactory
     * or have the same constructor and properties aka 'callbacks'.
+    * If not set a default implementation will be used.
     *
     * @param factoryClass the factory class
     */
@@ -216,6 +230,7 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    /**
     * Get the aliases
     * 
+    * @see BeanMetaData#getAliases()
     * @return the aliases
     */
    public Set<AliasMetaData> getAliases()
@@ -226,6 +241,7 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    /**
     * Set the aliases
     * 
+    * @see BeanMetaData#getAliases()
     * @param aliases the aliases
     */
    @XmlElement(name="alias", type=AbstractAliasMetaData.class)
@@ -237,6 +253,7 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    /**
     * Get the access mode.
     *
+    * @see BeanMetaData#getAccessMode()
     * @return the access mode
     */
    public BeanAccessMode getAccessMode()
@@ -247,6 +264,7 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    /**
     * Set the access mode.
     *
+    * @see BeanMetaData#getAccessMode()
     * @param accessMode the access mode
     */
    @XmlAttribute(name = "access-mode")
@@ -258,6 +276,7 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    /**
     * Get the mode
     * 
+    * @see BeanMetaData#getMode()
     * @return the mode
     */
    public ControllerMode getMode()
@@ -268,6 +287,7 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    /**
     * Set the mode
     * 
+    * @see BeanMetaData#getMode()
     * @param mode the mode
     */
    @XmlAttribute
@@ -279,6 +299,7 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    /**
     * Get the annotations
     * 
+    * @see BeanMetaData#getAnnotations()
     * @return the annotations
     */
    public Set<AnnotationMetaData> getAnnotations()
@@ -289,6 +310,7 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    /**
     * Set the annotations
     * 
+    * @see BeanMetaData#getAnnotations()
     * @param annotations the annotations
     */
    @XmlElement(name="annotation", type=AbstractAnnotationMetaData.class)
@@ -300,6 +322,7 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    /**
     * Get the classloader
     * 
+    * @see BeanMetaData#getClassLoader()
     * @return the classloader
     */
    public ClassLoaderMetaData getClassLoader()
@@ -310,6 +333,7 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    /**
     * Set the classloader
     * 
+    * @see BeanMetaData#getClassLoader()
     * @param classLoader the classloader
     */
    @XmlElement(name="classloader", type=AbstractClassLoaderMetaData.class)
@@ -321,6 +345,7 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    /**
     * Get the constructor
     * 
+    * @see BeanMetaData#getConstructor()
     * @return the constructor
     */
    public ConstructorMetaData getConstructor()
@@ -331,6 +356,7 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    /**
     * Set the constructor
     * 
+    * @see BeanMetaData#getConstructor()
     * @param constructor the constructor
     */
    @XmlElement(name="constructor", type=AbstractConstructorMetaData.class)
@@ -342,6 +368,7 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    /**
     * Get the create
     * 
+    * @see BeanMetaData#getCreate()
     * @return the create
     */
    public LifecycleMetaData getCreate()
@@ -352,6 +379,7 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    /**
     * Set the create
     * 
+    * @see BeanMetaData#getCreate()
     * @param create the create
     */
    @XmlElement(name="create", type=AbstractLifecycleMetaData.class)
@@ -363,6 +391,7 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    /**
     * Get the properties
     * 
+    * @see BeanMetaData#getProperties()
     * @return the properties
     */
    public Set<PropertyMetaData> getProperties()
@@ -373,6 +402,7 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    /**
     * Set the properties
     * 
+    * @see BeanMetaData#getProperties()
     * @param properties the properties
     */
    @XmlElement(name="property", type=AbstractPropertyMetaData.class)
@@ -384,6 +414,7 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    /**
     * Get the start
     * 
+    * @see BeanMetaData#getStart()
     * @return the start
     */
    public LifecycleMetaData getStart()
@@ -394,6 +425,7 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    /**
     * Set the start
     * 
+    * @see BeanMetaData#getStart()
     * @param start the start
     */
    @XmlElement(name="start", type=AbstractLifecycleMetaData.class)
@@ -403,8 +435,9 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    }
 
    /**
-    * Get the demans
+    * Get the demands
     * 
+    * @see BeanMetaData#getDemands()
     * @return the demands
     */
    @XmlElement(name="demand", type=AbstractDemandMetaData.class)
@@ -416,6 +449,7 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    /**
     * Set the demands
     * 
+    * @see BeanMetaData#getDemands()
     * @param demands the demands
     */
    public void setDemands(Set<DemandMetaData> demands)
@@ -426,6 +460,7 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    /**
     * Get the dependencies
     * 
+    * @see BeanMetaData#getDepends()
     * @return the dependencies
     */
    public Set<DependencyMetaData> getDepends()
@@ -436,6 +471,7 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    /**
     * Set the dependencies
     * 
+    * @see BeanMetaData#getDepends()
     * @param depends the dependencies
     */
    @XmlElement(name="depends", type=AbstractDependencyMetaData.class)
@@ -447,6 +483,7 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    /**
     * Get the install callbacks
     * 
+    * @see BeanMetaData#getInstallCallbacks()
     * @return the install callbacks
     */
    public List<CallbackMetaData> getInstallCallbacks()
@@ -457,6 +494,7 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    /**
     * Set the install callbacks
     * 
+    * @see BeanMetaData#getInstallCallbacks()
     * @param installCallbacks the install callbacks
     */
    @XmlElement(name="incallback", type=InstallCallbackMetaData.class)
@@ -468,6 +506,7 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    /**
     * Get the installs
     * 
+    * @see BeanMetaData#getInstalls()
     * @return the installs
     */
    public List<InstallMetaData> getInstalls()
@@ -478,6 +517,7 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    /**
     * Set the installs
     * 
+    * @see BeanMetaData#getInstalls()
     * @param installs the installs
     */
    @XmlElement(name="install", type=AbstractInstallMetaData.class)
@@ -489,6 +529,7 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    /**
     * Get the supples
     * 
+    * @see BeanMetaData#getSupplies()
     * @return the supplies
     */
    public Set<SupplyMetaData> getSupplies()
@@ -499,6 +540,7 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    /**
     * Set the supplies
     * 
+    * @see BeanMetaData#getSupplies()
     * @param supplies the supplies
     */
    @XmlElement(name="supply", type=AbstractSupplyMetaData.class)
@@ -510,6 +552,7 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    /**
     * Get the uninstall callbacks
     * 
+    * @see BeanMetaData#getUninstallCallbacks()
     * @return the uninstall callbacks
     */
    public List<CallbackMetaData> getUninstallCallbacks()
@@ -520,6 +563,7 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    /**
     * Set the uninstall callbacks
     * 
+    * @see BeanMetaData#getUninstallCallbacks()
     * @param uninstallCallbacks the uninstall callbacls
     */
    @XmlElement(name="uncallback", type=UninstallCallbackMetaData.class)
@@ -531,6 +575,7 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    /**
     * Get the uninstalls
     * 
+    * @see BeanMetaData#getUninstalls()
     * @return the uninstalls
     */
    public List<InstallMetaData> getUninstalls()
@@ -541,6 +586,7 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
    /**
     * Set the uninstalls
     * 
+    * @see BeanMetaData#getUninstalls()
     * @param uninstalls the uninstalls
     */
    @XmlElement(name="uninstall", type=AbstractInstallMetaData.class)
@@ -555,6 +601,12 @@ public class GenericBeanFactoryMetaData extends JBossObject implements BeanMetaD
       return Collections.singletonList(getBeanMetaData());
    }
 
+   /**
+    * Get the bean metadata for the {@link BeanFactory} created by this bean factory metadata
+    * 
+    * @see BeanMetaData#getUninstalls()
+    * @param uninstalls the uninstalls
+    */
    @XmlTransient
    public BeanMetaData getBeanMetaData()
    {

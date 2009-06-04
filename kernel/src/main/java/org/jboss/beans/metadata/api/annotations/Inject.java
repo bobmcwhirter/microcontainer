@@ -34,6 +34,7 @@ import org.jboss.beans.metadata.api.model.InjectOption;
  * Beans when injected by class type are by default changed to configured
  * state - if not yet configured.
  * You can change this behavior by setting state.
+ * See {@link Constructor} for an example of the usage.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
@@ -42,15 +43,15 @@ import org.jboss.beans.metadata.api.model.InjectOption;
 public @interface Inject
 {
    /**
-    * Get bean.
-    * Default is no bean.
+    * Get bean name to inject.
+    * Default is no bean, in which
     *
     * @return bean name
     */
    String bean() default "";
 
    /**
-    * Get property.
+    * Get property of bean to inject.
     * Default is no property.
     *
     * @return property name

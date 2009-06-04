@@ -24,6 +24,7 @@ package org.jboss.kernel.spi.metadata;
 import java.util.List;
 
 import org.jboss.dependency.spi.ControllerContext;
+import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.KernelObject;
 import org.jboss.metadata.spi.MetaData;
 import org.jboss.metadata.spi.repository.MutableMetaDataRepository;
@@ -31,7 +32,7 @@ import org.jboss.metadata.spi.retrieval.MetaDataRetrieval;
 import org.jboss.metadata.spi.scope.ScopeKey;
 
 /**
- * KernelMetaDataRepository.
+ * The entry point to the {@link MutableMetaDataRepository} used for a {@link Kernel}.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
@@ -39,14 +40,15 @@ import org.jboss.metadata.spi.scope.ScopeKey;
 public interface KernelMetaDataRepository extends KernelObject
 {
    /**
-    * Get the meta data repository
+    * Get the meta data repository for the {@link Kernel}
     * 
     * @return the meta data repository
     */
    MutableMetaDataRepository getMetaDataRepository();
 
    /**
-    * Get MetaData
+    * Get MetaData for a {@link ControllerContext} from the {@link Kernel}'s 
+    * {@link MutableMetaDataRepository}.
     * 
     * @param context the context
     * @return the metadata
@@ -54,21 +56,22 @@ public interface KernelMetaDataRepository extends KernelObject
    MetaData getMetaData(ControllerContext context);
 
    /**
-    * Add metadata to the bean.
+    * Add metadata to a bean's {@link ControllerContext} from the {@link Kernel}'s 
+    * {@link MutableMetaDataRepository}
     * 
     * @param context the context
     */
    void addMetaData(ControllerContext context);
 
    /**
-    * Remove any previously added metadata
+    * Remove any previously added metadata from a {@link ControllerContext}.
     * 
     * @param context the context
     */
    void removeMetaData(ControllerContext context);
 
    /**
-    * Get the default scope for a context
+    * Get the default (non-mutable) scope key for a context
     * 
     * @param context the context
     * @return the default scope
@@ -76,7 +79,7 @@ public interface KernelMetaDataRepository extends KernelObject
    ScopeKey getFullScope(ControllerContext context);
    
    /**
-    * Get the mutable scope for a context
+    * Get the mutable scope key for a context
     * 
     * @param context the context
     * @return the default scope
@@ -84,7 +87,8 @@ public interface KernelMetaDataRepository extends KernelObject
    ScopeKey getMutableScope(ControllerContext context);
 
    /**
-    * Create a metadata retrieval
+    * Create a metadata retrieval for a {@link ControllerContext}.
+    * The returned metadata retrieval will be a composite containing the passed in retrievals. 
     * 
     * @param context the controller context
     * @param retrievals the retrievals

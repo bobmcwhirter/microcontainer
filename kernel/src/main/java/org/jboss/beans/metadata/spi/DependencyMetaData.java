@@ -24,7 +24,7 @@ package org.jboss.beans.metadata.spi;
 import org.jboss.util.JBossInterface;
 
 /**
- * Metadata about what a bean's dependency.
+ * Metadata about a bean's dependency.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
@@ -34,7 +34,7 @@ public interface DependencyMetaData extends MetaDataVisitorNode, JBossInterface
    /**
     * What is the dependency
     * 
-    * @return the dependency
+    * @return the name of the bean we depend on.
     */
    Object getDependency();
 }

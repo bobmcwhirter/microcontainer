@@ -27,9 +27,22 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The aliases.
+ * Used to create aliases for a bean. An alias is an alternative name for a bean within the controller
  * Equivalent to deployment's alias element.
  *
+ * For example this configuration:
+ * <pre>
+ * &#64;Bean(name="SomeBean")
+ * &#64;Aliases({"Red", "Blue"})
+ * public class MyBean
+ * {
+ * }
+ * </pre>
+ * Creates an instance of MyBean and installs it in the Microcontainer using the name <code>MyBean</code>,
+ * and registers the aliases <code>Red</code> and <code>Blue</code>.
+ * Other beans can inject it using <code>MyBean</code>, <code>Red</code> and <code>Blue</code>.
+ *
+ * @see org.jboss.beans.metadata.spi.BeanMetaData#getAliases()
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
@@ -45,7 +58,7 @@ public @interface Aliases
    String[] value();
 
    /**
-    * Do system property replace.
+    * Do system property replacement
     *
     * @return true to replace system property, false otherwise
     */

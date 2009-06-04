@@ -30,7 +30,7 @@ package org.jboss.beans.metadata.spi;
 public interface PropertyMetaData extends FeatureMetaData
 {
    /**
-    * Get the name.
+    * Get the name of the property.
     * 
     * @return the name.
     */
@@ -51,7 +51,7 @@ public interface PropertyMetaData extends FeatureMetaData
    boolean isPreInstantiate();
 
    /**
-    * Get the value.
+    * Get the value the property is being set to.
     * 
     * @return the value.
     */

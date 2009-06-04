@@ -26,6 +26,7 @@ import java.util.Set;
 import org.jboss.beans.metadata.spi.BeanMetaData;
 import org.jboss.dependency.spi.Controller;
 import org.jboss.dependency.spi.ControllerState;
+import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.KernelObject;
 
 /**
@@ -34,7 +35,8 @@ import org.jboss.kernel.spi.KernelObject;
  * The controller is the core component for keeping track
  * of beans to make sure the configuration and lifecycle are
  * done in the correct order including dependencies and
- * classloading considerations. 
+ * classloading considerations. The {@link Kernel} uses this class as its
+ * controller, rather than the normal {@link Controller}, and it contains a few
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
@@ -42,40 +44,45 @@ import org.jboss.kernel.spi.KernelObject;
 public interface KernelController extends KernelObject, Controller
 {
    /**
-    * Install a context
+    * Install a context from a {@link BeanMetaData}.
     * 
-    * @param metaData the metaData
-    * @return the context
+    * @see Controller#install(org.jboss.dependency.spi.ControllerContext)
+    * @param metaData the bean metadata
+    * @return the context that is created from the bean meta data. 
     * @throws Throwable for any error
     */
    KernelControllerContext install(BeanMetaData metaData) throws Throwable;
 
    /**
-    * Install a context
+    * Install a context from a {@link BeanMetaData} in the same way as
+    * {@link #install(BeanMetaData)}, but use the passed in target as the target
+    * for this context instead of instantiating one in the {@link ControllerState#INSTANTIATED}
+    * state.
     * 
+    * @see #install(BeanMetaData)
     * @param metaData the metaData
     * @param target the target object
-    * @return the context
+    * @return the context that is cre
     * @throws Throwable for any error
     */
    KernelControllerContext install(BeanMetaData metaData, Object target) throws Throwable;
 
    /**
-    * Add supplies
+    * Add supplies from the context to the my list of suppliers.
     * 
-    * @param context the context
+    * @param context the context we want to check for supplies
     */
    void addSupplies(KernelControllerContext context);
 
    /**
-    * Remove supplies
+    * Remove supplies from the context from my list of suppliers.
     * 
-    * @param context the context
+    * @param context the context we want to check for supplies
     */
    void removeSupplies(KernelControllerContext context);
 
    /**
-    * Get all instantiated contexts of a type
+    * Get all instantiated contexts of a given type
     * 
     * @param clazz the type
     * @return the contexts
@@ -83,7 +90,7 @@ public interface KernelController extends KernelObject, Controller
    Set<KernelControllerContext> getInstantiatedContexts(Class<?> clazz);
 
    /**
-    * Get all contexts of a type which are at least in state.
+    * Get all contexts of a type which are in the given state or above
     *
     * @param clazz the type
     * @param state the required state
@@ -92,6 +99,7 @@ public interface KernelController extends KernelObject, Controller
    Set<KernelControllerContext> getContexts(Class<?> clazz, ControllerState state);
 
    /**
+    * Get an instantiated context that is of the type passed in.
     * If zero or multiple instances match class clazz
     * a warning is issued, but no throwable is thrown
     *
@@ -101,16 +109,16 @@ public interface KernelController extends KernelObject, Controller
    KernelControllerContext getContextByClass(Class<?> clazz);
 
    /**
-    * Add instantiated context into contextsByClass map
-    * look at all target's superclasses and interfaces
+    * Add instantiated context into the map used by {@link #getContextByClass(Class)}.
+    * Look at all the context's target's superclasses and interfaces.
     * 
     * @param context the context
     */
    void addInstantiatedContext(KernelControllerContext context);
 
    /**
-    * Remove instantiated context from contextsByClass map
-    * look at all target's superclasses and interfaces
+    * Remove instantiated context from the map used by {@link #getContextByClass(Class)}.
+    * Look at all target's superclasses and interfaces.
     * 
     * @param context the context
     */

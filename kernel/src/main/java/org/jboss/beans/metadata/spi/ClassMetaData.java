@@ -24,11 +24,15 @@ package org.jboss.beans.metadata.spi;
 import org.jboss.util.JBossInterface;
 
 /**
- * Class/interface metadata. 
+ * Class/interface metadata. It contains a class name.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 public interface ClassMetaData extends JBossInterface
 {
+   /**
+    * Get the class name
+    * @return the class name
+    */
    String getClassName();
 }

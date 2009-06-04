@@ -27,7 +27,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Marks that an annotation is cleaned up while uninstalling.
+ * Marks that data introduced into a {@link org.jboss.beans.metadata.spi.BeanMetaData} annotation is 
+ * cleaned up while uninstalling.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */

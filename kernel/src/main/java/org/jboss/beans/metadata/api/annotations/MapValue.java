@@ -27,7 +27,18 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Map value injection.
+ * Creates a map that can be used as a parameter
+ * <pre>
+ *  &#64;MapValue(keyClass="java.lang.String", 
+ *         valueClass="java.lang.String", 
+ *         {@EntryValue(key=&#64;Value(string=&#64;StringValue("foo.bar.key")), 
+ *                      value=&#64;Value(string=&#64;StringValue("QWERT"))), 
+ *          &#64;EntryValue(key=&#64;Value(string=&#64;StringValue("xyz.key")), 
+ *                      value=&#64;Value(string=&#64;StringValue("QWERTY"))) 
+ *        }) 
+ * public void setMap(Map<String, String> map) {} 
+ * </pre>
+ * creates a collection of the type <code>org.jboss.example.CustomList</code>, where all the elements are of type String.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
@@ -36,7 +47,7 @@ import java.lang.annotation.Target;
 public @interface MapValue
 {
    /**
-    * Get the map class.
+    * Get the map class. If absent, the default type is java.util.HashMap 
     *
     * @return the map class
     */
@@ -57,7 +68,7 @@ public @interface MapValue
    Class<?> valueClass() default void.class;
 
    /**
-    * Get the entries.
+    * Get the array containing this map's entries.
     *
     * @return the entries
     */

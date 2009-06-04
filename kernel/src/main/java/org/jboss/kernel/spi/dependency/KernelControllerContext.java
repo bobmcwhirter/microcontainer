@@ -23,12 +23,18 @@ package org.jboss.kernel.spi.dependency;
 
 import org.jboss.beans.info.spi.BeanInfo;
 import org.jboss.beans.metadata.spi.BeanMetaData;
+import org.jboss.dependency.spi.ControllerContext;
+import org.jboss.dependency.spi.ControllerState;
 import org.jboss.dependency.spi.dispatch.LifecycleDispatchContext;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
 
 /**
- * Information about dependencies and state.
+ * Information about dependencies and state. Extension of {@link ControllerContext}
+ * that allows access to extra information when running in the {@link Kernel}. When 
+ * deploying a {@link BeanMetaData} into the {@link Kernel}, a 
+ * <code>KernelControllerContext</code> is created by the Microcontainer, rather tha
+ * vanilla {@link ControllerContext}. 
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
@@ -36,35 +42,37 @@ import org.jboss.kernel.spi.registry.KernelRegistryEntry;
 public interface KernelControllerContext extends KernelRegistryEntry, LifecycleDispatchContext
 {
    /**
-    * Get the kernel
+    * Get the kernel this kernel controller context was deployed into.
     * 
     * @return the kernel
     */
    Kernel getKernel();
 
    /**
-    * Get the BeanInfo
+    * Get the BeanInfo for the bean represented by this kernel controller context
     * 
     * @return the bean info
     */
    BeanInfo getBeanInfo();
 
    /**
-    * Set the bean info
+    * Set the bean info for the bean represented by this kernel controller context.
+    * This method should only be called by the {@link KernelController}.
     * 
     * @param info the bean info
     */
    void setBeanInfo(BeanInfo info);
 
    /**
-    * Get the metadata
+    * Get the metadata representing the bean to be installed by this kernel controller context.
     * 
     * @return the bean metadata
     */
    BeanMetaData getBeanMetaData();
 
    /**
-    * Set the target
+    * Set the target. This will be the bean instance once the kernel controller context reaches the
+    * {@link ControllerState#INSTANTIATED} state.
     * 
     * @param target the target
     */

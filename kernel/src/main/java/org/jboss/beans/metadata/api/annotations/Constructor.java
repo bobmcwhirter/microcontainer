@@ -27,8 +27,43 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Mark the constructor used to instantiate bean.
- *
+ * Mark the constructor used to instantiate a bean. If absent, the default constructor 
+ * of the @{@link Bean} annotated class will be used. If the constructor has parameters,
+ * use the following annotations on the parameters to set their values:
+ * <ul>
+ *   <li>@{@link ArrayValue}</li>
+ *   <li>@{@link CollectionValue}</li>
+ *   <li>@{@link Inject}</li>
+ *   <li>@{@link JavaBeanValue}</li>
+ *   <li>@{@link ListValue}</li> 
+ *   <li>@{@link MapValue}</li> 
+ *   <li>@{@link NullValue}</li> 
+ *   <li>@{@link SetValue}</li> 
+ *   <li>@{@link StringValue}</li>
+ * </ul>
+ * 
+ * For example the following configuration:<p>
+ * <pre>
+ * &#64;Bean(name="SomeBean")
+ * public class MyBean
+ * {
+ *   public MyBean()
+ *   {
+ *   }
+ * 
+ *   &#64;Constructor
+ *   public MyBean(&#64;StringValue(value="25", type="long") long age, &#64;Inject(bean="OtherBean") Object other)
+ *   {
+ *      ...
+ *   }
+ * }
+ * </pre>
+ * uses the non-default constructor as its constructor and uses the long value <code>25</code> for the <code>age</code> parameter, and injects
+ * the bean <code>OtherBean</code> into the <code>other</code> parameter. 
+ * 
+ * @see Factory
+ * @see FactoryMethod
+ * @see org.jboss.beans.metadata.spi.BeanMetaData#getConstructor()
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)

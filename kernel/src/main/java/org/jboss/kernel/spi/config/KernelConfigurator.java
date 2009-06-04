@@ -31,6 +31,7 @@ import org.jboss.beans.metadata.spi.ParameterMetaData;
 import org.jboss.joinpoint.spi.Joinpoint;
 import org.jboss.joinpoint.spi.MethodJoinpoint;
 import org.jboss.kernel.spi.KernelObject;
+import org.jboss.metadata.spi.MetaData;
 import org.jboss.reflect.spi.ClassInfo;
 import org.jboss.reflect.spi.TypeInfo;
 
@@ -38,7 +39,8 @@ import org.jboss.reflect.spi.TypeInfo;
  * A configurator.<p>
  * 
  * The configurator is a utility class used by the controller
- * to create and configure beans. 
+ * to create and configure beans. It will typically wrap a
+ * {@link KernelConfig}.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
@@ -46,7 +48,7 @@ import org.jboss.reflect.spi.TypeInfo;
 public interface KernelConfigurator extends KernelObject
 {
    /**
-    * Get the BeanInfo
+    * Get the BeanInfo for a class.
     * 
     * @param className the class name
     * @param cl the classloader
@@ -56,7 +58,7 @@ public interface KernelConfigurator extends KernelObject
    BeanInfo getBeanInfo(String className, ClassLoader cl) throws Throwable;
    
    /**
-    * Get the BeanInfo
+    * Get the BeanInfo for a class.
     * 
     * @param clazz the class
     * @return the bean info
@@ -65,7 +67,7 @@ public interface KernelConfigurator extends KernelObject
    BeanInfo getBeanInfo(Class<?> clazz) throws Throwable;
    
    /**
-    * Get the BeanInfo
+    * Get the BeanInfo from a type info.
     * 
     * @param type the type info
     * @return the bean info
@@ -74,7 +76,7 @@ public interface KernelConfigurator extends KernelObject
    BeanInfo getBeanInfo(TypeInfo type) throws Throwable;
    
    /**
-    * Get the BeanInfo
+    * Get the BeanInfo for a class using the specified bean access mode.
     *
     * @param className the class name
     * @param cl the classloader
@@ -85,7 +87,7 @@ public interface KernelConfigurator extends KernelObject
    BeanInfo getBeanInfo(String className, ClassLoader cl, BeanAccessMode mode) throws Throwable;
 
    /**
-    * Get the BeanInfo
+    * Get the BeanInfo for a class using the specified bean access mode.
     *
     * @param clazz the class
     * @return the bean info
@@ -95,7 +97,7 @@ public interface KernelConfigurator extends KernelObject
    BeanInfo getBeanInfo(Class<?> clazz, BeanAccessMode mode) throws Throwable;
 
    /**
-    * Get the BeanInfo
+    * Get the BeanInfo from a typ info using the specified bean access mode.
     *
     * @param type the type info
     * @param mode the access mode
@@ -105,7 +107,8 @@ public interface KernelConfigurator extends KernelObject
    BeanInfo getBeanInfo(TypeInfo type, BeanAccessMode mode) throws Throwable;
 
    /**
-    * Get the BeanInfo for some metadata
+    * Get the BeanInfo for some metadata. The BeanInfo will be for the bean metadata's
+    * specified class.
     * 
     * @param metaData the metadata
     * @return the bean info
@@ -114,7 +117,7 @@ public interface KernelConfigurator extends KernelObject
    BeanInfo getBeanInfo(BeanMetaData metaData) throws Throwable;
    
    /**
-    * Get the type info for a class
+    * Get the type info for a class.
     * 
     * @param className the class name
     * @param cl the classloader
@@ -124,7 +127,7 @@ public interface KernelConfigurator extends KernelObject
    TypeInfo getTypeInfo(String className, ClassLoader cl) throws Throwable;
    
    /**
-    * Get the type info for a class
+    * Get the type info for a class.
     * 
     * @param clazz the class
     * @return the type info
@@ -133,7 +136,7 @@ public interface KernelConfigurator extends KernelObject
    TypeInfo getTypeInfo(Class<?> clazz) throws Throwable;
    
    /**
-    * Get the class info for a class
+    * Get the class info for a class.
     * 
     * @param className the class name
     * @param cl the classloader
@@ -143,7 +146,7 @@ public interface KernelConfigurator extends KernelObject
    ClassInfo getClassInfo(String className, ClassLoader cl) throws Throwable;
    
    /**
-    * Get the class info for a class
+    * Get the class info for a class.
     * 
     * @param clazz the class
     * @return the class info
@@ -152,7 +155,7 @@ public interface KernelConfigurator extends KernelObject
    ClassInfo getClassInfo(Class<?> clazz) throws Throwable;
    
    /**
-    * Get a constructor join point
+    * Get a constructor join point for a bean info. This will be the default constructor.
     * 
     * @param info the bean info
     * @return the join point
@@ -161,7 +164,8 @@ public interface KernelConfigurator extends KernelObject
    Joinpoint getConstructorJoinPoint(BeanInfo info) throws Throwable;
    
    /**
-    * Get a constructor join point
+    * Get a constructor join point for a bean metadata. This will be the constructor 
+    * that is the closest match to the constructor specified in the bean metadata.
     * 
     * @param metaData the bean metadata
     * @return the join point
@@ -170,7 +174,9 @@ public interface KernelConfigurator extends KernelObject
    Joinpoint getConstructorJoinPoint(BeanMetaData metaData) throws Throwable;
    
    /**
-    * Get a constructor join point
+    * Get a constructor join point for a bean metadata. This will be the constructor 
+    * that is the closest match to the constructor specified by the passed in constructor
+    * metadata.
     * 
     * @param info the bean info
     * @param metaData the constructor metadata
@@ -181,19 +187,21 @@ public interface KernelConfigurator extends KernelObject
    Joinpoint getConstructorJoinPoint(BeanInfo info, ConstructorMetaData metaData, BeanMetaData beanMetaData) throws Throwable;
    
    /**
-    * Get a constructor join point
+    * Get a constructor join point a bean info. This will be the constructor 
+    * that is the closest match to the constructor specified by the passed in constructor
+    * metadata. 
     * 
     * @param info the bean info
     * @param metaData the constructor metadata
     * @param beanMetaData the bean metadata
-    * @param object an opaque object
+    * @param object an opaque object. If used with AOP this should be the {@link MetaData} for the bean.
     * @return the join point
     * @throws Throwable for any error
     */
    Joinpoint getConstructorJoinPoint(BeanInfo info, ConstructorMetaData metaData, BeanMetaData beanMetaData, Object object) throws Throwable;
 
    /**
-    * Get a method joinpoint
+    * Get a method joinpoint for a bean.
     * 
     * @param info the bean info
     * @param cl the classloader

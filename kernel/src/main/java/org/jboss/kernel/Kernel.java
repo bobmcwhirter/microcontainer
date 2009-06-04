@@ -27,12 +27,24 @@ import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.event.KernelEventManager;
 import org.jboss.kernel.spi.metadata.KernelMetaDataRepository;
 import org.jboss.kernel.spi.registry.KernelBus;
+import org.jboss.kernel.spi.registry.KernelRegistry;
 import org.jboss.kernel.spi.validation.KernelBeanValidator;
 
 /**
  * The kernel.<p>
  * 
- * The kernel is the entry point into the kernel services. 
+ * The kernel is the entry point into the kernel services. The kernel
+ * is the {@link KernelController} + additional services such as the
+ * <ul>
+ *   <li>{@link KernelBus}</li>
+ *   <li>{@link KernelConfig}</li>
+ *   <li>{@link KernelConfigurator}</li>
+ *   <li>{@link KernelController}</li>
+ *   <li>{@link KernelEventManager}</li>
+ *   <li>{@link KernelMetaDataRepository}</li>
+ *   <li>{@link KernelRegistry}</li>
+ *   <li>{@link KernelBeanValidator}</li>
+ * </ul>
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @author <a href="mailto:les.hazlewood@jboss.org">Les A. Hazlewood</a>

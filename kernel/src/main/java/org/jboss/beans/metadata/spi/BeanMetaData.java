@@ -24,14 +24,22 @@ package org.jboss.beans.metadata.spi;
 import java.util.List;
 import java.util.Set;
 
+import org.jboss.dependency.spi.Controller;
+import org.jboss.dependency.spi.ControllerContext;
 import org.jboss.dependency.spi.ControllerMode;
 import org.jboss.dependency.spi.ErrorHandlingMode;
+import org.jboss.kernel.spi.dependency.KernelControllerContext;
+import org.jboss.kernel.spi.deployment.KernelDeployment;
 import org.jboss.beans.metadata.api.model.AutowireType;
+import org.jboss.beans.metadata.spi.builder.BeanMetaDataBuilder;
 import org.jboss.beans.info.spi.BeanAccessMode;
 
 /**
- * Metadata about a bean.
- * 
+ * Metadata about a bean. This is the main source of information about a bean, and is the result of parsing a 
+ * <code>-beans.xml</code> or reading the bean class annotation. It can also be constructed programatically using 
+ * {@link BeanMetaDataBuilder}. The MC will translate the bean metadata into a 
+ * {@link KernelControllerContext} that is put into the {@link Controller} to install the bean.
+ *  
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @author <a href="ales.justin@jboss.com">Ales Justin</a>
  * @version $Revision$
@@ -39,14 +47,15 @@ import org.jboss.beans.info.spi.BeanAccessMode;
 public interface BeanMetaData extends FeatureMetaData, ValueMetaData
 {
    /**
-    * Get the bean.
+    * Get the bean's classname.
     * 
-    * @return the bean.
+    * @return the bean's classname.
     */
    String getBean();
 
    /**
-    * Get the name
+    * Get the name of the bean. This is the name it will be registered under in the {@link Controller}.
+    * In the case of a hierarchy of controllers this must be unique across all the controllers.
     * 
     * @return the name
     */
@@ -60,14 +69,17 @@ public interface BeanMetaData extends FeatureMetaData, ValueMetaData
    Set<RelatedClassMetaData> getRelated();
 
    /**
-    * Set the name
+    * Set the name of the bean. This is the name it will be registered under in the {@link Controller}.
+    * In the case of a hierarchy of controllers this must be unique across all the controllers.
     * 
     * @param name the name
     */
    void setName(String name);
 
    /**
-    * The aliases
+    * The aliases. An alias is an alternative name for the bean that is local to a particular 
+    * {@link Controller}. Beans can express dependencies on other beans via their alias or
+    * their names.
     *
     * @return the aliases or null if there are no aliases
     */
@@ -88,35 +100,38 @@ public interface BeanMetaData extends FeatureMetaData, ValueMetaData
    boolean isAbstract();
 
    /**
-    * Get the autowire type.
-    *
-    * @return the autowire type
+    * Gets the autowire type. If autowiring is enabled then 
+    * {@link ControllerContext}s wanting to inject the bean resulting from this bean metadata
+    * do not need to specify the name of the {@link ControllerContext}. This specifies how
+    * to lookup the autowired beans.
+    *  
+    * @return the autowire type, or null if we don't want injection by autowiring
     */
    AutowireType getAutowireType();
 
    /**
-    * Get the mode
+    * Get the controller mode to be used when installing this bean.
     * 
     * @return the mode
     */
    ControllerMode getMode();
    
    /**
-    * Set the name
+    * Set the controller mode to be used when installing this bean.
     *
     * @param mode the mode
     */
    void setMode(ControllerMode mode);
 
    /**
-    * Get error handling mode
+    * Get error handling mode to be used when installing this bean.
     *
     * @return the error handling mode
     */
    ErrorHandlingMode getErrorHandlingMode();
 
    /**
-    * Get the access mode
+    * Get the access mode for this bean.
     *
     * @return the access mode
     */
@@ -125,124 +140,134 @@ public interface BeanMetaData extends FeatureMetaData, ValueMetaData
    /**
     * Is this bean is a candidate for
     * getting injected via contextual matching
-    * or callback resolution.
-    *
+    * or callback resolution. 
+    * If autowiring is enabled then 
+    * {@link ControllerContext}s wanting to inject the bean resulting from this bean metadata
+    * do not need to specify the name of the {@link ControllerContext}. Instead a match between the type of the target property/
+    * parameter and my bean type can be used.
+    * 
     * @return true (default) if used for autowiring
     */
    boolean isAutowireCandidate();
 
    /**
-    * Get the annotations
+    * Get the annotations for this bean. They will eventually end up in the meta data repository for the 
+    * resulting {@link ControllerContext}.
+    * 
     * @return the bean annotations
     */
    Set<AnnotationMetaData> getAnnotations();
    /**
-    * Set the annotations
+    * Set the annotations. They will eventually end up in the meta data repository for the 
+    * resulting {@link ControllerContext}.
     *
     * @param annotations the annotations
     */
    void setAnnotations(Set<AnnotationMetaData> annotations);
 
    /**
-    * Get the properties.
+    * Get the properties for the bean. This will contain the values for each property
+    * and can include injections of other beans.
     * 
     * @return List<PropertyMetaData>.
     */
    Set<PropertyMetaData> getProperties();
 
    /**
-    * Get the bean ClassLoader
+    * Get the bean ClassLoader. This is the classloader to use when constructing the bean. If not
+    * set the {@link KernelDeployment#getClassLoader()} will be used instead.
     * 
     * @return the ClassLoader metadata
     */
    ClassLoaderMetaData getClassLoader();
 
    /**
-    * Set the bean ClassLoader
+    * Set the bean ClassLoader. This is the classloader to use when constructing the bean. If not
+    * set the {@link KernelDeployment#getClassLoader()} will be used instead.
     * 
     * @param classLoader the ClassLoader metadata
     */
    void setClassLoader(ClassLoaderMetaData classLoader);
 
    /**
-    * Get the constructor
+    * Get how the bean should be constructed. If null the default constructor will be used.
     * 
-    * @return the constructor metadata
+    * @return the constructor metadata, or null for the default constructor
     */
    ConstructorMetaData getConstructor();
 
    /**
-    * Get the create lifecycle
+    * Get the create lifecycle method.
     * 
-    * @return the create lifecycle
+    * @return the create lifecycle method
     */
    LifecycleMetaData getCreate();
 
    /**
-    * Get the start lifecycle
+    * Get the start lifecycle method.
     * 
-    * @return the start lifecycle
+    * @return the start lifecycle method
     */
    LifecycleMetaData getStart();
 
    /**
-    * Get the stop lifecycle
+    * Get the stop lifecycle method.
     * 
-    * @return the stop lifecycle
+    * @return the stop lifecycle method
     */
    LifecycleMetaData getStop();
 
    /**
-    * Get the destroy lifecycle
+    * Get the destroy lifecycle method.
     * 
-    * @return the destroy lifecycle
+    * @return the destroy lifecycle method
     */
    LifecycleMetaData getDestroy();
    
    /**
-    * Get what this bean demands.
+    * Get what this bean demands for dependencies not specified using injections.
     * 
     * @return Set<DemandMetaData>
     */
    Set<DemandMetaData> getDemands();
 
    /**
-    * Get what this bean supplies.
+    * Get what this bean supplies for dependencies not specified using injections.
     * 
     * @return Set<SupplyMetaData>
     */
    Set<SupplyMetaData> getSupplies();
    
    /**
-    * Get what this bean depends.
+    * Get what other beans this bean depends on.
     * 
     * @return Set<DependencyMetaData>
     */
    Set<DependencyMetaData> getDepends();
 
    /**
-    * Get the installation oeprations.
+    * Get the installation lifecycle methods.
     * 
     * @return List<InstallMetaData>
     */
    List<InstallMetaData> getInstalls();
 
    /**
-    * Get the uninstallation operations.
+    * Get the uninstallation lifecycle methods.
     * 
     * @return List<InstallMetaData>
     */
    List<InstallMetaData> getUninstalls();
    
    /**
-    * Get the installation oeprations.
+    * Get the install callbacks that are registered for this bean.
     *
     * @return List<InstallMetaData>
     */
    List<CallbackMetaData> getInstallCallbacks();
 
    /**
-    * Get the uninstallation operations.
+    * Get the uninstall callbacks that are registered for this bean.
     *
     * @return List<InstallMetaData>
     */

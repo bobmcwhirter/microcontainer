@@ -27,8 +27,18 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The value factory.
- *
+ * A value that is calculated by making a method call on another bean.
+ * 
+ * <pre>
+ * &#64;ValueFactory(
+ *    bean="PersonRegister", 
+ *    method="getPersonFromId", 
+ *    parameters={&#64;Parameter(string=@StringValue(value="123", type="int"))}) 
+ * public void setCalculatedValue(Person person) {} 
+ * </pre>
+ * Here, the <code>person</code> parameter is calculated, by calling <code>getPersonFromId(123)</code>
+ * on the bean called <code>PersonRegister</code>.
+ * 
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)

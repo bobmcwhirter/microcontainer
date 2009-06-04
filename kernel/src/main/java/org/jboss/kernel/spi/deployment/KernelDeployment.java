@@ -31,11 +31,17 @@ import org.jboss.beans.metadata.spi.ClassLoaderMetaData;
 import org.jboss.beans.metadata.spi.LifecycleMetaData;
 import org.jboss.beans.metadata.spi.NamedAliasMetaData;
 import org.jboss.dependency.spi.ControllerMode;
+import org.jboss.dependency.spi.ControllerState;
+import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.kernel.spi.dependency.KernelControllerContext;
 import org.jboss.util.JBossInterface;
 
 /**
- * A kernel deployment.
+ * A kernel deployment. It contains one or more {@link BeanMetaData}s
+ * that each contain the configuration for a bean. Each {@link BeanMetaData}
+ * becomes a {@link KernelControllerContext} that is used by the {@link KernelController}
+ * to move the beans through the controller lifecycle. If a <code>-beans.xml</code>
+ * was used to specify the deployment, this represents one <code>-beans.xml</code>. 
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
@@ -127,42 +133,44 @@ public interface KernelDeployment extends JBossInterface
    Set<NamedAliasMetaData> getAliases();
 
    /**
-    * Get the ControllerMode.
+    * Get the ControllerMode for this deployement.
     *
     * @return mode
     */
    ControllerMode getMode();
 
    /**
-    * Get the beans in the deployment
+    * Get the bean metadatas in the deployment.
     *
     * @return List<BeanMetaData> 
     */
    List<BeanMetaData> getBeans();
 
    /**
-    * Get the bean factories in the deployment
+    * Get the bean factories in the deployment. A {@link BeanMetaDataFactory}
+    * becomes one or more {@link BeanMetaData}s.
     *
     * @return List<BeanMetaDataFactory> 
     */
    List<BeanMetaDataFactory> getBeanFactories();
    
    /**
-    * Get the installed contexts
+    * Get the installed contexts in this deployment. These are the {@link KernelControllerContext}s
+    * resulting from {@link #getBeans()} and {@link #getBeanFactories()}.
     *
     * @return the installed contexts 
     */
    List<KernelControllerContext> getInstalledContexts();
    
    /**
-    * Add an installed context
+    * Add an installed context to the deployment once we have parsed its {@link BeanMetaData}.
     *
     * @param context the context to add 
     */
    void addInstalledContext(KernelControllerContext context);
    
    /**
-    * Remove an installed context
+    * Remove an installed context from the deployment on undeployment.
     *
     * @param context the context to add 
     */

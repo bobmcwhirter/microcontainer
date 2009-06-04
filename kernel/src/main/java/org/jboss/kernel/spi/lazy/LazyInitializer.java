@@ -27,7 +27,7 @@ import org.jboss.kernel.Kernel;
 import org.jboss.metadata.spi.MetaData;
 
 /**
- * Lazy initializer.
+ * Lazy initializer used by LazyProxyFactory
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */

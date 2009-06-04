@@ -41,7 +41,7 @@ import org.jboss.util.JBossObject;
 import org.jboss.util.JBossStringBuilder;
 
 /**
- * Inject from controller context:
+ * Helper class for {@link FromContext} to inject from controller context:
  *  * name - controller context name
  *  * aliases - aliases
  *  * metadata - inject MetaData

@@ -22,7 +22,10 @@
 package org.jboss.beans.metadata.spi.factory;
 
 /**
- * Bean factory interface.
+ * Bean factory interface. A bean factory is defined in much the same way as a bean,
+ * but instead of instantiating and configuring a single instance of the bean,
+ * we get a reference to the bean factory, which can then be used to create several
+ * instances of a bean.
  *
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */

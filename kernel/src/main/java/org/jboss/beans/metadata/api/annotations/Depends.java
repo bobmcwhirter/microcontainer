@@ -27,8 +27,18 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The depends values.
+ * Used to specify other beans we have a dependency on without wanting to inject that bean.
+ * For example this configuration:
+ * <pre>
+ * &#64;Bean(name="SomeBean")
+ * &#64;Depends({"BeanA","BeanB"})
+ * public class MyBean
+ * {
+ * }
+ * </pre>
+ * Creates an dependency of SomeBean on BeanA and BeanB.
  *
+ * @see org.jboss.beans.metadata.spi.BeanMetaData#getDepends()
  * @author <a href="mailto:ales.justin@jboss.com">Ales Justin</a>
  */
 @Retention(RetentionPolicy.RUNTIME)

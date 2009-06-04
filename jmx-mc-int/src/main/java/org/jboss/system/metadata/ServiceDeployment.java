@@ -37,7 +37,8 @@ import org.jboss.mx.loading.LoaderRepositoryFactory.LoaderRepositoryConfig;
 import org.w3c.dom.Element;
 
 /**
- * ServiceDeployment.
+ * ServiceDeployment. Used to parse the legacy -service.xml files
+ * for MBean deployment.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @author Scott.Stark@jboss.org
@@ -67,7 +68,7 @@ public class ServiceDeployment
    private List<ServiceDeploymentClassPath> classPaths;
    
    /**
-    * Get the name.
+    * Get the name o.
     * 
     * @return the name.
     */

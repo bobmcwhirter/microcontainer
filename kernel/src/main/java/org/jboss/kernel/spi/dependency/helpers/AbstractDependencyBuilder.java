@@ -29,7 +29,9 @@ import org.jboss.kernel.spi.dependency.DependencyBuilderListItem;
 import org.jboss.metadata.spi.MetaData;
 
 /**
- * AbstractDependencyBuilder.
+ * AbstractDependencyBuilder used as the base class for the pluggable dependency builders such as the 
+ * AOP dependency builders. This is the default implementation used in the {@link org.jboss.dependency.spi.ControllerState#DESCRIBED}
+ * state to determine extra dependencies if the AOP dependency builder is absent.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$

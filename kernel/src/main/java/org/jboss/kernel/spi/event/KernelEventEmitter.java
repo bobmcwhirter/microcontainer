@@ -22,7 +22,7 @@
 package org.jboss.kernel.spi.event;
 
 /**
- * An event emitter
+ * An event emitter raises {@link KernelEvent}s.
  * 
  * @author <a href="adrian@jboss.com">Adrian Brock</a>
  * @version $Revision$
@@ -30,7 +30,7 @@ package org.jboss.kernel.spi.event;
 public interface KernelEventEmitter
 {
    /**
-    * Register a listener
+    * Register a listener who is interested in cer
     * 
     * @param listener the listener
     * @param filter the filter
@@ -50,7 +50,7 @@ public interface KernelEventEmitter
    void unregisterListener(KernelEventListener listener, KernelEventFilter filter, Object handback) throws Throwable;
 
    /**
-    * Fire an event
+    * Fire a kernel event and notify all the listeners who are listening for this event.
     * 
     * @param event the event
     */
