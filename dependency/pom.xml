@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
-    <groupId>org.jboss.microcontainer</groupId>
-    <artifactId>jboss-microcontainer</artifactId>
+    <groupId>org.jboss.kernel</groupId>
+    <artifactId>jboss-mc-kernel</artifactId>
     <version>2.2.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -11,9 +11,9 @@
   <url>http://www.jboss.com/products/jbossmc</url>
   <description>JBoss Microcontainer Dependency</description>
   <scm>
-    <connection>scm:svn:http://anonsvn.jboss.org/repos/jbossas/projects/microcontainer/trunk/dependency</connection>
-    <developerConnection>scm:svn:http://anonsvn.jboss.org/repos/jbossas/projects/microcontainer/trunk/dependency</developerConnection>
-    <url>http://viewvc.jboss.org/cgi-bin/viewvc.cgi/jbossas/projects/microcontainer/trunk/dependency</url>
+    <connection>scm:svn:http://anonsvn.jboss.org/repos/jbossas/projects/kernel/trunk/dependency</connection>
+    <developerConnection>scm:svn:http://anonsvn.jboss.org/repos/jbossas/projects/kernel/trunk/dependency</developerConnection>
+    <url>http://viewvc.jboss.org/cgi-bin/viewvc.cgi/jbossas/projects/kernel/trunk/dependency</url>
   </scm>
   <build>
     <plugins>

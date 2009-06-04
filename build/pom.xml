@@ -10,8 +10,8 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
-    <groupId>org.jboss.microcontainer</groupId>
-    <artifactId>jboss-microcontainer</artifactId>
+    <groupId>org.jboss.kernel</groupId>
+    <artifactId>jboss-mc-kernel</artifactId>
     <version>2.2.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -42,7 +42,7 @@
                     <goal>attached</goal>
                   </goals>
                   <configuration>
-                    <finalName>jboss-microcontainer-${project.version}</finalName>
+                    <finalName>jboss-kernel-${project.version}</finalName>
                     <descriptors>
                       <descriptor>src/assembly/dist.xml</descriptor>
                       <descriptor>src/assembly/dist-with-deps.xml</descriptor>
@@ -59,23 +59,23 @@
   
   <dependencies>
     <dependency>
-      <groupId>org.jboss.microcontainer</groupId>
+      <groupId>org.jboss.kernel</groupId>
       <artifactId>jboss-aop-mc-int</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jboss.microcontainer</groupId>
+      <groupId>org.jboss.kernel</groupId>
       <artifactId>jboss-dependency</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jboss.microcontainer</groupId>
+      <groupId>org.jboss.kernel</groupId>
       <artifactId>jboss-kernel</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jboss.microcontainer</groupId>
+      <groupId>org.jboss.kernel</groupId>
       <artifactId>jboss-guice-int</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jboss.microcontainer</groupId>
+      <groupId>org.jboss.kernel</groupId>
       <artifactId>jboss-spring-int</artifactId>
     </dependency>
     

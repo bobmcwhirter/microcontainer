@@ -5,20 +5,20 @@
     <artifactId>jboss-parent</artifactId>
     <version>4</version>
   </parent>
-  <groupId>org.jboss.microcontainer</groupId>
-  <artifactId>jboss-microcontainer</artifactId>
+  <groupId>org.jboss.kernel</groupId>
+  <artifactId>jboss-mc-kernel</artifactId>
   <version>2.2.0-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>JBoss Microcontainer Parent POM</name>
+  <name>JBoss Microcontainer Kernel Parent POM</name>
   <url>http://www.jboss.org/jbossmc/</url>
   <description>
     The JBoss Microcontainer provides a lightweight container for managing POJOs, their deployment
     and configuration.
   </description>
   <scm>
-    <connection>scm:svn:http://anonsvn.jboss.org/repos/jbossas/projects/microcontainer/trunk/</connection>
-    <developerConnection>scm:svn:https://svn.jboss.org/repos/jbossas/projects/microcontainer/trunk/</developerConnection>
-    <url>http://viewvc.jboss.org/cgi-bin/viewvc.cgi/jbossas/projects/microcontainer/trunk/</url>
+    <connection>scm:svn:http://anonsvn.jboss.org/repos/jbossas/projects/kernel/trunk/</connection>
+    <developerConnection>scm:svn:https://svn.jboss.org/repos/jbossas/projects/kernel/trunk/</developerConnection>
+    <url>http://viewvc.jboss.org/cgi-bin/viewvc.cgi/jbossas/projects/kernel/trunk/</url>
   </scm>
 
   <modules>
@@ -54,8 +54,8 @@
   </properties>
 
   <build>
-    <outputDirectory>${microcontainer.outputDirectory}</outputDirectory>
-    <testOutputDirectory>${microcontainer.testOutputDirectory}</testOutputDirectory>
+    <outputDirectory>${kernel.outputDirectory}</outputDirectory>
+    <testOutputDirectory>${kernel.testOutputDirectory}</testOutputDirectory>
     <finalName>${artifactId}</finalName>
     <plugins>
       <plugin>
@@ -89,7 +89,7 @@
         <version>2.0-beta-9</version>
         <configuration>
           <generateReleasePoms>false</generateReleasePoms>
-          <tagBase>https://svn.jboss.org/repos/jbossas/projects/microcontainer/tags</tagBase>
+          <tagBase>https://svn.jboss.org/repos/jbossas/projects/kernel/tags</tagBase>
           <autoVersionSubmodules>true</autoVersionSubmodules>
         </configuration>
       </plugin>
@@ -136,22 +136,22 @@
     <!-- The parent pom manages the inter-dependencies of the modules. -->
     <dependencies>
       <dependency>
-        <groupId>org.jboss.microcontainer</groupId>
+        <groupId>org.jboss.kernel</groupId>
         <artifactId>jboss-aop-mc-int</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.jboss.microcontainer</groupId>
+        <groupId>org.jboss.kernel</groupId>
         <artifactId>jboss-dependency</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.jboss.microcontainer</groupId>
+        <groupId>org.jboss.kernel</groupId>
         <artifactId>jboss-kernel</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.jboss.microcontainer</groupId>
+        <groupId>org.jboss.kernel</groupId>
         <artifactId>jboss-kernel</artifactId>
         <version>${project.version}</version>
         <type>test-jar</type>
@@ -178,24 +178,24 @@
         <version>${version.org.jboss.mx}</version>
       </dependency>
       <dependency>
-        <groupId>org.jboss.microcontainer</groupId>
+        <groupId>org.jboss.kernel</groupId>
         <artifactId>jboss-jmx-mc-int</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.jboss.microcontainer</groupId>
+        <groupId>org.jboss.kernel</groupId>
         <artifactId>jboss-jmx-mc-int</artifactId>
         <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>org.jboss.microcontainer</groupId>
+        <groupId>org.jboss.kernel</groupId>
         <artifactId>jboss-spring-int</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.jboss.microcontainer</groupId>
+        <groupId>org.jboss.kernel</groupId>
         <artifactId>jboss-guice-int</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -315,8 +315,8 @@
         <activeByDefault>true</activeByDefault>
       </activation>
       <properties>
-        <microcontainer.outputDirectory>target/classes</microcontainer.outputDirectory>
-        <microcontainer.testOutputDirectory>target/test-classes</microcontainer.testOutputDirectory>
+        <kernel.outputDirectory>target/classes</kernel.outputDirectory>
+        <kernel.testOutputDirectory>target/test-classes</kernel.testOutputDirectory>
       </properties>
     </profile>
     <profile>
@@ -337,22 +337,22 @@
             </executions>
             <configuration>
               <downloadSources>true</downloadSources>
-              <buildOutputDirectory>${microcontainer.outputDirectory}</buildOutputDirectory>
+              <buildOutputDirectory>${kernel.outputDirectory}</buildOutputDirectory>
             </configuration>
           </plugin>
         </plugins>
       </build>
       <properties>
-        <microcontainer.outputDirectory>eclipse-target/classes</microcontainer.outputDirectory>
-        <microcontainer.testOutputDirectory>eclipse-target/tests-classes</microcontainer.testOutputDirectory>
+        <kernel.outputDirectory>eclipse-target/classes</kernel.outputDirectory>
+        <kernel.testOutputDirectory>eclipse-target/tests-classes</kernel.testOutputDirectory>
       </properties>
     </profile>
 
     <profile>
       <id>assembly</id>
       <properties>
-        <microcontainer.outputDirectory>target/classes</microcontainer.outputDirectory>
-        <microcontainer.testOutputDirectory>target/test-classes</microcontainer.testOutputDirectory>
+        <kernel.outputDirectory>target/classes</kernel.outputDirectory>
+        <kernel.testOutputDirectory>target/test-classes</kernel.testOutputDirectory>
       </properties>
     </profile>
   </profiles>
